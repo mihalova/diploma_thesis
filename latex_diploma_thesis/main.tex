@@ -1,0 +1,121 @@
+\documentclass[12pt,a4paper,oneside]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{setspace}
+\usepackage{graphicx}
+\graphicspath{ {./figures/} }
+%\usepackage{natbib}
+\usepackage[left=3.5cm,right=2cm,top=2.5cm,bottom=2.5cm]{geometry}
+\setstretch{1.5} %riadkovanie 1.5
+\titleformat{\chapter}{\normalfont\huge\bfseries}{\thechapter}{20pt}{\normalfont\huge\bfseries}
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+\newtheorem{definition}{Definition}
+
+\newcommand\mytitle{Software for isometric gene tree reconciliation}
+\newcommand\mythesistype{Master's thesis}
+\newcommand\myauthor{Bc. Dominika Mihálová}
+\newcommand\myadvisor{doc. Mgr. Bronislava Brejová, PhD.}
+\newcommand\myplacedate{Bratislava, 2020}
+\newcommand\myuniversity{COMENIUS UNIVERSITY IN BRATISLAVA}
+\newcommand\myfaculty{FACULTY OF MATHEMATICS, PHYSICS AND INFORMATICS}
+\newcommand{\sub}[1]{$_{\text{#1}}$}
+\newcommand{\reference}[1]{č.~\ref{#1}}
+\newcommand{\imageHeight}{150px}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+
+\begin{document}
+%obal
+\frontmatter
+\thispagestyle{empty}
+\noindent
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\textbf{\myuniversity \\
+		\myfaculty}
+	\end{center}
+\end{minipage}
+
+\vfill
+\begin{center}
+	\begin{minipage}{0.8\textwidth}
+		\centering{\textbf{\Large\MakeUppercase{\mytitle}}} \\
+		\centering{\mythesistype}
+	\end{minipage}
+\end{center}
+\vfill
+2020 \hfill
+\myauthor
+\eject 
+
+%titulná strana
+\thispagestyle{empty}
+\noindent
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\textbf{\myuniversity \\
+		\myfaculty}
+	\end{center}
+\end{minipage}
+\vfill
+
+\begin{center}
+	\begin{minipage}{0.8\textwidth}
+		\centering{\textbf{\Large\MakeUppercase{\mytitle}}} \\
+		\centering{\mythesistype}
+	\end{minipage}
+\end{center}
+\vfill
+\begin{tabular}{l l}
+	Study programme: & Applied Computer Science\\
+	Field of study: & Computer Science\\
+	Department: & Department of Computer Science\\
+	Supervisor: & \myadvisor
+\end{tabular}
+\vfill
+\noindent
+\myplacedate \hfill
+\myauthor
+\eject 
+
+%zadanie - pojde obrazok
+%\chapter*{Thesis assignment}\label{chap:thesis_assignment}
+%\vfill\eject 
+
+%sk abstrakt
+%\chapter*{Abstrakt}\label{chap:abstract_sk}
+%\vfill\eject 
+
+%en abstrakt
+%\chapter*{Abstract}\label{chap:abstract_en}
+%\vfill\eject 
+
+%predhovor
+%\chapter*{Introduction}\label{chap:introduction}
+%\vfill\eject 
+
+%obsah
+\tableofcontents
+\newpage
+%zoznam obrazkov
+%\listoffigures
+
+\mainmatter
+
+\input chapter_1.tex
+
+\backmatter
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{bibliography}
+
+\end{document}
