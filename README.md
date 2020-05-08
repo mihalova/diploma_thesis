@@ -1,5 +1,4 @@
 # Software for isometric gene tree reconciliation 
-
 The goal of this thesis is to implement a practical software for isometric gene tree reconciliation and to evaluate its accuracy on simulated as well as real biological data.
 
 ## Content
