@@ -3,5 +3,5 @@
 \contentsline {section}{\numberline {1.1}Background}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Different approaches to gene tree reconciliation}{3}{section.1.2}%
 \contentsline {subsection}{\numberline {1.2.1}Scoring gene tree reconciliation}{4}{subsection.1.2.1}%
-\contentsline {subsection}{\numberline {1.2.2}Probabilistic gene tree reconciliation}{4}{subsection.1.2.2}%
-\contentsline {subsection}{\numberline {1.2.3}Isometric gene tree reconciliation}{5}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.2}Probabilistic gene tree reconciliation}{6}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Isometric gene tree reconciliation}{6}{subsection.1.2.3}%

@@ -15,6 +15,14 @@ Dave Danicic et~al.
 \newblock {\em Notung 2.8: A Manual}.
 \newblock Notung Development Team, Mar. 2015.
 
+\bibitem{doyon}
+Jean-Philippe Doyon, Cedric Chauve, and Sylvie Hamel.
+\newblock Algorithms for exploring the space of gene tree/species tree
+  reconciliations.
+\newblock In {\em Nelson C.E., Vialette S. (eds) Comparative Genomics.
+  RECOMB-CG 2008. Lecture Notes in Computer Science}, volume 5267, pages 1--13.
+  Springer, Berlin, Heidelberg, Oct. 2008.
+
 \bibitem{felsenstein}
 Joseph Felsenstein.
 \newblock {\em Inferring Phylogenies}.
@@ -31,14 +39,6 @@ Damir Hasić and Eric Tannier.
 \newblock Gene tree species tree reconciliation with gene conversion.
 \newblock {\em Journal of Mathematical Biology}, 78(6):1981--2014, May 2019.
 
-\bibitem{doyon}
-Sylvie~Hamel Jean-Philippe~Doyon, Cedric~Chauve.
-\newblock Algorithms for exploring the space of gene tree/species tree
-  reconciliations.
-\newblock In {\em Nelson C.E., Vialette S. (eds) Comparative Genomics.
-  RECOMB-CG 2008. Lecture Notes in Computer Science}, volume 5267, pages 1--13.
-  Springer, Berlin, Heidelberg, Oct. 2008.
-
 \bibitem{ma}
 Jian Ma et~al.
 \newblock The infinite sites model of genome evolution.
@@ -49,6 +49,11 @@ Jian Ma et~al.
 Matthew~D. Rasmussen and Manolis Kellis.
 \newblock A bayesian approach for fast and accurate gene tree reconstruction.
 \newblock {\em Molecular Biology and Evolution}, 28(1):273--290, Jan. 2011.
+
+\bibitem{vernot}
+Benjamin Vernot et~al.
+\newblock Reconciliation with non-binary species trees.
+\newblock {\em Journal of Computational Biology}, 15(8):981--1006, Oct. 2008.
 
 \bibitem{treebest}
 Albert~J. Vilella et~al.
