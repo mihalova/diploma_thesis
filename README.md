@@ -1,6 +1,8 @@
 # Software for isometric gene tree reconciliation 
 The goal of this thesis is to implement a practical software for isometric gene tree reconciliation and to evaluate its accuracy on simulated as well as real biological data.
 
+This thesis and source code is based on master's thesis of Radoslav Chládek: Algorithms for isometric gene tree reconciliation (Univerzita Komenského v Bratislave, 2019). 
+
 ## Content
 Project have two folders and one file:
 * latex_diploma_thesis - contains actual version of thesis (all latex files, pdf file and figures)
