@@ -5,6 +5,7 @@ This thesis and source code is based on master's thesis of Radoslav Chládek: Al
 
 ## Content
 Project have two folders and one file:
+* data - contains scripts for testing the reconciliation software
 * latex_diploma_thesis - contains actual version of thesis (all latex files, pdf file and figures)
 * reconciliation_software - contains cource code in Java of the reconciliation software
 * presentation - contains progress of my work for class: Project seminar 1
