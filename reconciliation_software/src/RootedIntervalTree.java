@@ -25,9 +25,9 @@ public class RootedIntervalTree {
         u.setLcaS(RootedExactTree.lca(v.getLcaS(),w.getLcaS()));
 
         //detom sa orezu intervaly zhora kvoli nastavenej hlbke korena
-        Double newVmin = Reconciliator.linear2(0, true, v, w, u.getMaxD(), rootEdge, Reconciliator.dirPath);
+        Double newVmin = Reconciliator.linear2(0, true, v, w, u.getMaxD(), rootEdge, Reconciliator.getDirPath());
         newVmin = Reconciliator.round(newVmin);
-        Double newWmin = Reconciliator.linear2(1, true, v, w, u.getMaxD(), rootEdge, Reconciliator.dirPath);
+        Double newWmin = Reconciliator.linear2(1, true, v, w, u.getMaxD(), rootEdge, Reconciliator.getDirPath());
         newWmin = Reconciliator.round(newWmin);
 
         v.setMinD(newVmin);
@@ -50,7 +50,7 @@ public class RootedIntervalTree {
             double vDepth = vInterval.getMinDepth();
 
             //hlbku w vypocitame z LP
-            Double wDepth = Reconciliator.linearW(0, false, vDepth, w, u.getMaxD(), rootEdge, Reconciliator.dirPath);
+            Double wDepth = Reconciliator.linearW(0, false, vDepth, w, u.getMaxD(), rootEdge, Reconciliator.getDirPath());
             wDepth = Reconciliator.round(wDepth);
             DL DLu = u.countDL(u.getMaxD(), vDepth, wDepth);
 
