@@ -1,26 +1,26 @@
 public class DL {
-    private final int duplication;
-    private final int loss;
+    private final int d;
+    private final int l;
 
-    public DL(int duplication, int loss) {
-        this.duplication = duplication;
-        this.loss = loss;
+    public DL(int d, int l) {
+        this.d = d;
+        this.l = l;
     }
 
-    public int getDuplication() {
-        return duplication;
+    public int getD() {
+        return d;
     }
 
-    public int getLoss() {
-        return loss;
+    public int getL() {
+        return l;
     }
 
     public int getSum(){
-        return duplication + loss;
+        return d + l;
     }
 
     @Override public boolean equals(Object obj) {
         DL o = (DL) obj;
-        return o != null && this.duplication == o.duplication && this.loss == o.loss;
+        return o != null && this.d == o.d && this.l == o.l;
     }
 }

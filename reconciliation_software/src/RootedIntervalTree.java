@@ -25,10 +25,10 @@ public class RootedIntervalTree {
         u.setLcaS(RootedExactTree.lca(v.getLcaS(),w.getLcaS()));
 
         //detom sa orezu intervaly zhora kvoli nastavenej hlbke korena
-        Double newVmin = Reconciliation.linear2(0, true, v, w, u.getMaxD(), rootEdge, Reconciliation.dirPath);
-        newVmin = Reconciliation.round(newVmin);
-        Double newWmin = Reconciliation.linear2(1, true, v, w, u.getMaxD(), rootEdge, Reconciliation.dirPath);
-        newWmin = Reconciliation.round(newWmin);
+        Double newVmin = Reconciliator.linear2(0, true, v, w, u.getMaxD(), rootEdge, Reconciliator.dirPath);
+        newVmin = Reconciliator.round(newVmin);
+        Double newWmin = Reconciliator.linear2(1, true, v, w, u.getMaxD(), rootEdge, Reconciliator.dirPath);
+        newWmin = Reconciliator.round(newWmin);
 
         v.setMinD(newVmin);
         w.setMinD(newWmin);
@@ -47,22 +47,22 @@ public class RootedIntervalTree {
             Interval vInterval = v.getInterval(i);
 
             //mapovanie na vrch intervalu ma rovnako vela DL
-            double vDepth = vInterval.getMinDepth();
+            double vDepth = vInterval.getMinD();
 
             //hlbku w vypocitame z LP
-            Double wDepth = Reconciliation.linearW(0, false, vDepth, w, u.getMaxD(), rootEdge, Reconciliation.dirPath);
-            wDepth = Reconciliation.round(wDepth);
+            Double wDepth = Reconciliator.linearW(0, false, vDepth, w, u.getMaxD(), rootEdge, Reconciliator.dirPath);
+            wDepth = Reconciliator.round(wDepth);
             DL DLu = u.countDL(u.getMaxD(), vDepth, wDepth);
 
             //v praci binarne vyhladavanie, tu len prechod cez podintervaly
             for (int j = w.intervalsSize() - 1; j >= 0; j--) {
                 Interval wInterval = w.getInterval(j);
                 //ak sa rovna wInterval.getMaxD(), moze sa namapovat aj do nizsieho intervalu
-                if(wInterval.getMaxDepth() == wDepth && j > 0) continue;
+                if(wInterval.getMaxD() == wDepth && j > 0) continue;
                 //wDepth patri do intervalu
-                if(wInterval.getMinDepth() <= wDepth && wInterval.getMaxDepth() >= wDepth){
-                    DL minDL = new DL(DLu.getDuplication() + vInterval.getDl().getDuplication() + wInterval.getDl().getDuplication(),
-                            DLu.getLoss() + vInterval.getDl().getLoss() + wInterval.getDl().getLoss());
+                if(wInterval.getMinD() <= wDepth && wInterval.getMaxD() >= wDepth){
+                    DL minDL = new DL(DLu.getD() + vInterval.getDl().getD() + wInterval.getDl().getD(),
+                            DLu.getL() + vInterval.getDl().getL() + wInterval.getDl().getL());
                     if(minDL.getSum() < bestDL.getSum()){
                         bestDL = minDL;
                         bestVdepth = vDepth;
@@ -85,7 +85,7 @@ public class RootedIntervalTree {
         int lossesOnPathBetweenRoots = RootedExactTree.pathToRoot(u.getBearingNode(u.getMaxD())).size() - 1;
 
         //nastav celkove DL korena
-        u.setTotalDL(new DL(bestDL.getDuplication(), bestDL.getLoss()+ lossesOnPathBetweenRoots));
+        u.setTotalDL(new DL(bestDL.getD(), bestDL.getL()+ lossesOnPathBetweenRoots));
     }
 
     private RootedIntervalNode enroot(UnrootedNode uNode, Edge sourceEdge){
@@ -107,7 +107,7 @@ public class RootedIntervalTree {
 
             RootedIntervalNode child = enroot(otherNode, e);
             child.setParent(rNode);
-            child.setMinL(e.getMinLength());
+            child.setMinL(e.getMinL());
             child.setMaxL(e.getMaxL());
 
             if(rNode.getLeft() == null){
@@ -146,8 +146,8 @@ public class RootedIntervalTree {
 
     static boolean upward(RootedIntervalNode v){
         if(v.getLeft() == null){
-            v.setMinD(v.getLcaS().getDepth());
-            v.setMaxD(v.getLcaS().getDepth());
+            v.setMinD(v.getLcaS().getD());
+            v.setMaxD(v.getLcaS().getD());
             return true;
         }
         if(!upward(v.getLeft()) || !upward(v.getRight())) return false;
@@ -155,7 +155,7 @@ public class RootedIntervalTree {
                 v.getRight().getMinD() - v.getRight().getMaxL());
         double maxD = Math.min(v.getLeft().getMaxD() - v.getLeft().getMinL(),
                 v.getRight().getMaxD() - v.getRight().getMinL());
-        maxD = Math.min(maxD, v.getLcaS().getDepth());
+        maxD = Math.min(maxD, v.getLcaS().getD());
 
         if(maxD < minD) {
             return false;
