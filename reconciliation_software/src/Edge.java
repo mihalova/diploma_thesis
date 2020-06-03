@@ -1,14 +1,14 @@
 public class Edge {
     private final UnrootedNode u;
     private final UnrootedNode v;
-    private final double minL;
-    private final double maxL;
+    private double minLength;
+    private double maxLength;
 
-    public Edge(UnrootedNode u, UnrootedNode v, double minL, double maxL){
+    public Edge(UnrootedNode u, UnrootedNode v, double minLength, double maxLength){
         this.u = u;
         this.v = v;
-        this.minL = minL;
-        this.maxL = maxL;
+        this.minLength = minLength;
+        this.maxLength = maxLength;
     }
 
     public UnrootedNode getU() {
@@ -20,11 +20,19 @@ public class Edge {
     }
 
     public double getMaxL() {
-        return maxL;
+        return maxLength;
     }
 
-    public double getMinL() {
-        return minL;
+    public double getMinLength() {
+        return minLength;
+    }
+
+    public void setMaxL(double maxL) {
+        this.maxLength = maxL;
+    }
+
+    public void setMinLength(double minLength) {
+        this.minLength = minLength;
     }
 
     @Override public boolean equals(Object obj) {

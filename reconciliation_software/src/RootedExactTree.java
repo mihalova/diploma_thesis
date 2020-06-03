@@ -102,9 +102,9 @@ class RootedExactTree {
 
     private Double mapOnInternal(RootedExactNode node, RootedExactTree s) {
         if(node.getLeft() == null){
-            double depthInS = s.findNode(leafMap.get(node.getName())).getD();
-            double currentD = node.getD();
-            node.setD(depthInS);
+            double depthInS = s.findNode(leafMap.get(node.getName())).getDepth();
+            double currentD = node.getDepth();
+            node.setDepth(depthInS);
             return currentD - depthInS;
         }
         Double leftOffset = mapOnInternal(node.getLeft(), s);
@@ -119,7 +119,7 @@ class RootedExactTree {
         //if(leftOffset >= rightOffset){
         //	offset = leftOffset;
         //}
-        node.setD(node.getD() - leftOffset);
+        node.setDepth(node.getDepth() - leftOffset);
         //node.setD(node.getD() - offset);
 
         return leftOffset;
@@ -150,7 +150,7 @@ class RootedExactTree {
             unrooted.addNode(v);
         }
 
-        double l = root.getLeft().getD() + root.getRight().getD() - 2*root.getD();
+        double l = root.getLeft().getDepth() + root.getRight().getDepth() - 2*root.getDepth();
         Edge e = new Edge(u, v, l, l);
         u.addEdge(e);
         v.addEdge(e);
@@ -165,7 +165,7 @@ class RootedExactTree {
         if(child == null) return;
         String uName = parent.getName();
         String vName = child.getName();
-        double l = child.getD() - parent.getD();
+        double l = child.getDepth() - parent.getDepth();
 
         UnrootedNode u = new UnrootedNode(uName);
         int i = unrooted.indexOfNode(u);

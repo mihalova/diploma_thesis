@@ -1,17 +1,21 @@
 class RootedExactNode extends Node {
-    private double d;
+    private double depth;
 
     private RootedExactNode parent;
     private RootedExactNode left;
     private RootedExactNode right;
 
-    public RootedExactNode(String name, double d){
+    public RootedExactNode(String name, double depth){
         super(name);
-        this.d = Reconciliator.round(d);
+        this.depth = Reconciliator.round(depth);
     }
 
-    public double getD() {
-        return d;
+    public double getDepth() {
+        return depth;
+    }
+
+    public void setDepth(double d) {
+        this.depth = Reconciliator.round(d);
     }
 
     public RootedExactNode getLeft() {
@@ -38,7 +42,5 @@ class RootedExactNode extends Node {
         this.parent = parent;
     }
 
-    public void setD(double d) {
-        this.d = Reconciliator.round(d);
-    }
+
 }

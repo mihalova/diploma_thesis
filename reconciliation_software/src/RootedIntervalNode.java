@@ -144,14 +144,14 @@ class RootedIntervalNode extends Node {
             leftI = shiftedLeftIntervals.get(j);
             rightI = shiftedRightIntervals.get(k);
 
-            min = Math.max(middleI.getMinD(), Math.max(leftI.getMinD(), rightI.getMinD()));
+            min = Math.max(middleI.getMinDepth(), Math.max(leftI.getMinDepth(), rightI.getMinDepth()));
 
-            DL dl = countDL((middleI.getMaxD() + middleI.getMinD()) / 2,
+            DL dl = countDL((middleI.getMaxDepth() + middleI.getMinDepth()) / 2,
                     leftI.getOriginalMappingDepth(),
                     rightI.getOriginalMappingDepth());
 
-            DL newTotalDL = new DL(dl.getD() + leftI.getDl().getD() + rightI.getDl().getD(),
-                    dl.getL() + leftI.getDl().getL() + rightI.getDl().getL());
+            DL newTotalDL = new DL(dl.getDuplication() + leftI.getDl().getDuplication() + rightI.getDl().getDuplication(),
+                    dl.getLoss() + leftI.getDl().getLoss() + rightI.getDl().getLoss());
 
             if(!newTotalDL.equals(previousDL) && previousMax != Double.MAX_VALUE){
                 newInterval = new Interval(previousMax, max);
@@ -165,9 +165,9 @@ class RootedIntervalNode extends Node {
             max = min;
 
             //sprava sa zle pre nespresne hodnoty double premennych...
-            if(middleI.getMinD() == min) i++;
-            if(leftI.getMinD() == min) j++;
-            if(rightI.getMinD() == min) k++;
+            if(middleI.getMinDepth() == min) i++;
+            if(leftI.getMinDepth() == min) j++;
+            if(rightI.getMinDepth() == min) k++;
 
         } while (min != minD);
 
@@ -185,20 +185,20 @@ class RootedIntervalNode extends Node {
         //zacneme od najblizsieho nizsieho vrchola od maxD, teda bearingNode(maxD)
         RootedExactNode temp = getBearingNode(maxD);
 
-        if(temp.getD() > lcaS.getD()){
+        if(temp.getDepth() > lcaS.getDepth()){
             //bearing node moze byt pod lca, len ak mame nulovu hranu
             System.err.println("Duplikacia sa mapuje do lca - nulova hrana");
         }
 
         //ked sa na zaciatku nachadzame presne v nejakom vrchole, pridame interval len v hlbke tohto vrchola
-        if(temp.getD() == max){
+        if(temp.getDepth() == max){
             result.add(new Interval(max,max));
         }
 
         //na zaciatku kazdeho cyklu sme niekde na hrane nad vrcholom temp
         while(true){
             temp = temp.getParent();
-            if(temp == null || minD > temp.getD()){
+            if(temp == null || minD > temp.getDepth()){
                 //ak temp nema rodica, mapujeme sa nad koren a nasli sme posledny interval
                 //ak minimalna hlbka mozneho namapovania je nizsie ako rodic, tiez skoncime
                 result.add(new Interval(max, minD));
@@ -208,9 +208,9 @@ class RootedIntervalNode extends Node {
             // urcite je rodic uz vyssie ako v lca, teda speciacia tam nenastane
             // zaroven duplikacia vo vrchole sa namapuje tesne pod vrchol
             // => mozeme vzdy priamo vytvorit interval (max, temp.D)
-            result.add(new Interval(max, temp.getD()));
+            result.add(new Interval(max, temp.getDepth()));
 
-            max = temp.getD();
+            max = temp.getDepth();
         }
         return result;
     }
@@ -219,7 +219,7 @@ class RootedIntervalNode extends Node {
         if(left == null) return false; //list nie je duplikacia
         //vnutorny vrchol genoveho stromu je duplikacia, ked jeho lcaS je rovnake ako jedneho z jeho deti
         //taktiez ked to je speciacia (nesplna predoslu podmienku) ale mapuje sa vyssie ako do lcaS
-        return lcaS.equals(left.lcaS) || lcaS.equals(right.lcaS) || mappingDepth < lcaS.getD();
+        return lcaS.equals(left.lcaS) || lcaS.equals(right.lcaS) || mappingDepth < lcaS.getDepth();
     }
 
     // funkcia, ktora ako berie ako parametre parcialne mapovania vrchola a jeho deti
@@ -245,7 +245,7 @@ class RootedIntervalNode extends Node {
 
         if(isDuplication(mappingDepth)) {
             // kedze som duplikacia, nemozem sa mapovat presne do lca - iba ak dovolujem nulove hrany
-            if(mappingDepth == lcaS.getD()) {
+            if(mappingDepth == lcaS.getDepth()) {
                 System.err.println("Duplikacia sa mapuje presne do lca - nulova hrana - " + this.getName());
             }
             dup = 1;
@@ -276,13 +276,13 @@ class RootedIntervalNode extends Node {
         RootedExactNode node = lcaS;
 
         //zacni hladanie v lcaS, pokracuj do rodicov, kym nenajdes bearing node
-        while(node.getD() > mappingDepth){
+        while(node.getDepth() > mappingDepth){
             // node z S je bearing node, ked:
             // je koren (namapovanie musi byt nad korenom)
             // rodic ma mensiu hlbku ako hlbka namapovania
             // mapujem sa presne do rodica, ale kedze som duplikacia, nemapujem sa priamo do vrchola v S ale tesne pod neho
-            if(node.getParent() == null || node.getParent().getD() < mappingDepth ||
-                    (node.getParent().getD() == mappingDepth && isDuplication(mappingDepth))){
+            if(node.getParent() == null || node.getParent().getDepth() < mappingDepth ||
+                    (node.getParent().getDepth() == mappingDepth && isDuplication(mappingDepth))){
                 break;
             }
             node = node.getParent();
@@ -299,8 +299,8 @@ class RootedIntervalNode extends Node {
         double previousMin = Double.MAX_VALUE; //najmensia hlbka z predosleho spracovaneho intervalu = najvacsia hlbka
 
         for (Interval interval : intervals) {
-            double shiftedIntervalMax = Reconciliator.round(interval.getMaxD() - minL);
-            double shiftedIntervalMin = Reconciliator.round(interval.getMinD() - maxL);
+            double shiftedIntervalMax = Reconciliator.round(interval.getMaxDepth() - minL);
+            double shiftedIntervalMin = Reconciliator.round(interval.getMinDepth() - maxL);
             if(shiftedIntervalMin > parent.maxD){
                 //intervaly, ktore sa aj po posunuti nachadzaju hlbsie ako najhlbsie namapovanie rodica, neberieme do uvahy
                 continue;
@@ -331,7 +331,7 @@ class RootedIntervalNode extends Node {
 
             Interval shiftedInterval = new Interval(previousMin, shiftedIntervalMin);
             shiftedInterval.setDl(interval.getDl());
-            shiftedInterval.setOriginalMappingDepth((interval.getMaxD() + interval.getMinD())/2);
+            shiftedInterval.setOriginalMappingDepth((interval.getMaxDepth() + interval.getMinDepth())/2);
             result.add(shiftedInterval);
             previousMin = shiftedIntervalMin;
 

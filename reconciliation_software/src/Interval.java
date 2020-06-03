@@ -1,6 +1,6 @@
 public class Interval {
-    private double maxD;
-    private double minD;
+    private double maxDepth;
+    private double minDepth;
     // nemusim si pre interval pamatat ci je otvoreny alebo uzavrety, kde sa to prejavi je len pri pocitani DL
     // intervaly, ktore su z aspon jednej strany otvorene, maju rozdielny minD a maxD
     // ked pri urcovani DL vezmem priemer maxD a minD, nemam problem s otvorenymi intervalmi
@@ -10,25 +10,25 @@ public class Interval {
     //len pre posunuty interval, je to priemer maxD a minD povodneho intervalu pred posunom
     private double originalMappingDepth;
 
-    public Interval(double maxD, double minD){
-        this.maxD = maxD;
-        this.minD = minD;
+    public Interval(double maxDepth, double minDepth){
+        this.maxDepth = maxDepth;
+        this.minDepth = minDepth;
     }
 
-    public double getMaxD() {
-        return maxD;
+    public double getMaxDepth() {
+        return maxDepth;
     }
 
-    public void setMaxD(double maxD) {
-        this.maxD = maxD;
+    public void setMaxDepth(double maxDepth) {
+        this.maxDepth = maxDepth;
     }
 
-    public double getMinD() {
-        return minD;
+    public double getMinDepth() {
+        return minDepth;
     }
 
-    public void setMinD(double minD) {
-        this.minD = minD;
+    public void setMinDepth(double minDepth) {
+        this.minDepth = minDepth;
     }
 
     public DL getDl() {

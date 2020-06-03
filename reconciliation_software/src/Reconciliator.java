@@ -28,68 +28,40 @@ class Reconciliator {
     }
 
     public static void main(String[] args) {
-        if (args.length != 3 || args[1].length()!=1 || "pdra".indexOf(args[1].charAt(0))<0) {
-            throw new IllegalArgumentException("Start the program with 3 arguments: [path] " +
-                    "[interval_method p/d/r/a] [method_param]");
+        Double tolerance;
+        if (args.length == 1) {
+            dirPath = args[0];
+            tolerance = null;
+        } else if (args.length == 2) {
+            dirPath = args[0];
+            tolerance = Double.valueOf(args[1]);
+        } else {
+            throw new IllegalArgumentException("Start the program with arguments: [path] and [tolerance (optional)]");
         }
-        dirPath = args[0];
-        String method = args[1];
-        double methodParam = Double.parseDouble(args[2]);
+
+
         File output = new File(dirPath + "/stats.txt");
-        RootedExactTree Sreal = Parser.parseRootedNewick(dirPath,
+        RootedExactTree Sreal = Parser.parseRootedTree(dirPath,
                 "Sreal_newick_outgroupless.tree");
         RootedExactTree S;
         try {
-            S = Parser.parseRootedNewick(dirPath, "S_newick.tree");
+            S = Parser.parseRootedTree(dirPath, "S_newick.tree");
         } catch (Exception exc) {
             writeStatus(output, "BAD S");
             return;
         }
-        RootedExactTree Greal = Parser.parseRootedNewick(dirPath, "Greal_newick.tree");
+        //rooted exact G
+        RootedExactTree Greal = Parser.parseRootedTree(dirPath, "Greal_newick.tree");
         if (!S.checkEqualTopology(Sreal)) {
             writeStatus(output, "BAD S");
             return;
         }
 
-        UnrootedTree GrealUnrooted = Greal.unrootAndRename();
+        //unrooted G with leaf mapping
+        File GtreeFile = new File(dirPath + "/G_newick.tree");
+        UnrootedTree G = Parser.parseUnrootedTree(GtreeFile, tolerance);
+        TreeMap<String, String> leafMap = G.getLeafMap();
 
-        // check consensus tree
-        File GConTreeFile = new File(dirPath + "/G_newick.tree");
-        UnrootedTree GConTree;
-        try {
-            GConTree = Parser.parseUnrootedNewick(GConTreeFile);
-        } catch(Exception e) {
-            writeStatus(output, "BAD Gcon");
-            return;
-        }
-        if (!GrealUnrooted.equalTopology(GConTree)) {
-            writeStatus(output, "BAD Gcon");
-            return;
-        }
-
-        int t = 0;
-        ArrayList<UnrootedTree> viableTrees = new ArrayList<>();
-        while (true) {
-            File GtreeFile = new File(dirPath + "/Gtrees/G_newick_" + t + ".tree");
-            if (!GtreeFile.exists()) {
-                break;
-            }
-            UnrootedTree Gtree = Parser.parseUnrootedNewick(GtreeFile);
-            if (GrealUnrooted.equalTopology(Gtree)) {
-                viableTrees.add(Gtree);
-            }
-            t++;
-        }
-        if (viableTrees.isEmpty()) {
-            writeStatus(output, "BAD G");
-            return;
-        }
-
-        UnrootedTree G = new UnrootedTree();
-        G.createFromTrees(viableTrees, method, methodParam);
-
-        TreeMap<String, String> leafMap = Parser.parseLeafMap(dirPath);
-        Greal.leafMap = leafMap;
         ArrayList<RootedIntervalNode> solutions = new ArrayList<>();
         DL minDL = new DL(Integer.MAX_VALUE/2, Integer.MAX_VALUE/2);
         for (Edge e : G.getEdges()) {
@@ -102,7 +74,7 @@ class Reconciliator {
             }
             if (!RootedIntervalTree.upward(vTree.getRoot())) {
                 //System.err.println("Zakorenenie na hrane " + e.getU().getName() + "," +
-                //	e.getV().getName() + " nie je mozne");
+                //e.getV().getName() + " nie je mozne");
                 continue;
             }
 
@@ -179,9 +151,9 @@ class Reconciliator {
 
             RootedIntervalTree.findMostParsimoniousDepths(root, e);
             if(root.getTotalDL().getSum() < minDL.getSum()){
-                minDL = new DL(root.getTotalDL().getD(), root.getTotalDL().getL());
+                minDL = new DL(root.getTotalDL().getDuplication(), root.getTotalDL().getLoss());
             }
-            System.out.println("Total DL of solution: ("+ root.getTotalDL().getD() +"," + root.getTotalDL().getL() + ")");
+            System.out.println("Total DL of solution: ("+ root.getTotalDL().getDuplication() +"," + root.getTotalDL().getLoss() + ")");
 
             solutions.add(root);
         }
@@ -201,7 +173,7 @@ class Reconciliator {
         }
 
         System.out.println("Number of the most parsimonious solutions: " + parsimonySolutions.size());
-        System.out.println("Minimal DL: ("+ minDL.getD() +"," + minDL.getL() + ")");
+        System.out.println("Minimal DL: ("+ minDL.getDuplication() +"," + minDL.getLoss() + ")");
         System.out.println();
 
         //ak chceme len riesenia s minimalnym DL:
@@ -247,6 +219,7 @@ class Reconciliator {
                     	return;
                     }
                     */
+
                     int numberOfNodes = 0;
                     int matchedNodes = 0;
                     System.out.println("#[min depth] [Greal depth] [max depth]");
@@ -255,9 +228,9 @@ class Reconciliator {
                         RootedExactNode realNode = Greal.findNode(line[0]);
                         double minD = Double.parseDouble(line[1]);
                         double maxD = Double.parseDouble(line[2]);
-                        System.out.print(line[0] + " " + minD + " " + realNode.getD() + " " + maxD);
+                        System.out.print(line[0] + " " + minD + " " + realNode.getDepth() + " " + maxD);
                         if (realNode.getLeft() != null) {
-                            if (realNode.getD() >= minD - EPSILON && realNode.getD() <= maxD + EPSILON) {
+                            if (realNode.getDepth() >= minD - EPSILON && realNode.getDepth() <= maxD + EPSILON) {
                                 matchedNodes++;
                                 System.out.print(" GOOD");
                             } else {
@@ -317,10 +290,10 @@ class Reconciliator {
             solver.strAddConstraint("0 1 0", LpSolve.LE, v.getMaxD());
 
             //hlbka korena je mensia ako hlbka lcaS
-            solver.strAddConstraint("0 0 1", LpSolve.LE, lcaS.getD());
+            solver.strAddConstraint("0 0 1", LpSolve.LE, lcaS.getDepth());
 
             //sucet vzdialenosti u a v od korena patri do intervalu dlzky korenovej hrany
-            solver.strAddConstraint("1 1 -2", LpSolve.GE, e.getMinL());
+            solver.strAddConstraint("1 1 -2", LpSolve.GE, e.getMinLength());
             solver.strAddConstraint("1 1 -2", LpSolve.LE, e.getMaxL());
 
             //hlbky u a v musia byt vacsie alebo rovne ako hlbka korena (plus epsilon aby sa algoritmy nekazili)
@@ -378,7 +351,7 @@ class Reconciliator {
 
 
             //sucet vzdialenosti u a v od korena patri do intervalu dlzky korenovej hrany
-            solver.strAddConstraint("1 1", LpSolve.GE, e.getMinL() + 2*rootDepth);
+            solver.strAddConstraint("1 1", LpSolve.GE, e.getMinLength() + 2*rootDepth);
             solver.strAddConstraint("1 1", LpSolve.LE, e.getMaxL() + 2*rootDepth);
 
             //hlbky u a v musia byt vacsie alebo rovne ako hlbka korena (uz plati z predosleho volania LP)
@@ -430,7 +403,7 @@ class Reconciliator {
 
 
             //sucet vzdialenosti v a w od korena patri do intervalu dlzky korenovej hrany
-            solver.strAddConstraint("1", LpSolve.GE, e.getMinL() - vDepth + 2*rootDepth);
+            solver.strAddConstraint("1", LpSolve.GE, e.getMinLength() - vDepth + 2*rootDepth);
             solver.strAddConstraint("1", LpSolve.LE, e.getMaxL() - vDepth + 2*rootDepth);
 
             //hlbka v musi byt vacsia ako hlbka korena (malo by platit)
