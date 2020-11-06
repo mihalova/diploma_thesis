@@ -22,4 +22,4 @@ Relative numeric accuracy ||*|| = 0
       The largest [LUSOL v2.2.1.0] fact(B) had 14 NZ entries, 1.0x largest basis.
       The constraint matrix inf-norm is 1, with a dynamic range of 1.
       Time to load data was 0.000 seconds, presolve used 0.000 seconds,
-       ... 0.000 seconds in simplex solver, in total 0.000 seconds.
+       ... 0.005 seconds in simplex solver, in total 0.005 seconds.

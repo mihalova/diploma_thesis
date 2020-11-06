@@ -139,7 +139,7 @@ class Parser {
     }
 
     public static double[] makeInterval(double time, Double tolerance) {
-        double min = time -(tolerance*time);
+        double min = time-(tolerance*time);
         double max = time+(tolerance*time);
         return new double[]{min, max};
     }

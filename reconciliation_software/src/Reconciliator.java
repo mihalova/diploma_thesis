@@ -9,23 +9,28 @@ import lpsolve.LpSolveException;
 
 class Reconciliator {
     private static String dirPath;
-    private Double tolerance;
+    private Double tolerance, step;
     private RootedExactTree S;
     private UnrootedTree G;
     private TreeMap<String, String> leafMap;
-    ArrayList<RootedIntervalNode> solutions = new ArrayList<>();
+    //ArrayList<RootedIntervalNode> solutions = new ArrayList<>();
 
-    public Reconciliator(String dirPath, Double tolerance){
+
+    public Reconciliator(String dirPath, Double tolerance, Double step) {
         this.dirPath = dirPath;
         this.tolerance = tolerance;
+        if (step != null)
+            this.step = step;
+        else
+            this.step = 0.1;
     }
 
-    public void runReconciliation(){
+    public void runReconciliation() {
         loadTreesFromFiles();
         reconcile();
     }
 
-    public static String getDirPath(){
+    public static String getDirPath() {
         return dirPath;
     }
 
@@ -59,78 +64,118 @@ class Reconciliator {
     }
 
     private void reconcile() {
-        DL minDL = new DL(Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2);
         for (Edge e : G.getEdges()) {
+            //vytvorim dva podstromy od hrany, na ktorej zakorenujem
             RootedIntervalTree uTree = new RootedIntervalTree(e.getU(), e, S, leafMap);
             RootedIntervalTree vTree = new RootedIntervalTree(e.getV(), e, S, leafMap);
-            if (!RootedIntervalTree.upward(uTree.getRoot())) {
-                //System.err.println("Zakorenenie na hrane " + e.getU().getName() + "," +
-                //	e.getV().getName() + " nie je mozne");
-                continue;
-            }
-            if (!RootedIntervalTree.upward(vTree.getRoot())) {
-                //System.err.println("Zakorenenie na hrane " + e.getU().getName() + "," +
-                //e.getV().getName() + " nie je mozne");
-                continue;
-            }
-
             RootedIntervalNode u = uTree.getRoot();
             RootedIntervalNode v = vTree.getRoot();
-            RootedExactNode lcaS = RootedExactTree.lca(u.getLcaS(), v.getLcaS());
-
-            Double minDR = linear(2, true, u, v, lcaS, e, dirPath);
-            if (minDR == null) continue;
-            minDR = round(minDR);
-            Double maxDR = round(linear(2, false, u, v, lcaS, e, dirPath));
-            Double minDU = round(linear(0, true, u, v, lcaS, e, dirPath));
-            Double maxDU = round(linear(0, false, u, v, lcaS, e, dirPath));
-            Double minDV = round(linear(1, true, u, v, lcaS, e, dirPath));
-            Double maxDV = round(linear(1, false, u, v, lcaS, e, dirPath));
-
-            RootedIntervalNode root = new RootedIntervalNode("root");
-            root.setMinD(minDR);
-            root.setMaxD(maxDR);
-            root.setDepth(maxDR);
-            u.setMinD(minDU);
-            u.setMaxD(maxDU);
-            v.setMinD(minDV);
-            v.setMaxD(maxDV);
-            root.setLeft(u);
-            root.setRight(v);
-            RootedIntervalTree.downward(u);
-            RootedIntervalTree.downward(v);
-
-            RootedIntervalTree.findMostParsimoniousDepths(root, e);
-            if (root.getTotalDL().getSum() < minDL.getSum()) {
-                minDL = new DL(root.getTotalDL().getDuplication(), root.getTotalDL().getLoss());
-            }
-            System.out.println("Total DL of solution: (" + root.getTotalDL().getDuplication() + "," + root.getTotalDL().getLoss() + ")");
-
-            solutions.add(root);
-        }
-
-        if (solutions.isEmpty()) {
-            System.err.println("No solution found");
-            return;
-        }
-
-        //riesenia s najmensim DL
-        ArrayList<RootedIntervalNode> parsimonySolutions = new ArrayList<>();
-        for (RootedIntervalNode solution : solutions) {
-            DL solDL = solution.getTotalDL();
-            if (solDL.getSum() == minDL.getSum()) {
-                parsimonySolutions.add(solution);
+            double intervalDifference = (e.getMaxLength() - e.getMinLength()) / 2;
+            //vytvorim root na hrane s krokom
+            for (double intervalNode1 = step; intervalNode1 <= e.getMinLength(); intervalNode1 += step) {
+                double intervalNode2 = e.getMinLength() - intervalNode1;
+                u.setMinL(intervalNode1);
+                u.setMaxL(intervalNode1 + intervalDifference);
+                v.setMinL(intervalNode2);
+                v.setMaxL(intervalNode2 + intervalDifference);
+                RootedIntervalNode root = new RootedIntervalNode("root");
+                root.setLeft(u);
+                root.setRight(v);
+                root.setLcaS(RootedExactTree.lca(u.getLcaS(), v.getLcaS()));
+                RootedIntervalTree.upward(root);
+                RootedIntervalTree.downward(root);
+                //vypis vysledkov upward a downward
+                result = null;
+                System.out.println(getTree(root));
             }
         }
-
-        System.out.println("Number of the most parsimonious solutions: " + parsimonySolutions.size());
-        System.out.println("Minimal DL: (" + minDL.getDuplication() + "," + minDL.getLoss() + ")");
-        System.out.println();
-
-        //ak chceme len riesenia s minimalnym DL:
-        solutions = parsimonySolutions;
     }
 
+
+    String result;
+    private String getTree(RootedIntervalNode n) {
+        if(n.getLeft() != null) {
+            getTree(n.getLeft());
+            getTree(n.getRight());
+        }
+        result += n.getName() + " "+ n.getMinD() + " " + n.getMaxD() + "\n";
+        return result;
+    }
+
+    /* private void reconcileOLD() {
+         DL minDL = new DL(Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2);
+         for (Edge e : G.getEdges()) {
+             //vytvorim dva podstromy od noveho root
+             RootedIntervalTree uTree = new RootedIntervalTree(e.getU(), e, S, leafMap);
+             RootedIntervalTree vTree = new RootedIntervalTree(e.getV(), e, S, leafMap);
+             if (!RootedIntervalTree.upward(uTree.getRoot())) {
+                 //System.err.println("Zakorenenie na hrane " + e.getU().getName() + "," +
+                 //	e.getV().getName() + " nie je mozne");
+                 continue;
+             }
+             if (!RootedIntervalTree.upward(vTree.getRoot())) {
+                 //System.err.println("Zakorenenie na hrane " + e.getU().getName() + "," +
+                 //e.getV().getName() + " nie je mozne");
+                 continue;
+             }
+
+             RootedIntervalNode u = uTree.getRoot();
+             RootedIntervalNode v = vTree.getRoot();
+             RootedExactNode lcaS = RootedExactTree.lca(u.getLcaS(), v.getLcaS());
+
+             Double minDR = linear(2, true, u, v, lcaS, e, dirPath);
+             if (minDR == null) continue;
+             minDR = round(minDR);
+             Double maxDR = round(linear(2, false, u, v, lcaS, e, dirPath));
+             Double minDU = round(linear(0, true, u, v, lcaS, e, dirPath));
+             Double maxDU = round(linear(0, false, u, v, lcaS, e, dirPath));
+             Double minDV = round(linear(1, true, u, v, lcaS, e, dirPath));
+             Double maxDV = round(linear(1, false, u, v, lcaS, e, dirPath));
+
+             RootedIntervalNode root = new RootedIntervalNode("root");
+             root.setMinD(minDR);
+             root.setMaxD(maxDR);
+             root.setDepth(maxDR);
+             u.setMinD(minDU);
+             u.setMaxD(maxDU);
+             v.setMinD(minDV);
+             v.setMaxD(maxDV);
+             root.setLeft(u);
+             root.setRight(v);
+             RootedIntervalTree.downward(u);
+             RootedIntervalTree.downward(v);
+
+             RootedIntervalTree.findMostParsimoniousDepths(root, e);
+             if (root.getTotalDL().getSum() < minDL.getSum()) {
+                 minDL = new DL(root.getTotalDL().getDuplication(), root.getTotalDL().getLoss());
+             }
+             System.out.println("Total DL of solution: (" + root.getTotalDL().getDuplication() + "," + root.getTotalDL().getLoss() + ")");
+
+             solutions.add(root);
+         }
+
+         if (solutions.isEmpty()) {
+             System.err.println("No solution found");
+             return;
+         }
+
+         //riesenia s najmensim DL
+         ArrayList<RootedIntervalNode> parsimonySolutions = new ArrayList<>();
+         for (RootedIntervalNode solution : solutions) {
+             DL solDL = solution.getTotalDL();
+             if (solDL.getSum() == minDL.getSum()) {
+                 parsimonySolutions.add(solution);
+             }
+         }
+
+         System.out.println("Number of the most parsimonious solutions: " + parsimonySolutions.size());
+         System.out.println("Minimal DL: (" + minDL.getDuplication() + "," + minDL.getLoss() + ")");
+         System.out.println();
+
+         //ak chceme len riesenia s minimalnym DL:
+         solutions = parsimonySolutions;
+     }
+ */
     private Double linear(Integer objective, boolean min, RootedIntervalNode u,
                                  RootedIntervalNode v, RootedExactNode lcaS, Edge e, String path) {
         try {
@@ -149,7 +194,7 @@ class Reconciliator {
 
             //sucet vzdialenosti u a v od korena patri do intervalu dlzky korenovej hrany
             solver.strAddConstraint("1 1 -2", LpSolve.GE, e.getMinLength());
-            solver.strAddConstraint("1 1 -2", LpSolve.LE, e.getMaxL());
+            solver.strAddConstraint("1 1 -2", LpSolve.LE, e.getMaxLength());
 
             //hlbky u a v musia byt vacsie alebo rovne ako hlbka korena (plus epsilon aby sa algoritmy nekazili)
 
@@ -207,7 +252,7 @@ class Reconciliator {
 
             //sucet vzdialenosti u a v od korena patri do intervalu dlzky korenovej hrany
             solver.strAddConstraint("1 1", LpSolve.GE, e.getMinLength() + 2 * rootDepth);
-            solver.strAddConstraint("1 1", LpSolve.LE, e.getMaxL() + 2 * rootDepth);
+            solver.strAddConstraint("1 1", LpSolve.LE, e.getMaxLength() + 2 * rootDepth);
 
             //hlbky u a v musia byt vacsie alebo rovne ako hlbka korena (uz plati z predosleho volania LP)
 
@@ -257,7 +302,7 @@ class Reconciliator {
 
             //sucet vzdialenosti v a w od korena patri do intervalu dlzky korenovej hrany
             solver.strAddConstraint("1", LpSolve.GE, e.getMinLength() - vDepth + 2 * rootDepth);
-            solver.strAddConstraint("1", LpSolve.LE, e.getMaxL() - vDepth + 2 * rootDepth);
+            solver.strAddConstraint("1", LpSolve.LE, e.getMaxLength() - vDepth + 2 * rootDepth);
 
             //hlbka v musi byt vacsia ako hlbka korena (malo by platit)
             solver.strAddConstraint("1", LpSolve.GE, rootDepth);

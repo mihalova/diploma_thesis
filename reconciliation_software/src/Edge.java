@@ -19,7 +19,7 @@ public class Edge {
         return v;
     }
 
-    public double getMaxL() {
+    public double getMaxLength() {
         return maxLength;
     }
 
@@ -27,7 +27,7 @@ public class Edge {
         return minLength;
     }
 
-    public void setMaxL(double maxL) {
+    public void setMaxLength(double maxL) {
         this.maxLength = maxL;
     }
 

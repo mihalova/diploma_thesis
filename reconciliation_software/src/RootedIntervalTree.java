@@ -105,11 +105,12 @@ public class RootedIntervalTree {
                 System.err.println("Chyba v subore G.tree");
             }
 
-            RootedIntervalNode child = enroot(otherNode, e);
+            RootedIntervalNode child = enroot(otherNode, e); //zakorenim strom od noveho root smerom dole
             child.setParent(rNode);
             child.setMinL(e.getMinLength());
-            child.setMaxL(e.getMaxL());
+            child.setMaxL(e.getMaxLength());
 
+            //nastavi postupne deti root
             if(rNode.getLeft() == null){
                 rNode.setLeft(child);
             } else if(rNode.getRight() == null){
@@ -118,7 +119,7 @@ public class RootedIntervalTree {
                 System.err.println("Node " + uNode.getName() + " doesnt contain source edge.");
             }
         }
-
+        //skontroluje, ci su dobre nastavene deti
         if(rNode.getLeft() != null && rNode.getRight() == null){
             System.err.println("There are 2 edges for node " + rNode.getName());
         }
@@ -145,18 +146,21 @@ public class RootedIntervalTree {
     }
 
     static boolean upward(RootedIntervalNode v){
+        //leaves
         if(v.getLeft() == null){
             v.setMinD(v.getLcaS().getDepth());
             v.setMaxD(v.getLcaS().getDepth());
             return true;
         }
+        //pre kazde dieta sprav upward
         if(!upward(v.getLeft()) || !upward(v.getRight())) return false;
+        //else vetva v algoritme
         double minD = Math.max(v.getLeft().getMinD() - v.getLeft().getMaxL(),
                 v.getRight().getMinD() - v.getRight().getMaxL());
         double maxD = Math.min(v.getLeft().getMaxD() - v.getLeft().getMinL(),
                 v.getRight().getMaxD() - v.getRight().getMinL());
         maxD = Math.min(maxD, v.getLcaS().getDepth());
-
+        //no solution
         if(maxD < minD) {
             return false;
         }
