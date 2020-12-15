@@ -86,8 +86,6 @@ class Reconciliator {
 
                 RootedIntervalTree tree = new RootedIntervalTree(root, S, leafMap);
                 tree.upward(root);
-                result = "";
-                System.out.println(getTree(root));
                 tree.downward(root);
 
                 result = "";
