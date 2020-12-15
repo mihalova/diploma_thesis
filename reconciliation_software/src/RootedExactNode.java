@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 class RootedExactNode extends Node {
     private double depth;
 
@@ -41,6 +43,5 @@ class RootedExactNode extends Node {
     public void setParent(RootedExactNode parent) {
         this.parent = parent;
     }
-
 
 }

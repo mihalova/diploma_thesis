@@ -7,7 +7,6 @@ class RootedIntervalNode extends Node {
     private double maxD;
 
     private double depth; //hlbka, ktora (snad) minimalizuje pocet udalosti
-    private DL totalDL; //totalny pocet udalosti v podstrome - ma ho definovany len koren
 
     private double minL;
     private double maxL;
@@ -101,7 +100,9 @@ class RootedIntervalNode extends Node {
         return intervals.get(i);
     }
 
-    public int intervalsSize(){
+
+
+   /* public int intervalsSize(){
         return intervals.size();
     }
 
@@ -340,13 +341,6 @@ class RootedIntervalNode extends Node {
         }
 
         return result;
-    }
+    }*/
 
-    public DL getTotalDL() {
-        return totalDL;
-    }
-
-    public void setTotalDL(DL totalDL) {
-        this.totalDL = totalDL;
-    }
 }

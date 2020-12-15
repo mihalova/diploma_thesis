@@ -4,6 +4,11 @@ public class RootedIntervalTree {
     private RootedExactTree speciesTree;
     private RootedIntervalNode root;
     TreeMap<String, String> leafMap;
+    private DL totalDL = new DL(0, 0);
+
+    public DL getTotalDL(){
+        return this.totalDL;
+    }
 
     public RootedIntervalTree(UnrootedNode newRoot, Edge sourceEdge, RootedExactTree speciesTree,
                               TreeMap<String, String> leafMap){
@@ -12,12 +17,44 @@ public class RootedIntervalTree {
         this.root = enroot(newRoot, sourceEdge);
     }
 
+    public RootedIntervalTree(RootedIntervalNode root, RootedExactTree speciesTree, TreeMap<String, String> leafMap){
+        this.speciesTree = speciesTree;
+        this.leafMap = leafMap;
+        this.root = root;
+    }
+
+    public void countDL(RootedIntervalNode node) {
+        RootedExactNode lca = node.getLcaS();
+        //namapovalo sa mimo lca
+        if (!(node.getMinD() >= lca.getDepth() && lca.getDepth() >= node.getMaxD())){
+            totalDL.addDuplication(1);
+            //zistit ako vysoko je node nad lca, tj. kolko S nodes je medzi nim a lca
+            int nodesNumber = 0;
+            double speciesNodeDepth;
+            RootedExactNode speciesNode = lca;
+            //ak duplikácia nad listami, loss už nenastane
+            if (!leafMap.containsValue(lca.getName())) {
+                do {
+                    speciesNode = speciesNode.getParent();
+                    speciesNodeDepth = speciesNode.getDepth();
+                    nodesNumber += 1;
+                } while (node.getMaxD() <= speciesNodeDepth);
+                totalDL.addLoss(nodesNumber);
+            }
+        } else if (lca.getName().equals("root") && node != root){ //do root sa namapuje niečo iné ako root
+            totalDL.addDuplication(1);
+        }
+        if (node.getLeft() != null) {
+            countDL(node.getLeft());
+            countDL(node.getRight());
+        }
+    }
     // novy koren 'u' genoveho stromu sa mapuje do svojho maxD
     // v detoch 'v' a 'w' uz presiel upward-downward algoritmus a ich intervaly hlbky mapovania su urcene linearnym programovanim
     // obe deti sa nemusia namapovat do svojich maximalnych hlbok, lebo nemusi na to vystacit dlzka korenovej hrany
     // chceme najst hlbky namapovania deti, aby pocet udalosti bol co najmensi
     // nastavi celkovy DL count stromu
-    public static void findMostParsimoniousDepths(RootedIntervalNode u, Edge rootEdge) {
+    /*public static void findMostParsimoniousDepths(RootedIntervalNode u, Edge rootEdge) {
         RootedIntervalNode v = u.getLeft();
         RootedIntervalNode w = u.getRight();
 
@@ -87,7 +124,7 @@ public class RootedIntervalTree {
         //nastav celkove DL korena
         u.setTotalDL(new DL(bestDL.getDuplication(), bestDL.getLoss()+ lossesOnPathBetweenRoots));
     }
-
+*/
     private RootedIntervalNode enroot(UnrootedNode uNode, Edge sourceEdge){
         RootedIntervalNode rNode = new RootedIntervalNode(uNode.getName());
 
@@ -145,7 +182,7 @@ public class RootedIntervalTree {
         return root;
     }
 
-    static boolean upward(RootedIntervalNode v){
+    boolean upward(RootedIntervalNode v){
         //leaves
         if(v.getLeft() == null){
             v.setMinD(v.getLcaS().getDepth());
@@ -164,13 +201,12 @@ public class RootedIntervalTree {
         if(maxD < minD) {
             return false;
         }
-
         v.setMinD(minD);
         v.setMaxD(maxD);
         return true;
     }
 
-    static void downward(RootedIntervalNode v){
+    void downward(RootedIntervalNode v){
         if(v.getLeft() == null) return;
         double minDepthL = Math.max(v.getMinD() + v.getLeft().getMinL(), v.getLeft().getMinD());
         double maxDepthL = Math.min(v.getMaxD() + v.getLeft().getMaxL(), v.getLeft().getMaxD());
@@ -180,15 +216,16 @@ public class RootedIntervalTree {
         v.getLeft().setMaxD(maxDepthL);
         v.getRight().setMinD(minDepthR);
         v.getRight().setMaxD(maxDepthR);
+        //System.out.println(v.getName() + " " + minD +" "+maxD);
         downward(v.getLeft());
         downward(v.getRight());
     }
 
-    private static void downwardSetSolution(RootedIntervalNode v) {
+   /* private static void downwardSetSolution(RootedIntervalNode v) {
         if(v.getLeft() == null) return;
         v.getLeft().setDepth(Math.min(v.getDepth() + v.getLeft().getMaxL(), v.getLeft().getMaxD()));
         v.getRight().setDepth(Math.min(v.getDepth() + v.getRight().getMaxL(), v.getRight().getMaxD()));
         downwardSetSolution(v.getLeft());
         downwardSetSolution(v.getRight());
-    }
+    }*/
 }

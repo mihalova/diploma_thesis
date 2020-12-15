@@ -1,7 +1,6 @@
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.TreeMap;
 
 import lpsolve.LpSolve;
@@ -63,6 +62,8 @@ class Reconciliator {
         leafMap = G.getLeafMap();
     }
 
+    int i = 0;
+
     private void reconcile() {
         for (Edge e : G.getEdges()) {
             //vytvorim dva podstromy od hrany, na ktorej zakorenujem
@@ -72,7 +73,7 @@ class Reconciliator {
             RootedIntervalNode v = vTree.getRoot();
             double intervalDifference = (e.getMaxLength() - e.getMinLength()) / 2;
             //vytvorim root na hrane s krokom
-            for (double intervalNode1 = step; intervalNode1 <= e.getMinLength(); intervalNode1 += step) {
+            for (double intervalNode1 = 0; intervalNode1 <= e.getMinLength(); intervalNode1 += step) { //TODO krajne pripady - root v node?
                 double intervalNode2 = e.getMinLength() - intervalNode1;
                 u.setMinL(intervalNode1);
                 u.setMaxL(intervalNode1 + intervalDifference);
@@ -82,23 +83,32 @@ class Reconciliator {
                 root.setLeft(u);
                 root.setRight(v);
                 root.setLcaS(RootedExactTree.lca(u.getLcaS(), v.getLcaS()));
-                RootedIntervalTree.upward(root);
-                RootedIntervalTree.downward(root);
-                //vypis vysledkov upward a downward
-                result = null;
+
+                RootedIntervalTree tree = new RootedIntervalTree(root, S, leafMap);
+                tree.upward(root);
+                result = "";
                 System.out.println(getTree(root));
+                tree.downward(root);
+
+                result = "";
+                System.out.println(getTree(root));
+
+                tree.countDL(root);
+                System.out.println("Duplications: " + tree.getTotalDL().getDuplication());
+                System.out.println("Deletions: " + tree.getTotalDL().getLoss());
+
             }
         }
     }
 
-
     String result;
+
     private String getTree(RootedIntervalNode n) {
-        if(n.getLeft() != null) {
+        if (n.getLeft() != null) {
             getTree(n.getLeft());
             getTree(n.getRight());
         }
-        result += n.getName() + " "+ n.getMinD() + " " + n.getMaxD() + "\n";
+        result += n.getName() + " " + n.getMinL() + " " + n.getMaxL() + " " + n.getMinD() + " " + n.getMaxD() + "\n";
         return result;
     }
 
@@ -177,7 +187,7 @@ class Reconciliator {
      }
  */
     private Double linear(Integer objective, boolean min, RootedIntervalNode u,
-                                 RootedIntervalNode v, RootedExactNode lcaS, Edge e, String path) {
+                          RootedIntervalNode v, RootedExactNode lcaS, Edge e, String path) {
         try {
             //prvy stlpec je hlbka u, druhy je hlbka v, treti je hlbka root
             LpSolve solver = LpSolve.makeLp(0, 3);

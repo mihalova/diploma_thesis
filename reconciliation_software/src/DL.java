@@ -1,6 +1,6 @@
 public class DL {
-    private final int duplication;
-    private final int loss;
+    private int duplication;
+    private int loss;
 
     public DL(int duplication, int loss) {
         this.duplication = duplication;
@@ -13,6 +13,14 @@ public class DL {
 
     public int getLoss() {
         return loss;
+    }
+
+    public void addDuplication(int D) {
+        this.duplication += D;
+    }
+
+    public void addLoss(int L) {
+        this.loss += L;
     }
 
     public int getSum(){
