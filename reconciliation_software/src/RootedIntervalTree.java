@@ -6,18 +6,18 @@ public class RootedIntervalTree {
     TreeMap<String, String> leafMap;
     private DL totalDL = new DL(0, 0);
 
-    public DL getTotalDL(){
+    public DL getTotalDL() {
         return this.totalDL;
     }
 
     public RootedIntervalTree(UnrootedNode newRoot, Edge sourceEdge, RootedExactTree speciesTree,
-                              TreeMap<String, String> leafMap){
+                              TreeMap<String, String> leafMap) {
         this.speciesTree = speciesTree;
         this.leafMap = leafMap;
         this.root = enroot(newRoot, sourceEdge);
     }
 
-    public RootedIntervalTree(RootedIntervalNode root, RootedExactTree speciesTree, TreeMap<String, String> leafMap){
+    public RootedIntervalTree(RootedIntervalNode root, RootedExactTree speciesTree, TreeMap<String, String> leafMap) {
         this.speciesTree = speciesTree;
         this.leafMap = leafMap;
         this.root = root;
@@ -46,11 +46,12 @@ public class RootedIntervalTree {
                 totalDL.addDuplication(1);
             }
         }
-            if (node.getLeft() != null) {
-                countDL(node.getLeft());
-                countDL(node.getRight());
-            }
+        if (node.getLeft() != null) {
+            countDL(node.getLeft());
+            countDL(node.getRight());
+        }
     }
+
     // novy koren 'u' genoveho stromu sa mapuje do svojho maxD
     // v detoch 'v' a 'w' uz presiel upward-downward algoritmus a ich intervaly hlbky mapovania su urcene linearnym programovanim
     // obe deti sa nemusia namapovat do svojich maximalnych hlbok, lebo nemusi na to vystacit dlzka korenovej hrany
@@ -127,20 +128,20 @@ public class RootedIntervalTree {
         u.setTotalDL(new DL(bestDL.getDuplication(), bestDL.getLoss()+ lossesOnPathBetweenRoots));
     }
 */
-    private RootedIntervalNode enroot(UnrootedNode uNode, Edge sourceEdge){
+    private RootedIntervalNode enroot(UnrootedNode uNode, Edge sourceEdge) {
         RootedIntervalNode rNode = new RootedIntervalNode(uNode.getName());
 
-        if(uNode.getEdges().size() != 3 && uNode.getEdges().size() != 1){
+        if (uNode.getEdges().size() != 3 && uNode.getEdges().size() != 1) {
             System.err.println("Zly pocet hran pre vrchol " + uNode.getEdges());
         }
 
-        for (Edge e: uNode.getEdges()) {
-            if(e.equals(sourceEdge)) continue;
+        for (Edge e : uNode.getEdges()) {
+            if (e.equals(sourceEdge)) continue;
 
             //assert rNode.getLeft() == null || rNode.getRight() == null;
 
             UnrootedNode otherNode = e.otherNode(uNode);
-            if(otherNode == null){
+            if (otherNode == null) {
                 System.err.println("Chyba v subore G.tree");
             }
 
@@ -150,29 +151,29 @@ public class RootedIntervalTree {
             child.setMaxL(e.getMaxLength());
 
             //nastavi postupne deti root
-            if(rNode.getLeft() == null){
+            if (rNode.getLeft() == null) {
                 rNode.setLeft(child);
-            } else if(rNode.getRight() == null){
+            } else if (rNode.getRight() == null) {
                 rNode.setRight(child);
             } else {
                 System.err.println("Node " + uNode.getName() + " doesnt contain source edge.");
             }
         }
         //skontroluje, ci su dobre nastavene deti
-        if(rNode.getLeft() != null && rNode.getRight() == null){
+        if (rNode.getLeft() != null && rNode.getRight() == null) {
             System.err.println("There are 2 edges for node " + rNode.getName());
         }
 
-        if(rNode.getLeft() != null && rNode.getRight() != null){
+        if (rNode.getLeft() != null && rNode.getRight() != null) {
             rNode.setLcaS(speciesTree.lca(rNode.getLeft().getLcaS(), rNode.getRight().getLcaS()));
-            if(rNode.getLeft().getName().compareTo(rNode.getRight().getName()) < 0){
+            if (rNode.getLeft().getName().compareTo(rNode.getRight().getName()) < 0) {
                 rNode.setName(rNode.getLeft().getName() + rNode.getRight().getName());
             } else {
                 rNode.setName(rNode.getRight().getName() + rNode.getLeft().getName());
             }
         } else {
             rNode.setLcaS(speciesTree.findNode(leafMap.get(rNode.getName())));
-            if(rNode.getLcaS() == null){
+            if (rNode.getLcaS() == null) {
                 System.err.println("Zly nazov listu " + rNode.getName());
             }
         }
@@ -184,15 +185,15 @@ public class RootedIntervalTree {
         return root;
     }
 
-    boolean upward(RootedIntervalNode v){
+    boolean upward(RootedIntervalNode v) {
         //leaves
-        if(v.getLeft() == null){
+        if (v.getLeft() == null) {
             v.setMinD(v.getLcaS().getDepth());
             v.setMaxD(v.getLcaS().getDepth());
             return true;
         }
         //pre kazde dieta sprav upward
-        if(!upward(v.getLeft()) || !upward(v.getRight())) return false;
+        if (!upward(v.getLeft()) || !upward(v.getRight())) return false;
         //else vetva v algoritme
         double minD = Math.max(v.getLeft().getMinD() - v.getLeft().getMaxL(),
                 v.getRight().getMinD() - v.getRight().getMaxL());
@@ -200,7 +201,7 @@ public class RootedIntervalTree {
                 v.getRight().getMaxD() - v.getRight().getMinL());
         maxD = Math.min(maxD, v.getLcaS().getDepth());
         //no solution
-        if(maxD < minD) {
+        if (maxD < minD) {
             return false;
         }
         v.setMinD(minD);
@@ -208,8 +209,8 @@ public class RootedIntervalTree {
         return true;
     }
 
-    void downward(RootedIntervalNode v){
-        if(v.getLeft() == null) return;
+    void downward(RootedIntervalNode v) {
+        if (v.getLeft() == null) return;
         double minDepthL = Math.max(v.getMinD() + v.getLeft().getMinL(), v.getLeft().getMinD());
         double maxDepthL = Math.min(v.getMaxD() + v.getLeft().getMaxL(), v.getLeft().getMaxD());
         double minDepthR = Math.max(v.getMinD() + v.getRight().getMinL(), v.getRight().getMinD());

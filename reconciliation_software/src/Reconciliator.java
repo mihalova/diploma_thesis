@@ -94,7 +94,6 @@ class Reconciliator {
                 tree.countDL(root);
                 System.out.println("Duplications: " + tree.getTotalDL().getDuplication());
                 System.out.println("Deletions: " + tree.getTotalDL().getLoss());
-
             }
         }
     }

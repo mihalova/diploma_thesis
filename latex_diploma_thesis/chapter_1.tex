@@ -4,25 +4,25 @@ In this chapter, we introduce basic information and define essential terminology
 \section{Background}
 Every organism has its complete set of genetic information encoded in a genome. A~genome consists of~several DNA (deoxyribonucleic acid) molecules and contains all the~information, which are required for~the~organism to~function.
 
-DNA is a long molecule composed of~two complementary strands. Each strand is made up of~four chemical bases: adenine, guanine, cytosine and thymine, and connected to its complementary strand by~pairing rules, where adenine is paired up with~thymine and cytosine is paired up with~guanine. Sequence of~these bases encodes the genetic information important for~building and maintaining an~organism. Specific parts of~DNA are called genes.
+DNA is a long molecule composed of~two complementary strands. Each strand is made up of~four chemical bases: adenine, guanine, cytosine and thymine, and connected to its complementary strand by~pairing rules, where adenine is paired up with~thymine and cytosine is paired up with~guanine. The~sequence of~these bases encodes the genetic information important for~building and maintaining an~organism. Specific parts of~DNA are called genes.
 
-A gene is a subsequence of~a~DNA strand that contains information for~synthesis of~a~specific molecule, usually a~protein. It is basic unit of~heredity.
+A gene is a subsequence of~a~DNA strand that contains information for~the~synthesis of~a~specific molecule, usually a~protein. It is a~basic unit of~heredity.
 
-The DNA sequence of a gene can be altered by mutation. It is a process that allows small changes in~DNA of~organisms that refers to~differences between individuals within a~population. We will be working with two types of mutations: duplication and deletion.
+The DNA sequence of a gene can be altered by mutation. It is a process that allows small changes in~the~DNA of~organisms that refers to~differences between individuals within a~population. We will be working with two types of mutations: duplication and deletion.
 
 Duplication is a~type of~mutation where one or more genes are copied and inserted to~some other position in~the same genome. A~duplicated gene sometimes develops a~new function \cite{doyon}. 
 
-The opposite of~duplication is deletion (gene loss). It~is a~type of~mutation in~which some part of~DNA sequence containing a~gene is left~out from~the~genome during DNA replication or it~loses its function. 
+The opposite of~duplication is deletion (gene loss). It~is a~type of~mutation in~which some part of~a~DNA sequence containing a~gene is left~out from~the~genome during DNA replication or it~loses its function. 
 
-Speciation is an~evolutionary process of~in~which a~single population evolves populations into~two distinct species. It can happen for~various reasons, for~example, when a~group separates from~other members of~its species to~different a~geographical area. Members of~a~new group develop own unique characteristics due to~the~demands of~another environment and this process will differentiate the~new species.
+Speciation is an~evolutionary process of~in~which a~single population evolves populations into~two distinct species. It can happen for~various reasons, for~example, when a~group separates from~other members of~its species to~different a~geographical area. Members of~a~new group develop their own unique characteristics due to~the~demands of~another environment and this process will differentiate the~new species.
 
-Duplications and speciations result in formation of groups of~similar genes, called gene families, from a~single gene. A~gene family consists of~evolutionarily related genes from one or multiple species, which are structurally and usually functionally similar.
+Duplications and speciations result in the~formation of groups of~similar genes, called gene families, from a~single gene. A~gene family consists of~evolutionarily related genes from one or multiple species, which are structurally and usually functionally similar.
 
-Evolutionary relationships formed by~evolutionary events are represented in~a~form of~graph called phylogenetic tree, which is a~branching diagram that~shows evolutionary relationships between organisms. A~phylogenetic tree is a~tree~$T$ with nodes~$V(T)$, edges~$E(T)$ and leaves~$L(T)$. It is called weighted when branch length~$w(u, v)$ is defined for~each edge~$(u, v)$.
+Evolutionary relationships formed by~evolutionary events are represented in~a~form of~graph called a~phylogenetic tree, which is a~branching diagram that~shows evolutionary relationships between organisms. A~phylogenetic tree is a~tree~$T$ with nodes~$V(T)$, edges~$E(T)$ and leaves~$L(T)$. It is called weighted when branch length~$w(u, v)$ is defined for~each edge~$(u, v)$.
 
 Phylogenetic trees can be either rooted or unrooted (Fig. \ref{unrooted_rooted}). A~rooted tree is a~phylogenetic tree $T$ where for $(u, v) \in E(T)$: node $u$ is the parent of node $v$, node $v$ is the children of node $u$, $root(T)$ does not have parent and leaves $L(T)$ do not have children. An ancestor of node $v$ is any node of tree $T$ on the path from node $v$ to $root(T)$. Every ancestor have at least one descendant. An descendant of node $v$ is any node of tree $T$ of which $v$ is an ancestor \cite{hasic}. We will denote for $u, v \in V(T)$ that $v<_Tu$ if~$u$ is ancestor of~$v$ and $v$ is descendant of~$u$.
 
-For~group of~nodes in~a~rooted tree, their~lowest common ancestor~(LCA) is the~farthest node from root that has all nodes in~the~group as~descendants.
+For~a~group of~nodes in~a~rooted tree, their~lowest common ancestor~(LCA) is the~farthest node from~the~root that has all nodes in~the~group as~descendants.
 
 An~unrooted tree is a~phylogenetic tree without root. Unrooted tree can be rooted by~placing a~root $r$ on some edge $(u, v)$. The~original edge $(u, v)$ is subdivided into two edges $(u, r)$ and $(r, v)$. If~edge $(u, v)$ is weighted, then $w(u, r) + w(r, v) = w(u, v)$.
 
@@ -33,13 +33,13 @@ An~unrooted tree is a~phylogenetic tree without root. Unrooted tree can be roote
   	\caption{Unrooted tree(left) and its~rooted version (right) tree. We~placed the~root~$R$ on~the~edge~$(C, D)$ replacing it with~two new edges~$(C, R)$ and~$(R, D)$.}
 \end{figure}
 
-We will be using two types of phylogenetics trees for showing evolutionary relationships: species trees (to describe the~evolution of~a~set of~species) and gene trees (to describe evolution of~a~particular gene).
+We will be using two types of phylogenetic trees for showing evolutionary relationships: species trees (to describe the~evolution of~a~set of~species) and gene trees (to describe the~evolution of~a~particular gene).
 
 A~species tree is a~phylogenetic tree $S$ where $L(S)$ represent present-day species and internal nodes from $V(S)$ represent speciation events in~the~history.
 
 A~gene tree is a~phylogenetic tree $G$ where $L(G)$ represent present-day copies of~the~gene and internal nodes from $V(S)$ represent duplication and deletion events in~the~history.
 
-Phylogenetic trees are reconstructed from a multiple alignment of the DNA sequences of present-day species by various methods \cite{felsenstein} to find  the most likely phylogenetic tree to given DNA sequences.
+Phylogenetic trees are reconstructed from a~multiple alignments of~the~DNA sequences of~present-day species by~various methods \cite{felsenstein} to find the~most likely phylogenetic tree to given DNA sequences.
 
 \section{Different approaches to gene tree reconciliation}
 An evolutionary history is a possible sequence of~evolutionary events that lead to~an~observed members of~a~gene family in~present-day species is shown by~evolutionary history (Fig. \ref{reconciliation}). It illustrates how many duplications and deletions happened during an~evolution of~one or more genes inside the evolution of~a~group of~species.
