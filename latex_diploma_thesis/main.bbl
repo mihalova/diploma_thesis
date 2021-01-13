@@ -1,5 +1,19 @@
 \begin{thebibliography}{10}
 
+\bibitem{treefix_tutorial}
+Mukul Bansal.
+\newblock Tutorial: Treefix and treefix-dtl.
+\newblock Available from: \url{http://compbio.mit.edu/treefix/tutorial.html},
+  2014.
+\newblock [Accessed 12 Jan 2021].
+
+\bibitem{phyldog_online}
+Bastien Boussau.
+\newblock Phyldog: joint reconstruction of species and gene phylogenies.
+\newblock Available from: \url{https://pbil.univ-lyon1.fr/software/phyldog/},
+  2012.
+\newblock [Accessed 12 Jan 2021].
+
 \bibitem{phyldog}
 Bastien Boussau et~al.
 \newblock Genome-scale coestimation of species and gene trees.
@@ -8,7 +22,22 @@ Bastien Boussau et~al.
 \bibitem{brejova}
 Broňa Brejová et~al.
 \newblock Isometric gene tree reconciliation revisited.
-\newblock {\em Algorithms fo Molecular Biology}, 12(1):17, Jun. 2017.
+\newblock {\em Algorithms for Molecular Biology}, 12(1):17, Jun. 2017.
+
+\bibitem{chladek_thesis}
+Radoslav Chládek.
+\newblock Algorithms for isometric gene tree reconciliation.
+\newblock Master's thesis, Comenius University in Bratislava, 2019.
+
+\bibitem{chladek_unpublished}
+Radoslav Chládek et~al.
+\newblock Isometric gene tree reconciliation with interval edge lengths.
+
+\bibitem{treerecs}
+Nicolas Comte et~al.
+\newblock Treerecs: an integrated phylogenetic tool, from sequences to
+  reconciliations.
+\newblock {\em bioRxiv}, Oct. 2019.
 
 \bibitem{notung}
 Dave Danicic et~al.
@@ -21,12 +50,12 @@ Jean-Philippe Doyon, Cedric Chauve, and Sylvie Hamel.
   reconciliations.
 \newblock In {\em Nelson C.E., Vialette S. (eds) Comparative Genomics.
   RECOMB-CG 2008. Lecture Notes in Computer Science}, volume 5267, pages 1--13.
-  Springer, Berlin, Heidelberg, Oct. 2008.
+  Springer-Verlag, Berlin, Heidelberg, Oct. 2008.
 
 \bibitem{felsenstein}
 Joseph Felsenstein.
 \newblock {\em Inferring Phylogenies}.
-\newblock Sinauer, 2003.
+\newblock Sinauer, Sunderland, 2003.
 
 \bibitem{goodman}
 Morris Goodman et~al.
@@ -39,11 +68,31 @@ Damir Hasić and Eric Tannier.
 \newblock Gene tree species tree reconciliation with gene conversion.
 \newblock {\em Journal of Mathematical Biology}, 78(6):1981--2014, May 2019.
 
+\bibitem{treebest_online}
+Li~Heng.
+\newblock Treesoft: Treebest. [online].
+\newblock Available from: \url{http://treesoft.sourceforge.net/treebest.shtml}.
+\newblock [Accessed 12 Jan 2021].
+
+\bibitem{treerecs_tutorial}
+INRIA.
+\newblock Tutorial – treerecs.
+\newblock Available from: \url{https://project.inria.fr/treerecs/tutorial/},
+  2011.
+\newblock [Accessed 12 Jan 2021].
+
 \bibitem{ma}
 Jian Ma et~al.
 \newblock The infinite sites model of genome evolution.
 \newblock {\em Proceedings of the National Academy of Science},
   105(38):14254--14261, Sep. 2008.
+
+\bibitem{spimap_online}
+Matthew~D. Rasmussen.
+\newblock Spimap documentation.
+\newblock Available from:
+  \url{http://compbio.mit.edu/spimap/pub/spimap/doc/spimap-manual.html}, 2011.
+\newblock [Accessed 12 Jan 2021].
 
 \bibitem{spimap}
 Matthew~D. Rasmussen and Manolis Kellis.
@@ -66,5 +115,12 @@ Wu~Yi-Chieh et~al.
 \newblock Treefix: Statistically informed gene tree error correction using
   species trees.
 \newblock {\em Systematic Biology}, 62(1):110--120, Jan. 2013.
+
+\bibitem{treefix_online}
+Wu~Yi-Chieh et~al.
+\newblock Treefix.
+\newblock Available from: \url{https://www.cs.hmc.edu/~yjw/software/treefix/},
+  2014.
+\newblock [Accessed 12 Jan 2021].
 
 \end{thebibliography}

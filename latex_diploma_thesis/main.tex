@@ -87,20 +87,21 @@
 \eject 
 
 %zadanie - pojde obrazok
-%\chapter*{Thesis assignment}\label{chap:thesis_assignment}
-%\vfill\eject 
+\chapter*{Thesis assignment}
+\vfill\eject 
 
 %sk abstrakt
-%\chapter*{Abstrakt}\label{chap:abstract_sk}
-%\vfill\eject 
+\chapter*{Abstrakt}
+\vfill\eject 
 
 %en abstrakt
-%\chapter*{Abstract}\label{chap:abstract_en}
-%\vfill\eject 
+\chapter*{Abstract}
+\vfill\eject 
 
 %predhovor
-%\chapter*{Introduction}\label{chap:introduction}
-%\vfill\eject 
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+\vfill\eject 
 
 %obsah
 \tableofcontents
@@ -110,9 +111,25 @@
 
 \mainmatter
 
-\input chapter_1.tex
+\input chapter_1_overview.tex
+\input chapter_2_methodology.tex
+\input chapter_3_specification.tex
+\input chapter_4_implementation.tex
+\input chapter_5_results.tex
 
 \backmatter
+
+%záver
+\chapter*{Conclusion}
+\addcontentsline{toc}{chapter}{Conclusion}
+\vfill\eject 
+
+%príloha
+\chapter*{Appendix}
+\addcontentsline{toc}{chapter}{Appendix}
+\vfill\eject 
+
+
 
 \nocite{*}
 \bibliographystyle{plain}

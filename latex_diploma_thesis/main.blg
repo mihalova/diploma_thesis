@@ -3,44 +3,46 @@ Capacity: max_strings=4000, hash_size=5000, hash_prime=4253
 The top-level auxiliary file: main.aux
 The style file: plain.bst
 Database file #1: bibliography.bib
-You've used 12 entries,
+Warning--empty note in chladek_unpublished
+You've used 21 entries,
             2118 wiz_defined-function locations,
-            582 strings with 5660 characters,
-and the built_in function-call counts, 3826 in all, are:
-= -- 374
-> -- 155
+            627 strings with 7084 characters,
+and the built_in function-call counts, 5789 in all, are:
+= -- 571
+> -- 236
 < -- 2
-+ -- 62
-- -- 48
-* -- 292
-:= -- 644
-add.period$ -- 37
-call.type$ -- 12
-change.case$ -- 50
++ -- 95
+- -- 72
+* -- 361
+:= -- 996
+add.period$ -- 69
+call.type$ -- 21
+change.case$ -- 86
 chr.to.int$ -- 0
-cite$ -- 12
-duplicate$ -- 139
-empty$ -- 322
-format.name$ -- 48
-if$ -- 809
+cite$ -- 22
+duplicate$ -- 205
+empty$ -- 496
+format.name$ -- 72
+if$ -- 1226
 int.to.chr$ -- 0
-int.to.str$ -- 12
-missing$ -- 12
-newline$ -- 63
-num.names$ -- 24
-pop$ -- 40
+int.to.str$ -- 21
+missing$ -- 13
+newline$ -- 113
+num.names$ -- 42
+pop$ -- 101
 preamble$ -- 1
-purify$ -- 40
+purify$ -- 67
 quote$ -- 0
-skip$ -- 105
+skip$ -- 163
 stack$ -- 0
-substring$ -- 272
-swap$ -- 20
+substring$ -- 317
+swap$ -- 27
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 46
-warning$ -- 0
-while$ -- 35
-width$ -- 14
-write$ -- 134
+type$ -- 82
+warning$ -- 1
+while$ -- 53
+width$ -- 23
+write$ -- 233
+(There was 1 warning)
