@@ -66,10 +66,12 @@ class Reconciliator {
             //vytvorim dva podstromy od hrany, na ktorej zakorenujem
             List<Triple<Double, Double, Double>> intervals = getIntervals(e);
             for (Triple<Double, Double, Double> t : intervals) {
+                //ak nad for, zle uklada do listu
                 RootedIntervalTree uTree = new RootedIntervalTree(e.getU(), e, S, leafMap);
                 RootedIntervalTree vTree = new RootedIntervalTree(e.getV(), e, S, leafMap);
                 RootedIntervalNode u = uTree.getRoot();
                 RootedIntervalNode v = vTree.getRoot();
+                //
                 u.setMinL(t.getFirst());
                 u.setMaxL(t.getFirst() + t.getThird());
                 v.setMinL(t.getSecond());
