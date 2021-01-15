@@ -11,7 +11,7 @@ class Reconciliator {
     private RootedExactTree S;
     private UnrootedTree G;
     private TreeMap<String, String> leafMap;
-    private List<Pair<DL, String>> solutions = new ArrayList<>();
+    private List<Pair<DL, RootedIntervalNode>> solutions = new ArrayList<>();
     DL minDL = new DL(Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2);
 
     public Reconciliator(String dirPath, Double tolerance, Double step) {
@@ -64,12 +64,12 @@ class Reconciliator {
     private void reconcile() {
         for (Edge e : G.getEdges()) {
             //vytvorim dva podstromy od hrany, na ktorej zakorenujem
-            RootedIntervalTree uTree = new RootedIntervalTree(e.getU(), e, S, leafMap);
-            RootedIntervalTree vTree = new RootedIntervalTree(e.getV(), e, S, leafMap);
-            RootedIntervalNode u = uTree.getRoot();
-            RootedIntervalNode v = vTree.getRoot();
             List<Triple<Double, Double, Double>> intervals = getIntervals(e);
             for (Triple<Double, Double, Double> t : intervals) {
+                RootedIntervalTree uTree = new RootedIntervalTree(e.getU(), e, S, leafMap);
+                RootedIntervalTree vTree = new RootedIntervalTree(e.getV(), e, S, leafMap);
+                RootedIntervalNode u = uTree.getRoot();
+                RootedIntervalNode v = vTree.getRoot();
                 u.setMinL(t.getFirst());
                 u.setMaxL(t.getFirst() + t.getThird());
                 v.setMinL(t.getSecond());
@@ -78,25 +78,22 @@ class Reconciliator {
                 root.setLeft(u);
                 root.setRight(v);
                 root.setLcaS(RootedExactTree.lca(u.getLcaS(), v.getLcaS()));
-                RootedIntervalTree tree = new RootedIntervalTree(root, S, leafMap);
+                RootedIntervalTree tree = new RootedIntervalTree(new RootedIntervalNode("root"), S, leafMap);
                 tree.upward(root);
                 tree.downward(root);
                 tree.countDL(root);
-                result = "";
-                solutions.add(new Pair<>(tree.getTotalDL(), printTree(root)));
+                solutions.add(new Pair<>(tree.getTotalDL(), root));
             }
         }
-        solutions.sort(new Comparator<Pair<DL, String>>() {
+        solutions.sort(new Comparator<Pair<DL, RootedIntervalNode>>() {
             @Override
-            public int compare(final Pair<DL, String> sol1, final Pair<DL, String> sol2) {
+            public int compare(final Pair<DL, RootedIntervalNode> sol1, final Pair<DL, RootedIntervalNode> sol2) {
                 return sol1.getFirst().getSum() - sol2.getFirst().getSum();
             }
         });
         saveSolutionToFile();
-        /*for (Pair<DL, RootedIntervalTree> r: solutions) {
-            result = "";*/
-            System.out.println(solutions.get(0).getFirst().getDuplication() + " " + solutions.get(0).getFirst().getLoss());
-            System.out.println(solutions.get(0).getSecond());
+        System.out.println(solutions.get(0).getFirst().getDuplication() + " " + solutions.get(0).getFirst().getLoss());
+        System.out.println(printTree(solutions.get(0).getSecond()));
 
     }
 
@@ -107,14 +104,22 @@ class Reconciliator {
             for (int i = 0; i < solutions.size(); i++) {
                 fw.write("D: " + solutions.get(i).getFirst().getDuplication() + " L: " + solutions.get(i).getFirst().getLoss());
                 fw.write(System.lineSeparator());
-                fw.write(solutions.get(i).getSecond());
+                printToTreeFile(fw, solutions.get(i).getSecond());
                 fw.write(System.lineSeparator());
             }
             fw.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
 
+    private void printToTreeFile(FileWriter fw, RootedIntervalNode node) throws IOException {
+        fw.write(node.getName() + " " + node.getMinD() + " " + node.getMaxD());
+        fw.write(System.lineSeparator());
+        if(node.getLeft() != null) {
+            printToTreeFile(fw, node.getLeft());
+            printToTreeFile(fw, node.getRight());
+        }
     }
 
     private List<Triple<Double, Double, Double>> getIntervals(Edge e) {
@@ -131,15 +136,12 @@ class Reconciliator {
         return intervals;
     }
 
-
-    String result;
-
     private String printTree(RootedIntervalNode n) {
-        result += n.getName() + " " + n.getMinD() + " " + n.getMaxD() + "\n";
+        String result ="";
         if (n.getLeft() != null) {
-            printTree(n.getLeft());
-            printTree(n.getRight());
+            result = printTree(n.getLeft()) + printTree(n.getRight());
         }
+        result += n.getName() + " " + n.getMinL() + " " + n.getMaxL() + " " + n.getMinD() + " " + n.getMaxD() + "\n";
         return result;
     }
 
