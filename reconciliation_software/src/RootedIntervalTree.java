@@ -23,34 +23,60 @@ public class RootedIntervalTree {
         this.root = root;
     }
 
-    public void countDL(RootedIntervalNode node) {
-        if (node != root) {
-            RootedExactNode lca = node.getLcaS();
-            //namapovalo sa mimo lca
-            if (!(node.getMinD() >= lca.getDepth() && lca.getDepth() >= node.getMaxD())) {
-                totalDL.addDuplication(1);
-                //zistit ako vysoko je node nad lca, tj. kolko S nodes je medzi nim a lca
-                int nodesNumber = 0;
-                double speciesNodeDepth;
-                RootedExactNode speciesNode = lca;
-                //ak duplikácia nad listami, loss už nenastane
-                if (!leafMap.containsValue(lca.getName())) {
-                    do {
-                        speciesNode = speciesNode.getParent();
-                        speciesNodeDepth = speciesNode.getDepth();
-                        nodesNumber += 1;
-                    } while (node.getMaxD() <= speciesNodeDepth);
-                    totalDL.addLoss(nodesNumber);
-                }
-            } else if (lca.getName().equals("root")) { //do root sa namapuje niečo iné ako root
-                totalDL.addDuplication(1);
-            }
+    public void countDLcopy(RootedIntervalNode u) {
+        RootedExactNode speciesNodeAbove;
+        if (u.getLeft() == null) {
+            speciesNodeAbove = u.getLcaS().getParent();
+        } else {
+            countDLcopy(u.getRight());
+            countDLcopy(u.getLeft());
+            speciesNodeAbove = u.getRight().getSpeciesNodeAbove();
         }
-        if (node.getLeft() != null) {
-            countDL(node.getLeft());
-            countDL(node.getRight());
+        RootedExactNode lca = u.getLcaS();
+        //System.out.println(u.getName() + " lca: " + lca.getName());
+        if (u.getParent() != null) {
+            RootedIntervalNode w = u.getParent();
+            Pair<Integer, RootedExactNode> pair = countSpeciesNodes(w, speciesNodeAbove);
+            totalDL.addLoss(pair.getFirst());
+            //System.out.println("loss: " + pair.getFirst());
+            u.setSpeciesNodeAbove(pair.getSecond());
+        }
+        if (u.getMaxD() < lca.getDepth()) {
+            totalDL.addDuplication(1);
+            //System.out.println("dup");
         }
     }
+
+    public void countDL(RootedIntervalNode u) {
+        RootedExactNode speciesNodeAbove;
+        if (u.getLeft() == null) {
+            speciesNodeAbove = u.getLcaS().getParent();
+        } else {
+            countDL(u.getRight());
+            countDL(u.getLeft());
+            speciesNodeAbove = u.getRight().getSpeciesNodeAbove();
+        }
+        RootedExactNode lca = u.getLcaS();
+        if (u.getParent() != null) {
+            RootedIntervalNode w = u.getParent();
+            Pair<Integer, RootedExactNode> pair = countSpeciesNodes(w, speciesNodeAbove);
+            totalDL.addLoss(pair.getFirst());
+            u.setSpeciesNodeAbove(pair.getSecond());
+        }
+        if (u.getMaxD() < lca.getDepth()) {
+            totalDL.addDuplication(1);
+        }
+    }
+
+    private Pair<Integer, RootedExactNode> countSpeciesNodes(RootedIntervalNode u, RootedExactNode speciesNode) {
+        int numberOfNodes = 0;
+        while (speciesNode.getDepth() > u.getMaxD()) {
+            numberOfNodes += 1;
+            speciesNode = speciesNode.getParent();
+        }
+        return new Pair<Integer, RootedExactNode>(numberOfNodes, speciesNode);
+    }
+
 
     // novy koren 'u' genoveho stromu sa mapuje do svojho maxD
     // v detoch 'v' a 'w' uz presiel upward-downward algoritmus a ich intervaly hlbky mapovania su urcene linearnym programovanim
@@ -215,10 +241,20 @@ public class RootedIntervalTree {
         double maxDepthL = Math.min(v.getMaxD() + v.getLeft().getMaxL(), v.getLeft().getMaxD());
         double minDepthR = Math.max(v.getMinD() + v.getRight().getMinL(), v.getRight().getMinD());
         double maxDepthR = Math.min(v.getMaxD() + v.getRight().getMaxL(), v.getRight().getMaxD());
-        v.getLeft().setMinD(minDepthL);
-        v.getLeft().setMaxD(maxDepthL);
-        v.getRight().setMinD(minDepthR);
-        v.getRight().setMaxD(maxDepthR);
+        if (minDepthL > maxDepthL) {
+            v.getLeft().setMinD(maxDepthL);
+            v.getLeft().setMaxD(minDepthL);
+        } else {
+            v.getLeft().setMinD(minDepthL);
+            v.getLeft().setMaxD(maxDepthL);
+        }
+        if (minDepthR > maxDepthR) {
+            v.getRight().setMinD(maxDepthR);
+            v.getRight().setMaxD(minDepthR);
+        } else {
+            v.getRight().setMinD(minDepthR);
+            v.getRight().setMaxD(maxDepthR);
+        }
         //System.out.println(v.getName() + " " + minD +" "+maxD);
         downward(v.getLeft());
         downward(v.getRight());

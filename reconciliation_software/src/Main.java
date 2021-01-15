@@ -31,3 +31,46 @@ public class Main {
     }
 
 }
+
+class Pair<X, Y> {
+    public final X x;
+    public final Y y;
+    public Pair(X x, Y y) {
+        this.x = x;
+        this.y = y;
+    }
+    public X getFirst(){
+        return x;
+    }
+    public Y getSecond(){
+        return y;
+    }
+    /*public void setFirst(X x){
+        this.x = x;
+    }
+    public void setSecond(Y y){
+        this.y = y;
+    }*/
+}
+
+class Triple<X, Y, Z> {
+    public final X x;
+    public final Y y;
+    public final Z z;
+    public Triple(X x, Y y, Z z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+    public X getFirst(){
+        return x;
+    }
+    public Y getSecond(){
+        return y;
+    }
+    public Z getThird(){
+        return z;
+    }
+}
+
+

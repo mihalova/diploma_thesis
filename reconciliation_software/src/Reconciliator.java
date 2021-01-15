@@ -1,10 +1,9 @@
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.TreeMap;
-
-import lpsolve.LpSolve;
-import lpsolve.LpSolveException;
+import java.util.*;
 
 class Reconciliator {
     private static String dirPath;
@@ -12,8 +11,8 @@ class Reconciliator {
     private RootedExactTree S;
     private UnrootedTree G;
     private TreeMap<String, String> leafMap;
-    //ArrayList<RootedIntervalNode> solutions = new ArrayList<>();
-
+    private List<Pair<DL, String>> solutions = new ArrayList<>();
+    DL minDL = new DL(Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2);
 
     public Reconciliator(String dirPath, Double tolerance, Double step) {
         this.dirPath = dirPath;
@@ -62,8 +61,6 @@ class Reconciliator {
         leafMap = G.getLeafMap();
     }
 
-    int i = 0;
-
     private void reconcile() {
         for (Edge e : G.getEdges()) {
             //vytvorim dva podstromy od hrany, na ktorej zakorenujem
@@ -71,41 +68,78 @@ class Reconciliator {
             RootedIntervalTree vTree = new RootedIntervalTree(e.getV(), e, S, leafMap);
             RootedIntervalNode u = uTree.getRoot();
             RootedIntervalNode v = vTree.getRoot();
-            double intervalDifference = (e.getMaxLength() - e.getMinLength()) / 2;
-            //vytvorim root na hrane s krokom
-            for (double intervalNode1 = 0; intervalNode1 <= e.getMinLength(); intervalNode1 += step) { //TODO krajne pripady - root v node?
-                double intervalNode2 = e.getMinLength() - intervalNode1;
-                u.setMinL(intervalNode1);
-                u.setMaxL(intervalNode1 + intervalDifference);
-                v.setMinL(intervalNode2);
-                v.setMaxL(intervalNode2 + intervalDifference);
+            List<Triple<Double, Double, Double>> intervals = getIntervals(e);
+            for (Triple<Double, Double, Double> t : intervals) {
+                u.setMinL(t.getFirst());
+                u.setMaxL(t.getFirst() + t.getThird());
+                v.setMinL(t.getSecond());
+                v.setMaxL(t.getSecond() + t.getThird());
                 RootedIntervalNode root = new RootedIntervalNode("root");
                 root.setLeft(u);
                 root.setRight(v);
                 root.setLcaS(RootedExactTree.lca(u.getLcaS(), v.getLcaS()));
-
                 RootedIntervalTree tree = new RootedIntervalTree(root, S, leafMap);
                 tree.upward(root);
                 tree.downward(root);
-
-                result = "";
-                System.out.println(getTree(root));
-
                 tree.countDL(root);
-                System.out.println("Duplications: " + tree.getTotalDL().getDuplication());
-                System.out.println("Deletions: " + tree.getTotalDL().getLoss());
+                result = "";
+                solutions.add(new Pair<>(tree.getTotalDL(), printTree(root)));
             }
         }
+        solutions.sort(new Comparator<Pair<DL, String>>() {
+            @Override
+            public int compare(final Pair<DL, String> sol1, final Pair<DL, String> sol2) {
+                return sol1.getFirst().getSum() - sol2.getFirst().getSum();
+            }
+        });
+        saveSolutionToFile();
+        /*for (Pair<DL, RootedIntervalTree> r: solutions) {
+            result = "";*/
+            System.out.println(solutions.get(0).getFirst().getDuplication() + " " + solutions.get(0).getFirst().getLoss());
+            System.out.println(solutions.get(0).getSecond());
+
     }
+
+    private void saveSolutionToFile() {
+        FileWriter fw;
+        try {
+            fw = new FileWriter(new File(dirPath + "/solution.txt"));
+            for (int i = 0; i < solutions.size(); i++) {
+                fw.write("D: " + solutions.get(i).getFirst().getDuplication() + " L: " + solutions.get(i).getFirst().getLoss());
+                fw.write(System.lineSeparator());
+                fw.write(solutions.get(i).getSecond());
+                fw.write(System.lineSeparator());
+            }
+            fw.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    private List<Triple<Double, Double, Double>> getIntervals(Edge e) {
+        List<Triple<Double, Double, Double>> intervals = new ArrayList<>();
+        //krajne moznosti (root tesne nad node)
+        intervals.add(new Triple<>(0.0, e.getMaxLength(), 0.0));
+        intervals.add(new Triple<>(e.getMaxLength(), 0.0, 0.0));
+        //intervaly s krokom
+        double intervalDifference = (e.getMaxLength() - e.getMinLength()) / 2;
+        for (double intervalNode1 = 0; intervalNode1 <= e.getMinLength(); intervalNode1 += step) {
+            double intervalNode2 = e.getMinLength() - intervalNode1;
+            intervals.add(new Triple<>(intervalNode1, intervalNode2, intervalDifference));
+        }
+        return intervals;
+    }
+
 
     String result;
 
-    private String getTree(RootedIntervalNode n) {
+    private String printTree(RootedIntervalNode n) {
+        result += n.getName() + " " + n.getMinD() + " " + n.getMaxD() + "\n";
         if (n.getLeft() != null) {
-            getTree(n.getLeft());
-            getTree(n.getRight());
+            printTree(n.getLeft());
+            printTree(n.getRight());
         }
-        result += n.getName() + " " + n.getMinL() + " " + n.getMaxL() + " " + n.getMinD() + " " + n.getMaxD() + "\n";
         return result;
     }
 
@@ -183,7 +217,7 @@ class Reconciliator {
          solutions = parsimonySolutions;
      }
  */
-    private Double linear(Integer objective, boolean min, RootedIntervalNode u,
+    /*private Double linear(Integer objective, boolean min, RootedIntervalNode u,
                           RootedIntervalNode v, RootedExactNode lcaS, Edge e, String path) {
         try {
             //prvy stlpec je hlbka u, druhy je hlbka v, treti je hlbka root
@@ -344,7 +378,7 @@ class Reconciliator {
         }
         return null;
     }
-
+*/
     // zaokruhlenie double na 7 desatinnych miest
     static Double round(Double value) {
         BigDecimal bd = new BigDecimal(Double.toString(value));

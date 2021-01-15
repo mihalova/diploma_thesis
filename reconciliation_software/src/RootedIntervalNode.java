@@ -16,6 +16,7 @@ class RootedIntervalNode extends Node {
     private RootedIntervalNode right;
 
     private RootedExactNode lcaS;
+    private RootedExactNode speciesNodeAbove;
 
     private ArrayList<Interval> intervals = new ArrayList<>();
 
@@ -85,6 +86,14 @@ class RootedIntervalNode extends Node {
 
     public void setLcaS(RootedExactNode lcaS) {
         this.lcaS = lcaS;
+    }
+
+    public RootedExactNode getSpeciesNodeAbove() {
+        return speciesNodeAbove;
+    }
+
+    public void setSpeciesNodeAbove(RootedExactNode speciesNodeAbove){
+        this.speciesNodeAbove = speciesNodeAbove;
     }
 
     public double getDepth() {
