@@ -10,6 +10,11 @@ public class RootedIntervalTree {
         return this.totalDL;
     }
 
+    public void setTotalDL(int D, int L) {
+        totalDL.addDuplication(D);
+        totalDL.addLoss(L);
+    }
+
     public RootedIntervalTree(UnrootedNode newRoot, Edge sourceEdge, RootedExactTree speciesTree,
                               TreeMap<String, String> leafMap) {
         this.speciesTree = speciesTree;
@@ -23,7 +28,7 @@ public class RootedIntervalTree {
         this.root = root;
     }
 
-    public void countDLcopy(RootedIntervalNode u) {
+    /*public void countDLcopy(RootedIntervalNode u) {
         RootedExactNode speciesNodeAbove;
         if (u.getLeft() == null) {
             speciesNodeAbove = u.getLcaS().getParent();
@@ -45,7 +50,7 @@ public class RootedIntervalTree {
             totalDL.addDuplication(1);
             //System.out.println("dup");
         }
-    }
+    }*/
 
     public void countDL(RootedIntervalNode u) {
         RootedExactNode speciesNodeAbove;
@@ -54,27 +59,28 @@ public class RootedIntervalTree {
         } else {
             countDL(u.getRight());
             countDL(u.getLeft());
-            speciesNodeAbove = u.getRight().getSpeciesNodeAbove();
+            speciesNodeAbove = u.getSpeciesNodeAbove();
         }
         RootedExactNode lca = u.getLcaS();
         if (u.getParent() != null) {
-            RootedIntervalNode w = u.getParent();
-            Pair<Integer, RootedExactNode> pair = countSpeciesNodes(w, speciesNodeAbove);
-            totalDL.addLoss(pair.getFirst());
-            u.setSpeciesNodeAbove(pair.getSecond());
+            RootedIntervalNode v = u.getParent();
+            totalDL.addLoss(countSpeciesNodes(v, speciesNodeAbove));
         }
-        if (u.getMaxD() < lca.getDepth()) {
+        //na leaves duplikacie nie su
+        if (u.getLeft() != null &&
+                (u.getMaxD() < lca.getDepth() || u.getLeft().getLcaS() == u.getLcaS() || u.getRight().getLcaS() == u.getLcaS())) {
             totalDL.addDuplication(1);
         }
     }
 
-    private Pair<Integer, RootedExactNode> countSpeciesNodes(RootedIntervalNode u, RootedExactNode speciesNode) {
+    private int countSpeciesNodes(RootedIntervalNode u, RootedExactNode speciesNode) {
         int numberOfNodes = 0;
         while (speciesNode.getDepth() > u.getMaxD()) {
             numberOfNodes += 1;
             speciesNode = speciesNode.getParent();
         }
-        return new Pair<Integer, RootedExactNode>(numberOfNodes, speciesNode);
+        u.setSpeciesNodeAbove(speciesNode);
+        return numberOfNodes;
     }
 
 

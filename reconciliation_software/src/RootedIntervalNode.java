@@ -11,6 +11,8 @@ class RootedIntervalNode extends Node {
     private double minL;
     private double maxL;
 
+    private DL nodesDL;
+
     private RootedIntervalNode parent;
     private RootedIntervalNode left;
     private RootedIntervalNode right;
@@ -102,6 +104,19 @@ class RootedIntervalNode extends Node {
 
     public void setDepth(double depth) {
         this.depth = depth;
+    }
+
+    public void setDuplicationOnNode(){
+        nodesDL.addDuplication(1);
+    }
+
+    public int getDuplicationOnNode(){
+        return nodesDL.getDuplication();
+    }
+
+    public void setNodesDL(int D, int L){
+        nodesDL.addDuplication(D);
+        nodesDL.addLoss(L);
     }
 
     public Interval getInterval(int i){

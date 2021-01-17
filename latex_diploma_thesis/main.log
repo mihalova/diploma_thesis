@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7350 64-bit) (preloaded format=pdflatex 2020.4.13)  13 JAN 2021 18:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7350 64-bit) (preloaded format=pdflatex 2020.4.13)  17 JAN 2021 22:19
 entering extended mode
 **./main.tex
 (main.tex
@@ -258,60 +258,122 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\amssymb.sty"
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
 )
+("C:\Program Files\MiKTeX 2.9\tex/latex/algorithms\algorithm.sty"
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/float\float.sty"
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count266
+\float@exts=\toks23
+\float@box=\box47
+\@float@everytoks=\toks24
+\@floatcapt=\box48
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/base\ifthen.sty"
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\@float@every@algorithm=\toks25
+\c@algorithm=\count267
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/algorithmicx\algpseudocode.sty"
+Package: algpseudocode 
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/algorithmicx\algorithmicx.sty"
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count268
+\c@ALG@rem=\count269
+\c@ALG@nested=\count270
+\ALG@tlm=\skip53
+\ALG@thistlm=\skip54
+\c@ALG@Lnr=\count271
+\c@ALG@blocknr=\count272
+\c@ALG@storecount=\count273
+\c@ALG@tmpcounter=\count274
+\ALG@tmplength=\skip55
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+) ("C:\Program Files\MiKTeX 2.9\tex/latex/listings\listings.sty"
+\lst@mode=\count275
+\lst@gtempboxa=\box49
+\lst@token=\toks26
+\lst@length=\count276
+\lst@currlwidth=\dimen149
+\lst@column=\count277
+\lst@pos=\count278
+\lst@lostspace=\dimen150
+\lst@width=\dimen151
+\lst@newlines=\count279
+\lst@lineno=\count280
+\lst@maxwidth=\dimen152
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/listings\lstmisc.sty"
+File: lstmisc.sty 2019/09/10 1.8c (Carsten Heinz)
+\c@lstnumber=\count281
+\lst@skipnumbers=\count282
+\lst@framebox=\box50
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/listings\listings.cfg"
+File: listings.cfg 2019/09/10 1.8c listings configuration
+))
+Package: listings 2019/09/10 1.8c (Carsten Heinz)
+
 ("C:\Program Files\MiKTeX 2.9\tex/latex/tools\indentfirst.sty"
 Package: indentfirst 1995/11/23 v1.03 Indent first paragraph (DPC)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/latex/titlesec\titlesec.sty"
 Package: titlesec 2019/10/16 v2.13 Sectioning titles
-\ttl@box=\box47
-\beforetitleunit=\skip53
-\aftertitleunit=\skip54
-\ttl@plus=\dimen149
-\ttl@minus=\dimen150
-\ttl@toksa=\toks23
-\titlewidth=\dimen151
-\titlewidthlast=\dimen152
-\titlewidthfirst=\dimen153
+\ttl@box=\box51
+\beforetitleunit=\skip56
+\aftertitleunit=\skip57
+\ttl@plus=\dimen153
+\ttl@minus=\dimen154
+\ttl@toksa=\toks27
+\titlewidth=\dimen155
+\titlewidthlast=\dimen156
+\titlewidthfirst=\dimen157
 )
 ("C:\Program Files\MiKTeX 2.9\tex/latex/tocloft\tocloft.sty"
 Package: tocloft 2017/08/31 v2.3i parameterised ToC, etc., typesetting
 Package tocloft Info: The document has chapter divisions on input line 51.
-\cftparskip=\skip55
-\cftbeforetoctitleskip=\skip56
-\cftaftertoctitleskip=\skip57
-\cftbeforepartskip=\skip58
-\cftpartnumwidth=\skip59
-\cftpartindent=\skip60
-\cftbeforechapskip=\skip61
-\cftchapindent=\skip62
-\cftchapnumwidth=\skip63
-\cftbeforesecskip=\skip64
-\cftsecindent=\skip65
-\cftsecnumwidth=\skip66
-\cftbeforesubsecskip=\skip67
-\cftsubsecindent=\skip68
-\cftsubsecnumwidth=\skip69
-\cftbeforesubsubsecskip=\skip70
-\cftsubsubsecindent=\skip71
-\cftsubsubsecnumwidth=\skip72
-\cftbeforeparaskip=\skip73
-\cftparaindent=\skip74
-\cftparanumwidth=\skip75
-\cftbeforesubparaskip=\skip76
-\cftsubparaindent=\skip77
-\cftsubparanumwidth=\skip78
-\cftbeforeloftitleskip=\skip79
-\cftafterloftitleskip=\skip80
-\cftbeforefigskip=\skip81
-\cftfigindent=\skip82
-\cftfignumwidth=\skip83
-\c@lofdepth=\count266
-\c@lotdepth=\count267
-\cftbeforelottitleskip=\skip84
-\cftafterlottitleskip=\skip85
-\cftbeforetabskip=\skip86
-\cfttabindent=\skip87
-\cfttabnumwidth=\skip88
+\cftparskip=\skip58
+\cftbeforetoctitleskip=\skip59
+\cftaftertoctitleskip=\skip60
+\cftbeforepartskip=\skip61
+\cftpartnumwidth=\skip62
+\cftpartindent=\skip63
+\cftbeforechapskip=\skip64
+\cftchapindent=\skip65
+\cftchapnumwidth=\skip66
+\cftbeforesecskip=\skip67
+\cftsecindent=\skip68
+\cftsecnumwidth=\skip69
+\cftbeforesubsecskip=\skip70
+\cftsubsecindent=\skip71
+\cftsubsecnumwidth=\skip72
+\cftbeforesubsubsecskip=\skip73
+\cftsubsubsecindent=\skip74
+\cftsubsubsecnumwidth=\skip75
+\cftbeforeparaskip=\skip76
+\cftparaindent=\skip77
+\cftparanumwidth=\skip78
+\cftbeforesubparaskip=\skip79
+\cftsubparaindent=\skip80
+\cftsubparanumwidth=\skip81
+\cftbeforeloftitleskip=\skip82
+\cftafterloftitleskip=\skip83
+\cftbeforefigskip=\skip84
+\cftfigindent=\skip85
+\cftfignumwidth=\skip86
+\c@lofdepth=\count283
+\c@lotdepth=\count284
+\cftbeforelottitleskip=\skip87
+\cftafterlottitleskip=\skip88
+\cftbeforetabskip=\skip89
+\cfttabindent=\skip90
+\cfttabnumwidth=\skip91
 )
 ("C:\Program Files\MiKTeX 2.9\tex/latex/setspace\setspace.sty"
 Package: setspace 2011/12/19 v6.7a set line spacing
@@ -333,8 +395,8 @@ Package graphics Info: Driver file: pdftex.def on input line 105.
 ("C:\Program Files\MiKTeX 2.9\tex/latex/graphics-def\pdftex.def"
 File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
 ))
-\Gin@req@height=\dimen154
-\Gin@req@width=\dimen155
+\Gin@req@height=\dimen158
+\Gin@req@width=\dimen159
 )
 ("C:\Program Files\MiKTeX 2.9\tex/latex/geometry\geometry.sty"
 Package: geometry 2020/01/02 v5.9 Page Geometry
@@ -342,48 +404,48 @@ Package: geometry 2020/01/02 v5.9 Page Geometry
 ("C:\Program Files\MiKTeX 2.9\tex/generic/iftex\ifvtex.sty"
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 )
-\Gm@cnth=\count268
-\Gm@cntv=\count269
-\c@Gm@tempcnt=\count270
-\Gm@bindingoffset=\dimen156
-\Gm@wd@mp=\dimen157
-\Gm@odd@mp=\dimen158
-\Gm@even@mp=\dimen159
-\Gm@layoutwidth=\dimen160
-\Gm@layoutheight=\dimen161
-\Gm@layouthoffset=\dimen162
-\Gm@layoutvoffset=\dimen163
-\Gm@dimlist=\toks24
+\Gm@cnth=\count285
+\Gm@cntv=\count286
+\c@Gm@tempcnt=\count287
+\Gm@bindingoffset=\dimen160
+\Gm@wd@mp=\dimen161
+\Gm@odd@mp=\dimen162
+\Gm@even@mp=\dimen163
+\Gm@layoutwidth=\dimen164
+\Gm@layoutheight=\dimen165
+\Gm@layouthoffset=\dimen166
+\Gm@layoutvoffset=\dimen167
+\Gm@dimlist=\toks28
 
 ("C:\Program Files\MiKTeX 2.9\tex/latex/geometry\geometry.cfg"))
-\c@definition=\count271
+\c@definition=\count288
 
 ("C:\Program Files\MiKTeX 2.9\tex/latex/l3backend\l3backend-pdfmode.def"
 File: l3backend-pdfmode.def 2020-03-12 L3 backend support: PDF mode
-\l__kernel_color_stack_int=\count272
-\l__pdf_internal_box=\box48
+\l__kernel_color_stack_int=\count289
+\l__pdf_internal_box=\box52
 )
 (main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-\AtBeginShipoutBox=\box49
-Package hyperref Info: Link coloring OFF on input line 35.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+\AtBeginShipoutBox=\box53
+Package hyperref Info: Link coloring OFF on input line 38.
  ("C:\Program Files\MiKTeX 2.9\tex/latex/hyperref\nameref.sty"
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
 
@@ -393,30 +455,31 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ("C:\Program Files\MiKTeX 2.9\tex/generic/gettitlestring\gettitlestring.sty"
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count273
+\c@section@level=\count290
 )
-LaTeX Info: Redefining \ref on input line 35.
-LaTeX Info: Redefining \pageref on input line 35.
-LaTeX Info: Redefining \nameref on input line 35.
+LaTeX Info: Redefining \ref on input line 38.
+LaTeX Info: Redefining \pageref on input line 38.
+LaTeX Info: Redefining \nameref on input line 38.
 
 (main.out) (main.out)
 \@outlinefile=\write3
 \openout3 = `main.out'.
 
+\c@lstlisting=\count291
 
 ("C:\Program Files\MiKTeX 2.9\tex/context/base/mkii\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count274
-\scratchdimen=\dimen164
-\scratchbox=\box50
-\nofMPsegments=\count275
-\nofMParguments=\count276
-\everyMPshowfont=\toks25
-\MPscratchCnt=\count277
-\MPscratchDim=\dimen165
-\MPnumerator=\count278
-\makeMPintoPDFobject=\count279
-\everyMPtoPDFconversion=\toks26
+\scratchcounter=\count292
+\scratchdimen=\dimen168
+\scratchbox=\box54
+\nofMPsegments=\count293
+\nofMParguments=\count294
+\everyMPshowfont=\toks29
+\MPscratchCnt=\count295
+\MPscratchDim=\dimen169
+\MPnumerator=\count296
+\makeMPintoPDFobject=\count297
+\everyMPtoPDFconversion=\toks30
 ) ("C:\Program Files\MiKTeX 2.9\tex/latex/epstopdf-pkg\epstopdf-base.sty"
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -456,12 +519,12 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 45.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 48.
 
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 45.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 48.
 
 
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\umsb.fd"
@@ -471,68 +534,116 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {C:/Users/Dominika/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3
 
-] [4
+]
+Underfull \hbox (badness 10000) in paragraph at lines 107--110
 
-] [5
+ []
 
-] [6
+[4
 
 ]
-(main.toc)
-\tf@toc=\write4
-\openout4 = `main.toc'.
+Underfull \hbox (badness 10000) in paragraph at lines 123--126
 
- [7] (chapter_1_overview.tex
+ []
+
+[5
+
+] (main.lof)
+\tf@lof=\write4
+\openout4 = `main.lof'.
+
+ [6] (main.toc)
+\tf@toc=\write5
+\openout5 = `main.toc'.
+
+ [7] [1
+
+
+] (chapter_1_overview.tex
 Chapter 1.
-[1
+[2
 
-
-]
-<./figures/unrooted_rooted.pdf, id=138, 408.02434pt x 123.14722pt>
+] [3]
+<./figures/unrooted_rooted.pdf, id=160, 408.02434pt x 123.14722pt>
 File: ./figures/unrooted_rooted.pdf Graphic file (type pdf)
 <use ./figures/unrooted_rooted.pdf>
-Package pdftex.def Info: ./figures/unrooted_rooted.pdf  used on input line 36.
+Package pdftex.def Info: ./figures/unrooted_rooted.pdf  used on input line 38.
 (pdftex.def)             Requested size: 441.01773pt x 133.1116pt.
- [2] [3 <./figures/unrooted_rooted.pdf>]
-<./figures/reconciliation.pdf, id=173, 755.07094pt x 245.41687pt>
+ [4pdfTeX warning (ext4): destination with the same identifier (name{figure.1.1
+}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.54 
+      <./figures/unrooted_rooted.pdf>]
+<./figures/reconciliation.pdf, id=183, 724.62718pt x 224.7597pt>
 File: ./figures/reconciliation.pdf Graphic file (type pdf)
 <use ./figures/reconciliation.pdf>
-Package pdftex.def Info: ./figures/reconciliation.pdf  used on input line 67.
-(pdftex.def)             Requested size: 441.01773pt x 143.34172pt.
- [4 <./figures/reconciliation.pdf>]
-Overfull \hbox (7.86867pt too wide) in paragraph at lines 81--83
+Package pdftex.def Info: ./figures/reconciliation.pdf  used on input line 69.
+(pdftex.def)             Requested size: 441.01773pt x 136.79112pt.
+ [5pdfTeX warning (ext4): destination with the same identifier (name{figure.1.2
+}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.74 
+      <./figures/reconciliation.pdf>]
+Overfull \hbox (7.86867pt too wide) in paragraph at lines 83--85
 []\T1/cmr/m/n/12 The TreeBeST rec-on-cil-i-a-tion method was then com-pared wit
 h PhyML+RAP method,
  []
 
-[5] [6] [7] [8] [9] [10]
-<./figures/isometric_reconciliation.pdf, id=260, 583.42969pt x 189.70876pt>
+[6] [7] [8] [9] [10] [11]
+<./figures/isometric_reconciliation.pdf, id=268, 560.0925pt x 183.8067pt>
 File: ./figures/isometric_reconciliation.pdf Graphic file (type pdf)
 <use ./figures/isometric_reconciliation.pdf>
 Package pdftex.def Info: ./figures/isometric_reconciliation.pdf  used on input 
-line 135.
-(pdftex.def)             Requested size: 441.01773pt x 143.40726pt.
- [11 <./figures/isometric_reconciliation.pdf>] [12]
-[13]) (chapter_2_methodology.tex [14]
+line 137.
+(pdftex.def)             Requested size: 441.01773pt x 144.73451pt.
+<./figures/isometric_reconciliation_inexact.pdf, id=270, 659.5842pt x 397.485pt
+>
+File: ./figures/isometric_reconciliation_inexact.pdf Graphic file (type pdf)
+<use ./figures/isometric_reconciliation_inexact.pdf>
+Package pdftex.def Info: ./figures/isometric_reconciliation_inexact.pdf  used o
+n input line 148.
+(pdftex.def)             Requested size: 441.01773pt x 265.77376pt.
+ [12pdfTeX warning (ext4): destination with the same identifier (name{figure.1.
+3}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.150 \end{figure}
+                   <./figures/isometric_reconciliation.pdf>] [13pdfTeX warning 
+(ext4): destination with the same identifier (name{figure.1.4}) has been alread
+y used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.158 
+       <./figures/isometric_reconciliation_inexact.pdf>] [14] [15])
+(chapter_2_methodology.tex [16]
 Chapter 2.
-) (chapter_3_specification.tex [15
+) (chapter_3_specification.tex [17
 
 ]
 Chapter 3.
-) (chapter_4_implementation.tex [16
+) (chapter_4_implementation.tex [18
 
 ]
 Chapter 4.
-) (chapter_5_results.tex [17
+[19
 
 ]
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 26.
+ [20]) (chapter_5_results.tex [21]
 Chapter 5.
-) [18
+) [22
 
-] [19
+] [23
 
 
-] [20
+] [24
 
 ] (main.bbl
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 6
@@ -540,44 +651,47 @@ LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 6
 
 ("C:\Program Files\MiKTeX 2.9\tex/latex/base\t1cmtt.fd"
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
-) [21
+) [25
 
 ])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 138.
- [22]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 138.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 167.
+ [26]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 167.
  (main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 138.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 138.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 167.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 167.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 845FA22BDE7F78ED4FB5824FB2601C50;1165.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 138.
+(rerunfilecheck)             Checksum: 83EB13A793F9DA67DC99C63F962EFF62;1168.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 167.
  ) 
 Here is how much of TeX's memory you used:
- 8369 strings out of 480934
- 121659 string characters out of 2909673
- 402028 words of memory out of 3000000
- 23970 multiletter control sequences out of 15000+200000
- 544975 words of font info for 53 fonts, out of 3000000 for 9000
+ 10357 strings out of 480934
+ 150187 string characters out of 2909673
+ 434504 words of memory out of 3000000
+ 25916 multiletter control sequences out of 15000+200000
+ 546413 words of font info for 55 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,6n,33p,1691b,450s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 34i,6n,36p,1691b,450s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\Dominika\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi6
 00\ectt1200.pk> <C:\Users\Dominika\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jkn
-appen/ec/dpi600\ecbx1440.pk> <C:\Users\Dominika\AppData\Local\MiKTeX\2.9\fonts/
-pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\Dominika\AppData\Local\MiKT
-eX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecsl1200.pk> <C:\Users\Dominika\AppDa
-ta\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk> <C:\Users\D
-ominika\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk
+appen/ec/dpi600\eccc1200.pk> <C:\Users\Dominika\AppData\Local\MiKTeX\2.9\fonts/
+pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\Dominika\AppData\Local\MiKT
+eX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\Dominika\AppDa
+ta\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\D
+ominika\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecsl1200.pk
 > <C:\Users\Dominika\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi60
-0\ecbx1728.pk> <C:\Users\Dominika\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jkna
-ppen/ec/dpi600\ecbx1200.pk><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsf
-onts/cm/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
-cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb
-><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Progr
-am Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on main.pdf (29 pages, 330753 bytes).
+0\ecbx2488.pk> <C:\Users\Dominika\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jkna
+ppen/ec/dpi600\ecrm1200.pk> <C:\Users\Dominika\AppData\Local\MiKTeX\2.9\fonts/p
+k/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\Dominika\AppData\Local\MiKTe
+X\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk><C:/Program Files/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pu
+blic/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsf
+onts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+sy10.pfb>
+Output written on main.pdf (33 pages, 532921 bytes).
 PDF statistics:
- 749 PDF objects out of 1000 (max. 8388607)
- 82 named destinations out of 1000 (max. 500000)
- 160 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 848 PDF objects out of 1000 (max. 8388607)
+ 89 named destinations out of 1000 (max. 500000)
+ 165 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -30,11 +30,13 @@ For~a~group of~nodes in~a~rooted tree, their~lowest common ancestor~(LCA) is the
 
 An~unrooted tree is a~phylogenetic tree without root. Unrooted tree can be rooted by~placing a~root $r$ on some edge $(u, v)$. The~original edge $(u, v)$ is subdivided into two edges $(u, r)$ and $(r, v)$. If~edge $(u, v)$ is weighted, then $w(u, r) + w(r, v) = w(u, v)$.
 
+A special type of an unrooted tree is a semi-rooted tree, where we presume the new root of an unrooted gene tree $G$ is positioned on edge $(u, v) \in E(G)$ and subtrees are rooted at nodes $u$ and $v$.
+
 \begin{figure}[ht]
 	\centering
 	\label{unrooted_rooted}
   	\includegraphics[width=\linewidth]{unrooted_rooted}
-  	\caption{Unrooted tree(left) and its~rooted version (right) tree. We~placed the~root~$R$ on~the~edge~$(C, D)$ replacing it with~two new edges~$(C, R)$ and~$(R, D)$.}
+  	\caption[Unrooted tree and its~rooted version]{Unrooted tree(left) and its~rooted version (right) tree. We~placed the~root~$R$ on~the~edge~$(C, D)$ replacing it with~two new edges~$(C, R)$ and~$(R, D)$.}
 \end{figure}
 
 We will be using two types of phylogenetic trees for showing evolutionary relationships: species trees (to describe the~evolution of~a~set of~species) and gene trees (to describe the~evolution of~a~particular gene).
@@ -65,7 +67,7 @@ An example of gene tree reconciliation is shown in Figure \ref{reconciliation}. 
 	\centering
 	\label{reconciliation}
   	\includegraphics[width=\linewidth]{reconciliation}
-  	\caption{Reconciliation and evolutionary history. On~the~left, the~gene tree~$G$ is mapped to~the~species tree~$S$. On~the~right, we~can see the evolutionary history implied by this reconciliation. This~history contains one~duplication $e$, two speciations $Y$ and $X$ and three gene losses (empty circles).}
+  	\caption[Reconciliation and evolutionary history]{Reconciliation and evolutionary history. On~the~left, the~gene tree~$G$ is mapped to~the~species tree~$S$. On~the~right, we~can see the evolutionary history implied by this reconciliation. This~history contains one~duplication $e$, two speciations $Y$ and $X$ and three gene losses (empty circles).}
 \end{figure}
 
 The LCA-mapping $\sigma: V(G) \rightarrow V(S)$ maps each node $u \in V(G)$ as low as possible to~the~unique node $\sigma(u) = LCA(\mu(v) | \forall v \in L(G), v<_Gu)$ in $S$. It satisfy both conditions in Definition \ref{def_reconciliation} and minimize the number of duplications and gene losses. This reconciliation can be found in linear time \cite{hasic}.
@@ -133,12 +135,19 @@ An isometric reconciliation between gene tree $G$ and species tree $S$ with exac
 	\centering
 	\label{isometric_reconciliation}
   	\includegraphics[width=\linewidth]{isometric_reconciliation}
-  	\caption{Isometric reconciliation. On~the~left is mapping of~the~node~$d$ of~the~gene tree~$G$ to~the~edge~$(x, b)$ of~the~species tree~$S$. The result of~the~isometric reconciliation with~mapped node~$d$ is on~the~right.}
+  	\caption[Isometric reconciliation]{Isometric reconciliation. On~the~left is mapping of~the~node~$d$ of~the~gene tree~$G$ to~the~edge~$(x, b)$ of~the~species tree~$S$. The result of~the~isometric reconciliation with~mapped node~$d$ is on~the~right.}
 \end{figure}
 
-\subsubsection{Inexact branch lengths}
+\subsubsection{Inexact branch lengths} \label{Inexact_branch_lengths}
 
 Input to the above-mentioned algorithms, gene trees and species trees with their branch lengths, are practically estimated from DNA sequences, which were gathered from present-day species \cite{felsenstein}. The branch lengths are computed from observed mutations in collected DNA sequences. However, mutations happen randomly in the evolution and DNA sequences are also random samples from studied present-day species. It means that inferred gene trees and species trees with their branch lengths are estimated with an error.
+
+\begin{figure}[ht]
+	\centering
+	\label{isometric_reconciliation_inexact}
+  	\includegraphics[width=\linewidth]{isometric_reconciliation_inexact}
+  	\caption[Isometric reconciliation with inexact branch lengths]{Isometric reconciliation with inexact branch lengths. On the left, we can see an unrooted gene tree G with inexact branch lengths and a rooted species tree S. On the right are two possible solutions with rooting the gene tree on the edge $(u, c)$: the first reconciliation is without duplications and gene losses while the second solution maps gene tree to species tree with two duplications ($u$ and $r$) and four gene losses.}
+\end{figure}
 
 To avoid defectiveness and make isometric reconciliation more precise, the isometric reconciliation with inexact branch lengths was introduces by Chládek in \cite{chladek_unpublished} and \cite{chladek_thesis}. They define inexact branch length as an interval, where for every weighted edge stands: $w(u, v) = \langle w(u, v)_{min}, w(u, v)_{max} \rangle$. They present three types of algorithm.\\
 \textbf{Linear programming algorithm}
@@ -148,7 +157,7 @@ The algorithm is based on linear programming and takes a rooted species tree and
 The first two inequalities assume that the difference of mapping depths of two nodes, where the one is a parent and the other is his child, has to be between the maximal and minimal length of the edge. The second two inequalities are similar and say that the distance between depths of two neighbouring nodes in species tree must be within the maximal and minimal length of the edge. Last inequality restricts mapping depth of node from gene tree to be same smaller than the depth of its LCA-mapping node in the species tree. The algorithm also defines that leaves from gene tree map to leaves from species tree and the root of the species tree is in depth 0, so every node, which maps above the root has negative depths. 
 
 For $N$ nodes, the algorithm can get to the result in polynomial time. It also works if the gene tree and species tree are non-binary trees. With a few changes in inequalities, the linear program can find reconciliation to semi-rooted and unrooted species and gene trees.\\
-\textbf{Two-pass algorithm}
+\textbf{Two-pass algorithm} \label{two-pass_algorithm}
 
 The two-pass algorithm is faster than the linear programming algorithm. The input for the algorithm is a rooted species tree with exact branch lengths and a rooted gene tree with inexact branch lengths. It consists of two parts: upward and downward sweep. 
 
