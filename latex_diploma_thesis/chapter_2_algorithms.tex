@@ -1,0 +1,65 @@
+\chapter{Algorithms}
+
+In this chapter, we show different algorithms implemented in our software. Our code is built on Chládek's code from his diploma thesis \cite{chladek_thesis}. We apply his implementation of parsing a gene tree and a species tree from a file. We slightly change the parsing function to transform exact branch lengths in a gene tree to intervals, if the given gene tree has exact branch lengths. To transform the branch lengths to intervals, the user needs to set the tolerance value has to be from interval $\langle 0, 1 \rangle$. The edge interval is than compute as: $\langle length - (tolerance \cdot length), length + (tolerance \cdot length) \rangle$. We also use his implementation of the two-pass algorithm, that we mentioned before in Chapter \ref{two-pass_algorithm}, to compute the gene tree possible mapping depths.
+
+%On this basis, we implement our algorithms, that are presented below, to find the most parsimonious reconciliation.
+
+The needed input for our algorithms is an unrooted gene tree with inexact branch lengths and a rooted species tree with exact branch lengths. Firstly, we root the unrooted tree, then we perform the two-pass algorithm \cite{chladek_thesis} and lastly we count the number of duplications and gene losses in order to find the most parsimonious reconciliation.
+
+\section{Rooting the gene tree}
+
+In our software, we decided to get all possible rooted gene trees by shifting the root on every edge by given step. For each edge $(u, v) \in E(G)$, we take its nodes and root the subtrees at $u$ and $v$, which result in a semi-rooted gene tree. We perform rooting by splitting the root edge with a step. Means, we split the root edge into two edges and then shift on the root edge by step to get another option of a rooted gene tree. By default, the step is set to $0.5$ or user can set its custom size of the step at the beginning. We also divide the interval difference into two. To cover all possibilities, we allow rooting the gene tree right above the node $u$ and $v$. It signifies that one edge is $\epsilon$ small and the other one have the original size of the interval.
+
+%\subsection{Two-pass algorithm}
+
+\section{Counting algorithm}
+
+The prerequisites for the counting algorithm are a rooted species tree, where each node $a \in V(S)$ has its depth $D(a)$ and a rooted gene tree, where each node $u \in V(G)$ has computed its interval of all possible mapping depths $\langle u_{minDepth}, u_{maxDepth}\rangle$. Our algorithm counts the number of duplications and gene losses in nodes and edges between a child and its parent. We allow only evolutionary events as duplication, gene loss and speciation can happen in evolutionary history.
+
+We count the evolutionary events in the direction from leaves to the root. For each node $u \in V(G)$ and its parent $v \in V(G)$, we consider evolutionary events that occur in the node $u$ and on the edge $(u, v)$. We do not compute evolutionary event in the parent, they are determined directly in the parent. In the root, we only calculate the evolutionary events that happened in the node as the root has no parent thus no edge to consider.
+
+Duplication and speciation are easy to determine since it depends whether the node $u$ is mapped to $\sigma(u)$ or above. To obtain the number of gene losses, we need to compute, how many species nodes are on the edge $(u, v)$. For $s \in V(S)$ being the first species node above node $u$ and $v \in (G)$ being the parent of node $u$, we count the number of species nodes on the edge $(u, v)$ with function $countSpeciesNodes(v, s)$ in Algorithm~\ref{countSpeciesNodes}.
+
+\begin{algorithm}
+\caption{Function for counting the number of species nodes on the edge} 
+\label{countSpeciesNodes}
+\begin{algorithmic}[1]
+\Function{countSpeciesNodes}{$v \in V(G), s \in V(S)$} 
+	\While {$s_{depth} > v_{maxDepth}$}
+		\State numberOfNodes += 1
+		\State s = parent(s)
+	\EndWhile
+	\State speciesNodeAbove(v) = s \\
+	\Return {numberOfNodes}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+The $countSpeciesNodes(v, s)$ function counts species nodes in a while cycle. If $s_{depth} > u_{maxDepth}$ stands, it means the species node $s$ is below the gene node $v$ thus it is located on the edge $(u, v)$. So we increase $numberOfNodes$, the variable for counting the species nodes on the edge $(u, v)$, and get the parent of current species node. When the condition does not stand, we found the final number of species nodes on the edge and the first species node above node $v$, which we store for future use. This function is further used in the main counting function $countDL(u)$ shown in Algorithm~\ref{countDL}, where the return variable is applied for getting the number of losses.
+
+\begin{algorithm}
+\caption{Function for counting duplications and gene losses} 
+\label{countDL}
+\begin{algorithmic}[1]
+\Function{countDL}{$u \in V(G)$} 
+	\For {$w \in children(u)$}
+		\State countDL(w)
+	\EndFor
+	\If {$u \in L(G)$}
+		\State speciesNodeAbove = parent($\sigma(u)$)
+	\Else
+		\State speciesNodeAbove = getSpeciesNodeAbove(u)
+	\EndIf
+	\If {$parent(u) \ne null$} %\Comment{not a root}
+		\State v = parent(u)
+		\State losses += countSpeciesNodes(v, speciesNodeAbove)
+	\EndIf
+	\If {$u \neq L(G)$ \textbf{and} $(u_{maxDepth} \ne \sigma(u)_{depth}$ \textbf{or} $\sigma(children(u)) = \sigma(u))$} %\Comment{same LCA-mapping means their all above root}
+		\State duplication += 1
+	\EndIf
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+We call the $countDL(u)$ function on the root of a gene tree. First, it moves to leaves and counts duplication and losses for every node and edge in direction from bottom to the top of the tree as the variable $speciesNodeAbove$ of current node is calculated in children node. For each $u \in L(G)$, we take parent of $\sigma(u)$ as first species node above the leaf and save it to the $speciesNodeAbove$ variable. Then, we compute the number of gene losses on the edge $(u, v)$ with the $countSpeciesNodes(v, s)$ function since the amount of species nodes on the edge $(u, v)$ is equal to the amount of gene losses between $u$ and $v$. We do not count gene losses in the root as it does not have parent thus it have no edge above. Duplications are computed in the internal nodes of the gene tree. Leaves have no duplications events as they are directly mapped to leaves of species tree by leaf-mapping. The duplication occurs when $u$ is not mapped into $\sigma(u)$ thus $u_{maxDepth} \ne \sigma(u)_{depth}$. If any child of node $u$ has the same LCA-mapping, the node $u$ is considered as duplication. This situation can happen if both, node $u$ and its child, is mapped above the root of the species tree. The node $u_{maxDepth}$ can be equal to $\sigma(u)_{depth}$, but only one node of gene tree is allowed to map into one node of species tree. The other are mapped above with $\epsilon$ small distance.
+
