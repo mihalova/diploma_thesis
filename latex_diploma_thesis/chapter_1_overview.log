@@ -5685,7 +5685,7 @@ Missing character: There is no n in font nullfont!
 <write> ... `def_reconciliation' on page \thepage 
                                                   \space undefined\on@line .
 l.58 ...ion in Definition \ref{def_reconciliation}
-                                                  . Node $d$ is mapped to no...
+                                                  . Software.Node $d$ is mapped to no...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct

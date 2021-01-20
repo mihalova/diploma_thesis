@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+package Software;
 
 public class Main {
 
@@ -11,7 +11,7 @@ public class Main {
         Reconciliator rec = new Reconciliator(dirPath, tolerance, step);
         rec.runReconciliation();
 
-        /*Printer print = new Printer(dirPath, rec.solutions);
+        /*Software.Printer print = new Software.Printer(dirPath, rec.solutions);
         print.runPrinter();*/
     }
 
@@ -51,26 +51,6 @@ class Pair<X, Y> {
     public void setSecond(Y y){
         this.y = y;
     }*/
-}
-
-class Triple<X, Y, Z> {
-    public final X x;
-    public final Y y;
-    public final Z z;
-    public Triple(X x, Y y, Z z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-    public X getFirst(){
-        return x;
-    }
-    public Y getSecond(){
-        return y;
-    }
-    public Z getThird(){
-        return z;
-    }
 }
 
 

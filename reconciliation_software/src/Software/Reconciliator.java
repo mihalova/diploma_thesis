@@ -1,3 +1,5 @@
+package Software;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -5,7 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-class Reconciliator {
+public class Reconciliator {
     private static String dirPath;
     private Double tolerance, step;
     private RootedExactTree S;
@@ -23,32 +25,36 @@ class Reconciliator {
             this.step = 0.1;
     }
 
+    //for testing
+    public UnrootedTree getGtreeForTesting(){
+        loadGeneTreeFromFile();
+        return G;
+    }
+
+    public List<Four<Double, Double, Double, Double>>getIntervalsForTesting(Edge e){
+        return getIntervals(e);
+    }
+    //
     public void runReconciliation() {
-        loadTreesFromFiles();
+        loadSpeciesTreeFromFile();
+        loadGeneTreeFromFile();
         reconcile();
     }
 
-    public static String getDirPath() {
-        return dirPath;
-    }
-
-    private void loadTreesFromFiles() {
-        //File output = new File(dirPath + "/stats.txt");
-        /*RootedExactTree Sreal = Parser.parseRootedTree(dirPath,
-                "Sreal_newick_outgroupless.tree");*/
+    private void loadSpeciesTreeFromFile() {
         try {
             S = Parser.parseRootedTree(dirPath, "S_newick.tree");
         } catch (Exception exc) {
             System.err.println("BAD S");
             return;
         }
-        //rooted exact G
-        /*RootedExactTree Greal = Parser.parseRootedTree(dirPath, "Greal_newick.tree");
-        if (!S.checkEqualTopology(Sreal)) {
-            System.err.println("BAD S");
-            return;
-        }*/
+    }
 
+    public static String getDirPath() {
+        return dirPath;
+    }
+
+    private void loadGeneTreeFromFile() {
         //unrooted G
         try {
             File GtreeFile = new File(dirPath + "/G_newick.tree");
@@ -64,8 +70,8 @@ class Reconciliator {
     private void reconcile() {
         for (Edge e : G.getEdges()) {
             //vytvorim dva podstromy od hrany, na ktorej zakorenujem
-            List<Triple<Double, Double, Double>> intervals = getIntervals(e);
-            for (Triple<Double, Double, Double> t : intervals) {
+            List<Four<Double, Double, Double, Double>> intervals = getIntervals(e);
+            for (Four<Double, Double, Double, Double> t : intervals) {
                 //ak nad for, zle uklada do listu
                 RootedIntervalTree uTree = new RootedIntervalTree(e.getU(), e, S, leafMap);
                 RootedIntervalTree vTree = new RootedIntervalTree(e.getV(), e, S, leafMap);
@@ -73,9 +79,9 @@ class Reconciliator {
                 RootedIntervalNode v = vTree.getRoot();
                 //
                 u.setMinL(t.getFirst());
-                u.setMaxL(t.getFirst() + t.getThird());
-                v.setMinL(t.getSecond());
-                v.setMaxL(t.getSecond() + t.getThird());
+                u.setMaxL(t.getSecond());
+                v.setMinL(t.getThird());
+                v.setMaxL(t.getFourth());
                 RootedIntervalNode root = new RootedIntervalNode("root");
                 root.setLeft(u);
                 root.setRight(v);
@@ -124,16 +130,16 @@ class Reconciliator {
         }
     }
 
-    private List<Triple<Double, Double, Double>> getIntervals(Edge e) {
-        List<Triple<Double, Double, Double>> intervals = new ArrayList<>();
+    List<Four<Double, Double, Double, Double>> getIntervals(Edge e) {
+        List<Four<Double, Double, Double, Double>> intervals = new ArrayList<>();
         //krajne moznosti (root tesne nad node)
-        intervals.add(new Triple<>(0.0, e.getMaxLength(), 0.0));
-        intervals.add(new Triple<>(e.getMaxLength(), 0.0, 0.0));
+        intervals.add(new Four<>(0.0, 0.0, e.getMinLength(), e.getMaxLength()));
+        intervals.add(new Four<>(e.getMinLength(), e.getMaxLength(), 0.0, 0.0));
         //intervaly s krokom
         double intervalDifference = (e.getMaxLength() - e.getMinLength()) / 2;
         for (double intervalNode1 = 0; intervalNode1 <= e.getMinLength(); intervalNode1 += step) {
             double intervalNode2 = e.getMinLength() - intervalNode1;
-            intervals.add(new Triple<>(intervalNode1, intervalNode2, intervalDifference));
+            intervals.add(new Four<>(intervalNode1, intervalNode1+intervalDifference, intervalNode2, intervalNode2+intervalDifference));
         }
         return intervals;
     }
@@ -148,25 +154,25 @@ class Reconciliator {
     }
 
     /* private void reconcileOLD() {
-         DL minDL = new DL(Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2);
-         for (Edge e : G.getEdges()) {
+         Software.DL minDL = new Software.DL(Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2);
+         for (Software.Edge e : G.getEdges()) {
              //vytvorim dva podstromy od noveho root
-             RootedIntervalTree uTree = new RootedIntervalTree(e.getU(), e, S, leafMap);
-             RootedIntervalTree vTree = new RootedIntervalTree(e.getV(), e, S, leafMap);
-             if (!RootedIntervalTree.upward(uTree.getRoot())) {
+             Software.RootedIntervalTree uTree = new Software.RootedIntervalTree(e.getU(), e, S, leafMap);
+             Software.RootedIntervalTree vTree = new Software.RootedIntervalTree(e.getV(), e, S, leafMap);
+             if (!Software.RootedIntervalTree.upward(uTree.getRoot())) {
                  //System.err.println("Zakorenenie na hrane " + e.getU().getName() + "," +
                  //	e.getV().getName() + " nie je mozne");
                  continue;
              }
-             if (!RootedIntervalTree.upward(vTree.getRoot())) {
+             if (!Software.RootedIntervalTree.upward(vTree.getRoot())) {
                  //System.err.println("Zakorenenie na hrane " + e.getU().getName() + "," +
                  //e.getV().getName() + " nie je mozne");
                  continue;
              }
 
-             RootedIntervalNode u = uTree.getRoot();
-             RootedIntervalNode v = vTree.getRoot();
-             RootedExactNode lcaS = RootedExactTree.lca(u.getLcaS(), v.getLcaS());
+             Software.RootedIntervalNode u = uTree.getRoot();
+             Software.RootedIntervalNode v = vTree.getRoot();
+             Software.RootedExactNode lcaS = Software.RootedExactTree.lca(u.getLcaS(), v.getLcaS());
 
              Double minDR = linear(2, true, u, v, lcaS, e, dirPath);
              if (minDR == null) continue;
@@ -177,7 +183,7 @@ class Reconciliator {
              Double minDV = round(linear(1, true, u, v, lcaS, e, dirPath));
              Double maxDV = round(linear(1, false, u, v, lcaS, e, dirPath));
 
-             RootedIntervalNode root = new RootedIntervalNode("root");
+             Software.RootedIntervalNode root = new Software.RootedIntervalNode("root");
              root.setMinD(minDR);
              root.setMaxD(maxDR);
              root.setDepth(maxDR);
@@ -187,14 +193,14 @@ class Reconciliator {
              v.setMaxD(maxDV);
              root.setLeft(u);
              root.setRight(v);
-             RootedIntervalTree.downward(u);
-             RootedIntervalTree.downward(v);
+             Software.RootedIntervalTree.downward(u);
+             Software.RootedIntervalTree.downward(v);
 
-             RootedIntervalTree.findMostParsimoniousDepths(root, e);
+             Software.RootedIntervalTree.findMostParsimoniousDepths(root, e);
              if (root.getTotalDL().getSum() < minDL.getSum()) {
-                 minDL = new DL(root.getTotalDL().getDuplication(), root.getTotalDL().getLoss());
+                 minDL = new Software.DL(root.getTotalDL().getDuplication(), root.getTotalDL().getLoss());
              }
-             System.out.println("Total DL of solution: (" + root.getTotalDL().getDuplication() + "," + root.getTotalDL().getLoss() + ")");
+             System.out.println("Total Software.DL of solution: (" + root.getTotalDL().getDuplication() + "," + root.getTotalDL().getLoss() + ")");
 
              solutions.add(root);
          }
@@ -204,25 +210,25 @@ class Reconciliator {
              return;
          }
 
-         //riesenia s najmensim DL
-         ArrayList<RootedIntervalNode> parsimonySolutions = new ArrayList<>();
-         for (RootedIntervalNode solution : solutions) {
-             DL solDL = solution.getTotalDL();
+         //riesenia s najmensim Software.DL
+         ArrayList<Software.RootedIntervalNode> parsimonySolutions = new ArrayList<>();
+         for (Software.RootedIntervalNode solution : solutions) {
+             Software.DL solDL = solution.getTotalDL();
              if (solDL.getSum() == minDL.getSum()) {
                  parsimonySolutions.add(solution);
              }
          }
 
          System.out.println("Number of the most parsimonious solutions: " + parsimonySolutions.size());
-         System.out.println("Minimal DL: (" + minDL.getDuplication() + "," + minDL.getLoss() + ")");
+         System.out.println("Minimal Software.DL: (" + minDL.getDuplication() + "," + minDL.getLoss() + ")");
          System.out.println();
 
-         //ak chceme len riesenia s minimalnym DL:
+         //ak chceme len riesenia s minimalnym Software.DL:
          solutions = parsimonySolutions;
      }
  */
-    /*private Double linear(Integer objective, boolean min, RootedIntervalNode u,
-                          RootedIntervalNode v, RootedExactNode lcaS, Edge e, String path) {
+    /*private Double linear(Integer objective, boolean min, Software.RootedIntervalNode u,
+                          Software.RootedIntervalNode v, Software.RootedExactNode lcaS, Software.Edge e, String path) {
         try {
             //prvy stlpec je hlbka u, druhy je hlbka v, treti je hlbka root
             LpSolve solver = LpSolve.makeLp(0, 3);
@@ -281,8 +287,8 @@ class Reconciliator {
     }
 
     //pouziva sa len v poslednom algorithme na orezavanie intervalov X[v] X[w] zhora
-    public static Double linear2(Integer objective, boolean min, RootedIntervalNode v,
-                                 RootedIntervalNode w, double rootDepth, Edge e, String path) {
+    public static Double linear2(Integer objective, boolean min, Software.RootedIntervalNode v,
+                                 Software.RootedIntervalNode w, double rootDepth, Software.Edge e, String path) {
         try {
             //prvy stlpec je hlbka u, druhy je hlbka v, treti je hlbka root
             LpSolve solver = LpSolve.makeLp(0, 2);
@@ -335,7 +341,7 @@ class Reconciliator {
 
     //pouziva sa len v poslednom algoritme na najdenie najhlbsieho namapovania vrchola w
     public static Double linearW(Integer objective, boolean min, double vDepth,
-                                 RootedIntervalNode w, double rootDepth, Edge e, String path) {
+                                 Software.RootedIntervalNode w, double rootDepth, Software.Edge e, String path) {
         try {
             LpSolve solver = LpSolve.makeLp(0, 1);
             solver.setOutputfile(path + "/lpsolveV_output.txt");
