@@ -7,12 +7,11 @@
 \BOOKMARK [2][-]{subsection.1.2.3}{Isometric gene tree reconciliation}{section.1.2}% 7
 \BOOKMARK [3][-]{subsubsection.1.2.3.1}{Exact branch length}{subsection.1.2.3}% 8
 \BOOKMARK [3][-]{subsubsection.1.2.3.2}{Inexact branch lengths}{subsection.1.2.3}% 9
-\BOOKMARK [0][-]{chapter.2}{Methodology}{}% 10
-\BOOKMARK [0][-]{chapter.3}{Specification of software}{}% 11
-\BOOKMARK [0][-]{chapter.4}{Implementation}{}% 12
-\BOOKMARK [1][-]{section.4.1}{Algorithms}{chapter.4}% 13
-\BOOKMARK [2][-]{subsection.4.1.1}{Rooting the gene tree}{section.4.1}% 14
-\BOOKMARK [2][-]{subsection.4.1.2}{Counting algorithm}{section.4.1}% 15
-\BOOKMARK [0][-]{chapter.5}{Results}{}% 16
-\BOOKMARK [0][-]{chapter*.5}{Conclusion}{}% 17
-\BOOKMARK [0][-]{chapter*.6}{Appendix}{}% 18
+\BOOKMARK [0][-]{chapter.2}{Algorithms}{}% 10
+\BOOKMARK [1][-]{section.2.1}{Rooting the gene tree}{chapter.2}% 11
+\BOOKMARK [1][-]{section.2.2}{Counting algorithm}{chapter.2}% 12
+\BOOKMARK [0][-]{chapter.3}{Specification of software}{}% 13
+\BOOKMARK [0][-]{chapter.4}{Methodology}{}% 14
+\BOOKMARK [0][-]{chapter.5}{Results}{}% 15
+\BOOKMARK [0][-]{chapter*.5}{Conclusion}{}% 16
+\BOOKMARK [0][-]{chapter*.6}{Appendix}{}% 17

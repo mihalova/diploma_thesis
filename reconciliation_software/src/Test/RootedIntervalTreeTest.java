@@ -16,13 +16,13 @@ class RootedIntervalTreeTest {
         RootedIntervalTree G = getGtree1_1();
         G.countDL(G.getRoot());
         System.out.println("Losses: "+G.getTotalDL().getLoss()+" Duplications: "+G.getTotalDL().getDuplication());
-        assertEquals(G.getTotalDL().getSum(), 6);
+        assertEquals(G.getTotalDL().getSum(), 0);
         System.out.println("");
         //gene tree 2
         G = getGtree1_2();
         G.countDL(G.getRoot());
         System.out.println("Losses: "+G.getTotalDL().getLoss()+" Duplications: "+G.getTotalDL().getDuplication());
-        assertEquals(G.getTotalDL().getSum(), 0);
+        assertEquals(G.getTotalDL().getSum(), 6);
     }
 
 
@@ -143,19 +143,6 @@ class RootedIntervalTreeTest {
         return leafMap;
     }
 
-    RootedIntervalTree getGtree1_2(){
-        //species tree
-        RootedExactNode[] nodesS = getS1();
-        RootedExactTree S = new RootedExactTree();
-        S.setRoot(nodesS[4]);
-        //gene tree
-        System.out.println("Gene tree 2");
-        double[] depths = {3.0, 3.0, 3.0, 2.0, 0.0};
-        RootedIntervalNode g = getG1(nodesS, depths);
-        RootedIntervalTree G = new RootedIntervalTree(g, S, getLeafMap1());
-        return G;
-    }
-
     RootedIntervalTree getGtree1_1(){
         //species tree
         RootedExactNode[] nodesS = getS1();
@@ -163,6 +150,19 @@ class RootedIntervalTreeTest {
         S.setRoot(nodesS[4]);
         //gene tree
         System.out.println("Gene tree 1");
+        double[] depths = {3.0, 3.0, 3.0, 2.0, 0.0};
+        RootedIntervalNode g = getG1(nodesS, depths);
+        RootedIntervalTree G = new RootedIntervalTree(g, S, getLeafMap1());
+        return G;
+    }
+
+    RootedIntervalTree getGtree1_2(){
+        //species tree
+        RootedExactNode[] nodesS = getS1();
+        RootedExactTree S = new RootedExactTree();
+        S.setRoot(nodesS[4]);
+        //gene tree
+        System.out.println("Gene tree 2");
         double[] depths = {3.0, 3.0, 3.0, 1.0, -1.0};
         RootedIntervalNode g = getG1(nodesS, depths);
         RootedIntervalTree G = new RootedIntervalTree(g, S, getLeafMap1());
