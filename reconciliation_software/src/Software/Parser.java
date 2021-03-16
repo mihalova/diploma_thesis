@@ -3,17 +3,20 @@ package Software;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
-class Parser {
+public class Parser {
     static UnrootedTree G;
     static int k;
 
-    static UnrootedTree parseUnrootedTree(File treeFile, Double tolerance) {
+    static UnrootedTree parseUnrootedTree(String path, Double tolerance, List<Pair<String, String>> Smapping) {
         G = new UnrootedTree();
         k = 0;
 
-        try (Scanner s = new Scanner(treeFile)) {
+        try (Scanner s = new Scanner(new File(path))) {
             String str = s.nextLine();
             //najde poslednu zatvorku
             int i = str.length() - 1;
@@ -43,11 +46,11 @@ class Parser {
             k++;
             G.addNode(node);
             UnrootedNode first = parseNewickUnrootedNode(
-                    str.substring(0, firstCommaIndex), node, tolerance);
+                    str.substring(0, firstCommaIndex), node, tolerance, Smapping);
             UnrootedNode second = parseNewickUnrootedNode(
-                    str.substring(firstCommaIndex + 1, secondCommaIndex), node, tolerance);
+                    str.substring(firstCommaIndex + 1, secondCommaIndex), node, tolerance, Smapping);
             UnrootedNode third = parseNewickUnrootedNode(
-                    str.substring(secondCommaIndex + 1), node, tolerance);
+                    str.substring(secondCommaIndex + 1), node, tolerance, Smapping);
 
             for (Edge e: first.getEdges()){
                 if(e.otherNode(first).equals(node)){
@@ -71,7 +74,7 @@ class Parser {
         return G;
     }
 
-    private static UnrootedNode parseNewickUnrootedNode(String str, UnrootedNode nodeFrom, Double tolerance) {
+    private static UnrootedNode parseNewickUnrootedNode(String str, UnrootedNode nodeFrom, Double tolerance, List<Pair<String, String>> Smapping) {
         double min_time = 0, max_time = 0;
         int colonIndex = str.lastIndexOf(':');
         String time = str.substring(colonIndex + 1);
@@ -93,12 +96,20 @@ class Parser {
         if(!str.startsWith("(")){
             //tu bude parsovanie leafmap G0_S1 = nodeG string "_" nodeS string
             String[] mappingG  = str.split("_");
-            if(mappingG.length == 0)
-                System.err.println("No mapping");
-            else
-                    G.addMapping(str, mappingG[1]);
+            if(mappingG.length == 1) {
+                if (Smapping.isEmpty())
+                    System.err.println("No mapping");
+                else {
+                    int i = 0;
+                    while (!mappingG[0].contains(Smapping.get(i).getFirst())) {
+                        i++;
+                    }
+                    G.addMapping(mappingG[0], Smapping.get(i).getSecond());
+                }
+            } else
+                G.addMapping(mappingG[0], mappingG[1]);
 
-            UnrootedNode node = new UnrootedNode(str);
+            UnrootedNode node = new UnrootedNode(mappingG[0]);
             G.addNode(node);
             Edge edgeFrom = new Edge(node, nodeFrom, min_time, max_time);
             G.addEdge(edgeFrom);
@@ -126,9 +137,9 @@ class Parser {
             int commaIndex = i;
 
             UnrootedNode first = parseNewickUnrootedNode(
-                    str.substring(1, commaIndex), node, tolerance);
+                    str.substring(1, commaIndex), node, tolerance, Smapping);
             UnrootedNode second = parseNewickUnrootedNode(
-                    str.substring(commaIndex + 1, str.length() - 1), node, tolerance);
+                    str.substring(commaIndex + 1, str.length() - 1), node, tolerance, Smapping);
 
             for (Edge e: first.getEdges()){
                 if(e.otherNode(first).equals(node)){
@@ -150,10 +161,10 @@ class Parser {
         return new double[]{min, max};
     }
 
-    static RootedExactTree parseRootedTree(String prefix, String fileName){
+    static RootedExactTree parseRootedTree(String path){
         RootedExactTree t = new RootedExactTree();
 
-        try (Scanner s = new Scanner(new File(prefix + "/" + fileName))) {
+        try (Scanner s = new Scanner(new File(path))) {
             String str = s.nextLine();
             //suradnica ciarky
             int i = 1;
@@ -170,9 +181,10 @@ class Parser {
             Double depth = Double.parseDouble(str.substring(k+2,str.length()-1));
             //nastavenie depth pre root
             t.getRoot().setDepth(depth);
+            t.getRoot().setLevel(0);
             //nodes pod root
-            RootedExactNode left = parseNode(str.substring(1,i), depth);
-            RootedExactNode right = parseNode(str.substring(i+1,k), depth);
+            RootedExactNode left = parseNode(str.substring(1,i), depth, 1);
+            RootedExactNode right = parseNode(str.substring(i+1,k), depth, 1);
             //nastaví hierarchiu
             left.setParent(t.getRoot());
             right.setParent(t.getRoot());
@@ -184,7 +196,7 @@ class Parser {
         return t;
     }
 
-    private static RootedExactNode parseNode(String str, double parentDepth){
+    private static RootedExactNode parseNode(String str, double parentDepth, int level){
         RootedExactNode node;
         if(str.startsWith("(")){
             //ulozenie inner nodes
@@ -208,8 +220,8 @@ class Parser {
             //celkova vzdialenost od root
             Double depth = parentDepth + time;
             //nodes pod
-            RootedExactNode left = parseNode(str.substring(1,ciarkaIndex), depth);
-            RootedExactNode right = parseNode(str.substring(ciarkaIndex+1,koniecIndex), depth);
+            RootedExactNode left = parseNode(str.substring(1,ciarkaIndex), depth, level+1);
+            RootedExactNode right = parseNode(str.substring(ciarkaIndex+1,koniecIndex), depth, level+1);
 
             //ulozi nazov nodu v spravnom poradi (napr. S1S2)
             String name;
@@ -220,7 +232,7 @@ class Parser {
             }
 
             //nastavi hierarchiu
-            node = new RootedExactNode(name, depth);
+            node = new RootedExactNode(name, depth, level);
             left.setParent(node);
             right.setParent(node);
             node.setLeft(left);
@@ -238,8 +250,22 @@ class Parser {
                 name = str.substring(0, colonIndex);
                 time = Double.parseDouble(str.substring(colonIndex + 1));
             }
-            node = new RootedExactNode(name, time + parentDepth);
+            node = new RootedExactNode(name, time + parentDepth, level);
             return node;
         }
+    }
+
+    public static List<Pair<String, String>> parseSpeciesMapping(File smap) {
+        List<Pair<String, String>> Smapping = new ArrayList<>();
+        try (Scanner s = new Scanner(smap)){
+            while (s.hasNextLine()) {
+                String str = s.nextLine().replaceAll("\\*","");
+                String[] mapping = str.split("\\s+");
+                Smapping.add(new Pair<String, String>(mapping[0], mapping[1]));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Smapping;
     }
 }

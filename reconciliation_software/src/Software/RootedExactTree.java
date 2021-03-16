@@ -9,7 +9,7 @@ public class RootedExactTree {
     TreeMap<String, String> leafMap = new TreeMap<>();
 
     public RootedExactTree(){
-        root = new RootedExactNode("root", 0);
+        root = new RootedExactNode("root", 0, 0);
     }
 
     public RootedExactNode getRoot() {

@@ -1,70 +1,52 @@
 package Software;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
 public class Reconciliator {
-    private static String dirPath;
-    private Double tolerance, step;
+    private Double step;
     private RootedExactTree S;
     private UnrootedTree G;
     private TreeMap<String, String> leafMap;
     private List<Pair<DL, RootedIntervalNode>> solutions = new ArrayList<>();
     DL minDL = new DL(Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2);
 
-    public Reconciliator(String dirPath, Double tolerance, Double step) {
-        this.dirPath = dirPath;
-        this.tolerance = tolerance;
+    public Reconciliator(RootedExactTree S, UnrootedTree G, Double step) {
+        this.S = S;
+        this.G = G;
         if (step != null)
             this.step = step;
         else
-            this.step = 0.1;
+            this.step = 0.5;
+        leafMap = G.getLeafMap();
+    }
+
+    public List<Pair<DL, RootedIntervalNode>> getSolutions(){
+        reconcile();
+        return solutions;
     }
 
     //for testing
-    public UnrootedTree getGtreeForTesting(){
-        loadGeneTreeFromFile();
+    public UnrootedTree getGtree(){
         return G;
     }
+/*
+    //for testing
+    public List<Pair<String, String>> getSmappingFromFile(){
+        loadSpeciesMappingFromFile();
+        return Smapping;
+    }
+
+    //for testing
+    public RootedExactTree getStreeFromFile(){
+        loadSpeciesTreeFromFile();
+        return S;
+    }*/
+
 
     public List<Four<Double, Double, Double, Double>>getIntervalsForTesting(Edge e){
         return getIntervals(e);
-    }
-    //
-    public void runReconciliation() {
-        loadSpeciesTreeFromFile();
-        loadGeneTreeFromFile();
-        reconcile();
-    }
-
-    private void loadSpeciesTreeFromFile() {
-        try {
-            S = Parser.parseRootedTree(dirPath, "S_newick.tree");
-        } catch (Exception exc) {
-            System.err.println("BAD S");
-            return;
-        }
-    }
-
-    public static String getDirPath() {
-        return dirPath;
-    }
-
-    private void loadGeneTreeFromFile() {
-        //unrooted G
-        try {
-            File GtreeFile = new File(dirPath + "/G_newick.tree");
-            G = Parser.parseUnrootedTree(GtreeFile, tolerance);
-        } catch (Exception exc) {
-            System.err.println("BAD G");
-            return;
-        }
-        //leaf mapping
-        leafMap = G.getLeafMap();
     }
 
     private void reconcile() {
@@ -89,57 +71,54 @@ public class Reconciliator {
                 RootedIntervalTree tree = new RootedIntervalTree(new RootedIntervalNode("root"), S, leafMap);
                 tree.upward(root);
                 tree.downward(root);
-                tree.countDL(root);
-                solutions.add(new Pair<>(tree.getTotalDL(), root));
+                tree.computeLevel(root);
+                System.out.println("\nTree:");
+                DL score = tree.countDL(root);
+                if (!solutions.isEmpty()) {
+                    if (solutions.get(0).getFirst().getSum() == score.getSum()) {
+                        solutions.add(new Pair<>(score, root));
+                    } else if (solutions.get(0).getFirst().getSum() > score.getSum()) {
+                        solutions.clear();
+                        solutions.add(new Pair<>(score, root));
+                    }
+                } else {
+                    solutions.add(new Pair<>(score, root));
+                }
             }
         }
-        solutions.sort(new Comparator<Pair<DL, RootedIntervalNode>>() {
-            @Override
-            public int compare(final Pair<DL, RootedIntervalNode> sol1, final Pair<DL, RootedIntervalNode> sol2) {
-                return sol1.getFirst().getSum() - sol2.getFirst().getSum();
-            }
-        });
-        saveSolutionToFile();
-        System.out.println(solutions.get(0).getFirst().getDuplication() + " " + solutions.get(0).getFirst().getLoss());
-        System.out.println(printTree(solutions.get(0).getSecond()));
 
-    }
-
-    private void saveSolutionToFile() {
-        FileWriter fw;
-        try {
-            fw = new FileWriter(new File(dirPath + "/solution.txt"));
-            for (int i = 0; i < solutions.size(); i++) {
-                fw.write("D: " + solutions.get(i).getFirst().getDuplication() + " L: " + solutions.get(i).getFirst().getLoss());
-                fw.write(System.lineSeparator());
-                printToTreeFile(fw, solutions.get(i).getSecond());
-                fw.write(System.lineSeparator());
-            }
-            fw.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void printToTreeFile(FileWriter fw, RootedIntervalNode node) throws IOException {
-        fw.write(node.getName() + " " + node.getMinD() + " " + node.getMaxD());
-        fw.write(System.lineSeparator());
-        if(node.getLeft() != null) {
-            printToTreeFile(fw, node.getLeft());
-            printToTreeFile(fw, node.getRight());
-        }
+        RootedIntervalTree tree = new RootedIntervalTree(new RootedIntervalNode("root"), S, leafMap);
+        System.out.println("\n\n\n");
+        DL score = tree.countDL(solutions.get(0).getSecond());
     }
 
     List<Four<Double, Double, Double, Double>> getIntervals(Edge e) {
+        //prerequsities
         List<Four<Double, Double, Double, Double>> intervals = new ArrayList<>();
+        double totalMaxDepth = e.getMaxLength();
+        double totalMinDepth = e.getMinLength();
+        double minDepthLeft = totalMinDepth;
+        double maxDepthLeft = totalMaxDepth - step;
+        double minDepthRight = 0.0;
+        double maxDepthRight = step;
+        double difference = totalMaxDepth - totalMinDepth;
+        double differenceDividedByStep = difference / step;
+        boolean differenceIsDivisibleByStep = differenceDividedByStep == Math.floor(differenceDividedByStep) && !Double.isInfinite(differenceDividedByStep);
+
         //krajne moznosti (root tesne nad node)
-        intervals.add(new Four<>(0.0, 0.0, e.getMinLength(), e.getMaxLength()));
-        intervals.add(new Four<>(e.getMinLength(), e.getMaxLength(), 0.0, 0.0));
+        intervals.add(new Four<>(0.0, 0.0, totalMinDepth, totalMaxDepth));
+        intervals.add(new Four<>(totalMinDepth, totalMaxDepth, 0.0, 0.0));
         //intervaly s krokom
-        double intervalDifference = (e.getMaxLength() - e.getMinLength()) / 2;
-        for (double intervalNode1 = 0; intervalNode1 <= e.getMinLength(); intervalNode1 += step) {
-            double intervalNode2 = e.getMinLength() - intervalNode1;
-            intervals.add(new Four<>(intervalNode1, intervalNode1+intervalDifference, intervalNode2, intervalNode2+intervalDifference));
+        while (maxDepthRight < totalMaxDepth && maxDepthLeft > 0.0) {
+            intervals.add(new Four<>(minDepthLeft, maxDepthLeft, minDepthRight, maxDepthRight));
+            if (difference == step || !differenceIsDivisibleByStep)
+                intervals.add(new Four<>(minDepthRight, maxDepthRight, minDepthLeft, maxDepthLeft));
+            minDepthLeft -= step;
+            if (minDepthLeft < 0.0)
+                minDepthLeft = 0.0;
+            maxDepthLeft -= step;
+            minDepthRight += step;
+            maxDepthRight += step;
         }
         return intervals;
     }

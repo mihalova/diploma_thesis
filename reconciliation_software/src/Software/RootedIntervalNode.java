@@ -13,14 +13,15 @@ public class RootedIntervalNode extends Node {
     private double minL;
     private double maxL;
 
-    private DL nodesDL;
-
     private RootedIntervalNode parent;
     private RootedIntervalNode left;
     private RootedIntervalNode right;
 
     private RootedExactNode lcaS;
-    private RootedExactNode speciesNodeAbove;
+    private int levelS;
+    private boolean mappedToLca; //integer value of boolean
+    private int levelDistanceFromParent;
+    private RootedExactNode speciesNodeBelow;
 
     private ArrayList<Interval> intervals = new ArrayList<>();
 
@@ -92,12 +93,40 @@ public class RootedIntervalNode extends Node {
         this.lcaS = lcaS;
     }
 
-    public RootedExactNode getSpeciesNodeAbove() {
-        return speciesNodeAbove;
+    public int getMappedToLca_Integer() {
+        return mappedToLca ? 1 : 0;
     }
 
-    public void setSpeciesNodeAbove(RootedExactNode speciesNodeAbove){
-        this.speciesNodeAbove = speciesNodeAbove;
+    public boolean getMappedToLca() {
+        return mappedToLca;
+    }
+
+    public void setMappedToLca(boolean m) {
+        this.mappedToLca = m;
+    }
+
+    public int getLevelS() {
+        return levelS;
+    }
+
+    public void setLevelS(int l) {
+        this.levelS = l;
+    }
+
+    public int getLevelDistanceFromParent() {
+        return levelDistanceFromParent;
+    }
+
+    public void setLevelDistanceFromParent(int l) {
+        this.levelDistanceFromParent = l;
+    }
+
+    public RootedExactNode getSpeciesNodeBelow() {
+        return speciesNodeBelow;
+    }
+
+    public void setSpeciesNodeBelow(RootedExactNode speciesNodeBelow){
+        this.speciesNodeBelow = speciesNodeBelow;
     }
 
     public double getDepth() {
@@ -106,19 +135,6 @@ public class RootedIntervalNode extends Node {
 
     public void setDepth(double depth) {
         this.depth = depth;
-    }
-
-    public void setDuplicationOnNode(){
-        nodesDL.addDuplication(1);
-    }
-
-    public int getDuplicationOnNode(){
-        return nodesDL.getDuplication();
-    }
-
-    public void setNodesDL(int D, int L){
-        nodesDL.addDuplication(D);
-        nodesDL.addLoss(L);
     }
 
     public Interval getInterval(int i){

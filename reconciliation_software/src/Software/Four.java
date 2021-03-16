@@ -1,10 +1,10 @@
 package Software;
 
 public class Four<W, X, Y, Z> {
-    public final W w;
-    public final X x;
-    public final Y y;
-    public final Z z;
+    private final W w;
+    private final X x;
+    private final Y y;
+    private final Z z;
     public Four(W w, X x, Y y, Z z) {
         this.w = w;
         this.x = x;

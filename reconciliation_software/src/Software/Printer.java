@@ -5,24 +5,47 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Printer {
 
-    ArrayList<RootedIntervalNode> solutions;
+    List<Pair<DL, RootedIntervalNode>> solutions;
     String dirPath;
 
-    public Printer(String dirPath, ArrayList<RootedIntervalNode> solutions){
-        this.dirPath = dirPath;
+    public Printer(String dirPath, List<Pair<DL, RootedIntervalNode>> solutions) {
+        this.dirPath = new File(dirPath).getParent();
         this.solutions = solutions;
-    }
-
-    void runPrinter(){
         saveSolutionToFile();
-        printReconciliation();
     }
 
-    private void saveSolutionToFile(){
+    private void saveSolutionToFile() {
+        FileWriter fw;
+        try {
+            fw = new FileWriter(new File(dirPath + "/solution.txt"));
+            for (int i = 0; i < solutions.size(); i++) {
+                fw.write("D: " + solutions.get(i).getFirst().getDuplication() + " L: " + solutions.get(i).getFirst().getLoss());
+                fw.write(System.lineSeparator());
+                printToTreeFile(fw, solutions.get(i).getSecond());
+                fw.write(System.lineSeparator());
+            }
+            fw.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void printToTreeFile(FileWriter fw, RootedIntervalNode node) throws IOException {
+        fw.write(node.getName() + " " + node.getMinD() + " " + node.getMaxD());
+        fw.write(System.lineSeparator());
+        if(node.getLeft() != null) {
+            printToTreeFile(fw, node.getLeft());
+            printToTreeFile(fw, node.getRight());
+        }
+    }
+
+
+    /*private void saveSolutionToFile(){
         for (int i = 0; i < solutions.size(); i++) {
             FileWriter fw;
             FileWriter fw2;
@@ -91,5 +114,5 @@ public class Printer {
         if (!goodRoot) {
             System.err.println("BAD ROOT");
         }
-    }
+    }*/
 }

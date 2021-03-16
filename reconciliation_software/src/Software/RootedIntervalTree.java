@@ -6,16 +6,6 @@ public class RootedIntervalTree {
     private RootedExactTree speciesTree;
     private RootedIntervalNode root;
     TreeMap<String, String> leafMap;
-    private DL totalDL = new DL(0, 0);
-
-    public DL getTotalDL() {
-        return this.totalDL;
-    }
-
-    public void setTotalDL(int D, int L) {
-        totalDL.addDuplication(D);
-        totalDL.addLoss(L);
-    }
 
     public RootedIntervalTree(UnrootedNode newRoot, Edge sourceEdge, RootedExactTree speciesTree,
                               TreeMap<String, String> leafMap) {
@@ -30,66 +20,75 @@ public class RootedIntervalTree {
         this.root = root;
     }
 
-    /*public void countDLcopy(Software.RootedIntervalNode u) {
-        Software.RootedExactNode speciesNodeAbove;
+    public void computeLevel(RootedIntervalNode u) {
         if (u.getLeft() == null) {
-            speciesNodeAbove = u.getLcaS().getParent();
+            u.setMappedToLca(true);
+            u.setSpeciesNodeBelow(u.getLcaS());
+            u.setLevelS(u.getSpeciesNodeBelow().getLevel());
         } else {
-            countDLcopy(u.getRight());
-            countDLcopy(u.getLeft());
-            speciesNodeAbove = u.getRight().getSpeciesNodeAbove();
-        }
-        Software.RootedExactNode lca = u.getLcaS();
-        //System.out.println(u.getName() + " lca: " + lca.getName());
-        if (u.getParent() != null) {
-            Software.RootedIntervalNode w = u.getParent();
-            Software.Pair<Integer, Software.RootedExactNode> pair = countSpeciesNodes(w, speciesNodeAbove);
-            totalDL.addLoss(pair.getFirst());
-            //System.out.println("loss: " + pair.getFirst());
-            u.setSpeciesNodeAbove(pair.getSecond());
-        }
-        if (u.getMaxD() < lca.getDepth()) {
-            totalDL.addDuplication(1);
-            //System.out.println("dup");
-        }
-    }*/
-
-    public void countDL(RootedIntervalNode u) {
-        RootedExactNode speciesNodeAbove;
-        if (u.getLeft() == null) {
-            speciesNodeAbove = u.getLcaS().getParent();
-        } else {
-            countDL(u.getRight());
-            countDL(u.getLeft());
-            speciesNodeAbove = u.getSpeciesNodeAbove();
-        }
-        System.out.println("Node: " + u.getName());
-        RootedExactNode lca = u.getLcaS();
-        if (u.getParent() != null) {
-            RootedIntervalNode v = u.getParent();
-            int losses = countSpeciesNodes(v, speciesNodeAbove);
-            System.out.println("\tLoss: " + losses);
-            totalDL.addLoss(losses);
-        }
-        if (u.getMaxD() < lca.getDepth()) {
-            System.out.println("\tDuplication: " + 1);
-            totalDL.addDuplication(1);
+            computeLevel(u.getRight());
+            computeLevel(u.getLeft());
+            RootedExactNode rightS = u.getRight().getSpeciesNodeBelow();
+            RootedExactNode leftS = u.getLeft().getSpeciesNodeBelow();
+            RootedExactNode speciesNode;
+            if (u.getMaxD() < u.getLcaS().getDepth()) { //not mapped to lca
+                if (rightS.getDepth() > leftS.getDepth())
+                    speciesNode = computeSpeciesNodeBelow(u, leftS);
+                else
+                    speciesNode = computeSpeciesNodeBelow(u, rightS);
+                u.setMappedToLca(false);
+                u.setSpeciesNodeBelow(speciesNode);
+                u.setLevelS(u.getSpeciesNodeBelow().getLevel());
+                levelDistanceFromChildren(u);
+            } else { //mapped to lca
+                if (rightS == u.getLcaS() || leftS == u.getLcaS()) //more gene nodes can mapped to root, only first one is speciation
+                    u.setMappedToLca(false);
+                else
+                    u.setMappedToLca(true);
+                u.setSpeciesNodeBelow(u.getLcaS());
+                u.setLevelS(u.getSpeciesNodeBelow().getLevel());
+                levelDistanceFromChildren(u);
+            }
         }
     }
 
-    private int countSpeciesNodes(RootedIntervalNode v, RootedExactNode speciesNode) {
-        int numberOfNodes = 0;
-        if (speciesNode != null) {
-            while (speciesNode.getDepth() >= v.getMaxD()) {
-                if (speciesNode.getDepth() > v.getMaxD())
-                    numberOfNodes += 1;
+    public void levelDistanceFromChildren(RootedIntervalNode u) {
+        int rightLevelDistance = u.getRight().getLevelS() - u.getLevelS();
+        int leftLevelDistance = u.getLeft().getLevelS() - u.getLevelS();
+        u.getRight().setLevelDistanceFromParent(rightLevelDistance - u.getMappedToLca_Integer());
+        u.getLeft().setLevelDistanceFromParent(leftLevelDistance - u.getMappedToLca_Integer());
+    }
+
+    private RootedExactNode computeSpeciesNodeBelow(RootedIntervalNode u, RootedExactNode speciesNode) {
+        RootedExactNode actualSpeciesNode = speciesNode;
+        while (speciesNode.getDepth() > u.getMaxD()) {
+            actualSpeciesNode = speciesNode;
+            if (speciesNode.getParent() == null)
+                break;
+            else
                 speciesNode = speciesNode.getParent();
-                if (speciesNode == null)
-                    break;
-            }
         }
-        v.setSpeciesNodeAbove(speciesNode);
-        return numberOfNodes;
+        return actualSpeciesNode;
+    }
+
+    public DL countDL(RootedIntervalNode u) {
+        int duplication = 0, losses = 0;
+        DL right = new DL(0, 0), left = new DL(0, 0);
+        if (u.getLeft() != null) {
+            right = countDL(u.getRight());
+            left = countDL(u.getLeft());
+        }
+        System.out.println("Node: " + u.getName());
+        RootedExactNode lca = u.getLcaS();
+
+        losses = u.getLevelDistanceFromParent();
+        System.out.println("\tLoss: " + losses);
+
+        if (!u.getMappedToLca()) {
+            System.out.println("\tDuplication: " + 1);
+            duplication = 1;
+        }
+        return new DL(duplication + right.getDuplication() + left.getDuplication(), losses + right.getLoss() + left.getLoss());
     }
 
 
