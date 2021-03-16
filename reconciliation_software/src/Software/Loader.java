@@ -108,7 +108,8 @@ public class Loader {
         if (new File(dirPathSpecies).exists()){
             S = Parser.parseRootedTree(dirPathSpecies);
         } else {
-            throw new IllegalArgumentException("Wrong species tree file.");
+            wrongArguments = true;
+            System.err.println("Wrong species tree file.");
         }
     }
 
@@ -124,7 +125,8 @@ public class Loader {
         if (new File(dirPathGene).exists()) {
             G = Parser.parseUnrootedTree(dirPathGene, tolerance, Smapping);
         } else {
-            throw new IllegalArgumentException("Wrong gene tree file.");
+            wrongArguments = true;
+            System.err.println("Wrong gene tree file.");
         }
     }
 }

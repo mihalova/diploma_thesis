@@ -78,14 +78,14 @@ public class RootedIntervalTree {
             right = countDL(u.getRight());
             left = countDL(u.getLeft());
         }
-        System.out.println("Node: " + u.getName());
+        //System.out.println("Node: " + u.getName());
         RootedExactNode lca = u.getLcaS();
 
         losses = u.getLevelDistanceFromParent();
-        System.out.println("\tLoss: " + losses);
+        //System.out.println("\tLoss: " + losses);
 
         if (!u.getMappedToLca()) {
-            System.out.println("\tDuplication: " + 1);
+            //System.out.println("\tDuplication: " + 1);
             duplication = 1;
         }
         return new DL(duplication + right.getDuplication() + left.getDuplication(), losses + right.getLoss() + left.getLoss());
@@ -172,7 +172,7 @@ public class RootedIntervalTree {
         RootedIntervalNode rNode = new RootedIntervalNode(uNode.getName());
 
         if (uNode.getEdges().size() != 3 && uNode.getEdges().size() != 1) {
-            System.err.println("Zly pocet hran pre vrchol " + uNode.getEdges());
+            System.err.println("Zlý počet hrán pre vrchol " + uNode.getEdges());
         }
 
         for (Edge e : uNode.getEdges()) {
@@ -182,7 +182,7 @@ public class RootedIntervalTree {
 
             UnrootedNode otherNode = e.otherNode(uNode);
             if (otherNode == null) {
-                System.err.println("Chyba v subore G.tree");
+                System.err.println("Chyba v súbore G.tree");
             }
 
             RootedIntervalNode child = enroot(otherNode, e); //zakorenim strom od noveho root smerom dole

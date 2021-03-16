@@ -72,7 +72,7 @@ public class Reconciliator {
                 tree.upward(root);
                 tree.downward(root);
                 tree.computeLevel(root);
-                System.out.println("\nTree:");
+                //System.out.println("\nTree:");
                 DL score = tree.countDL(root);
                 if (!solutions.isEmpty()) {
                     if (solutions.get(0).getFirst().getSum() == score.getSum()) {
@@ -88,7 +88,6 @@ public class Reconciliator {
         }
 
         RootedIntervalTree tree = new RootedIntervalTree(new RootedIntervalNode("root"), S, leafMap);
-        System.out.println("\n\n\n");
         DL score = tree.countDL(solutions.get(0).getSecond());
     }
 
@@ -123,7 +122,7 @@ public class Reconciliator {
         return intervals;
     }
 
-    private String printTree(RootedIntervalNode n) {
+   /* private String printTree(RootedIntervalNode n) {
         String result ="";
         if (n.getLeft() != null) {
             result = printTree(n.getLeft()) + printTree(n.getRight());
@@ -131,7 +130,7 @@ public class Reconciliator {
         result += n.getName() + " " + n.getMinL() + " " + n.getMaxL() + " " + n.getMinD() + " " + n.getMaxD() + "\n";
         return result;
     }
-
+*/
     /* private void reconcileOLD() {
          Software.DL minDL = new Software.DL(Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2);
          for (Software.Edge e : G.getEdges()) {

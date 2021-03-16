@@ -90,7 +90,7 @@ public class Parser {
             min_time = Double.parseDouble(interval[0]);
             max_time = Double.parseDouble(interval[1]);
         } else
-            throw new IllegalArgumentException("Insert tree with intervals or set tolerance.");
+            System.err.println("Insert tree with intervals or set tolerance.");
 
         str = str.substring(0, colonIndex);
         if(!str.startsWith("(")){
@@ -191,7 +191,7 @@ public class Parser {
             t.getRoot().setLeft(left);
             t.getRoot().setRight(right);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.err.println("Problem with parsing the species tree.");
         }
         return t;
     }
@@ -264,7 +264,7 @@ public class Parser {
                 Smapping.add(new Pair<String, String>(mapping[0], mapping[1]));
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.err.println("Problem with species map.");
         }
         return Smapping;
     }

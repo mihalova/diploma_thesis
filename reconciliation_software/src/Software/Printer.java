@@ -20,9 +20,20 @@ public class Printer {
     }
 
     private void saveSolutionToFile() {
+        File output;
+        if (dirPath == null) //if JAR in the same directory as gene tree
+            output = new File("solution.txt");
+        else
+            output = new File(dirPath + "/solution.txt");
+        try {
+            output.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Problem with creating an output file.");
+        }
         FileWriter fw;
         try {
-            fw = new FileWriter(new File(dirPath + "/solution.txt"));
+            fw = new FileWriter(output);
             for (int i = 0; i < solutions.size(); i++) {
                 fw.write("D: " + solutions.get(i).getFirst().getDuplication() + " L: " + solutions.get(i).getFirst().getLoss());
                 fw.write(System.lineSeparator());
@@ -31,7 +42,7 @@ public class Printer {
             }
             fw.close();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            System.err.println("Problem with writing into output file.");
         }
     }
 

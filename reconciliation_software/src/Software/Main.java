@@ -12,7 +12,7 @@ public class Main {
         Four<RootedExactTree, UnrootedTree, Double, String> loadArgs = load.getLoadArgs();
 
         if(load.exit()){
-            throw new IllegalArgumentException("Start the program with correct gene tree and species tree.");
+            System.err.println("Start the program with correct gene tree and species tree.");
         } else {
         Reconciliator rec = new Reconciliator(loadArgs.getFirst(),
                 loadArgs.getSecond(),
