@@ -10,8 +10,10 @@
 \BOOKMARK [0][-]{chapter.2}{Algorithms}{}% 10
 \BOOKMARK [1][-]{section.2.1}{Rooting the gene tree}{chapter.2}% 11
 \BOOKMARK [1][-]{section.2.2}{Counting algorithm}{chapter.2}% 12
-\BOOKMARK [0][-]{chapter.3}{Specification of software}{}% 13
-\BOOKMARK [0][-]{chapter.4}{Methodology}{}% 14
-\BOOKMARK [0][-]{chapter.5}{Results}{}% 15
-\BOOKMARK [0][-]{chapter*.5}{Conclusion}{}% 16
-\BOOKMARK [0][-]{chapter*.6}{Appendix}{}% 17
+\BOOKMARK [2][-]{subsection.2.2.1}{Preprocessing}{section.2.2}% 13
+\BOOKMARK [2][-]{subsection.2.2.2}{Main algorithm}{section.2.2}% 14
+\BOOKMARK [0][-]{chapter.3}{Implementation}{}% 15
+\BOOKMARK [0][-]{chapter.4}{Experiments}{}% 16
+\BOOKMARK [0][-]{chapter.5}{Results}{}% 17
+\BOOKMARK [0][-]{chapter*.5}{Conclusion}{}% 18
+\BOOKMARK [0][-]{chapter*.6}{Appendix}{}% 19

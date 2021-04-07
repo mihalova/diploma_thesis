@@ -1,1 +1,4 @@
 \chapter{Implementation}
+%Our code is built on Chládek's code from his diploma thesis \cite{chladek_thesis}. We apply his implementation of parsing a gene tree and a species tree from a file. We slightly change the parsing function to transform exact branch lengths in a gene tree to intervals, if the given gene tree has exact branch lengths. To transform the branch lengths to intervals, the user needs to set the tolerance value has to be from interval $\langle 0, 1 \rangle$. The edge interval is than compute as: $\langle length - (tolerance \cdot length), length + (tolerance \cdot length) \rangle$. We also use his implementation of the two-pass algorithm, that we mentioned before in Chapter \ref{two-pass_algorithm}, to compute the gene tree possible mapping depths.
+
+%On this basis, we implement our algorithms, that are presented below, to find the most parsimonious reconciliation.

@@ -26,16 +26,16 @@
 \@writefile{toc}{\contentsline {section}{\numberline {1.1}Background}{2}{section.1.1}\protected@file@percent }
 \citation{hasic}
 \citation{felsenstein}
-\citation{goodman}
 \newlabel{unrooted_rooted}{{1.1}{4}{Background}{section.1.1}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1.1}{\ignorespaces Unrooted tree and its~rooted version}}{4}{figure.1.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {1.2}Different approaches to gene tree reconciliation}{4}{section.1.2}\protected@file@percent }
+\citation{goodman}
 \citation{hasic}
 \newlabel{def_reconciliation}{{1}{5}{Different approaches to gene tree reconciliation}{Item.2}{}}
-\newlabel{reconciliation}{{1.2}{5}{Different approaches to gene tree reconciliation}{Item.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.2}{\ignorespaces Reconciliation and evolutionary history}}{5}{figure.1.2}\protected@file@percent }
 \citation{treebest_online}
 \citation{treebest}
+\newlabel{reconciliation}{{1.2}{6}{Different approaches to gene tree reconciliation}{Item.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.2}{\ignorespaces Reconciliation and evolutionary history}}{6}{figure.1.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2.1}Scoring gene tree reconciliation}{6}{subsection.1.2.1}\protected@file@percent }
 \citation{treefix_tutorial}
 \citation{treefix}
@@ -63,28 +63,37 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {1.4}{\ignorespaces Isometric reconciliation with inexact branch lengths}}{13}{figure.1.4}\protected@file@percent }
 \newlabel{two-pass_algorithm}{{1.2.3.2}{14}{Inexact branch lengths}{figure.1.4}{}}
 \citation{chladek_thesis}
-\citation{chladek_thesis}
-\citation{chladek_thesis}
 \@writefile{toc}{\contentsline {chapter}{\numberline {2}Algorithms}{17}{chapter.2}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{toc}{\contentsline {section}{\numberline {2.1}Rooting the gene tree}{17}{section.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2.2}Counting algorithm}{18}{section.2.2}\protected@file@percent }
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Function for counting the number of species nodes on the edge}}{18}{algorithm.1}\protected@file@percent }
-\newlabel{countSpeciesNodes}{{1}{18}{Counting algorithm}{algorithm.1}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Function for counting duplications and gene losses}}{19}{algorithm.2}\protected@file@percent }
-\newlabel{countDL}{{2}{19}{Counting algorithm}{algorithm.2}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}Specification of software}{20}{chapter.3}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Possible intervals to subdivide given edge $e$}}{18}{algorithm.1}\protected@file@percent }
+\newlabel{getIntervals}{{1}{18}{Rooting the gene tree}{algorithm.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}Counting algorithm}{19}{section.2.2}\protected@file@percent }
+\newlabel{finding_root}{{2.1}{20}{Rooting the gene tree}{algorithm.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces Rooting the gene tree: special case condition}}{20}{figure.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.1}Preprocessing}{21}{subsection.2.2.1}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Computes species node below given gene node $u$}}{21}{algorithm.2}\protected@file@percent }
+\newlabel{computeSpeciesNodeBelow}{{2}{21}{Preprocessing}{algorithm.2}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {3}{\ignorespaces Sets level distance from parent to children of node $u$}}{22}{algorithm.3}\protected@file@percent }
+\newlabel{levelDistanceFromChildren}{{3}{22}{Preprocessing}{algorithm.3}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {4}{\ignorespaces Compute levels for nodes from gene tree $G$}}{22}{algorithm.4}\protected@file@percent }
+\newlabel{computeLevel}{{4}{22}{Preprocessing}{algorithm.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.2}Main algorithm}{23}{subsection.2.2.2}\protected@file@percent }
+\newlabel{main_algorithm}{{2.2.2}{23}{Main algorithm}{subsection.2.2.2}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {5}{\ignorespaces Counts duplications and gene losses in gene tree $G$}}{24}{algorithm.5}\protected@file@percent }
+\newlabel{countDL}{{5}{24}{Main algorithm}{algorithm.5}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Implementation}{25}{chapter.3}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Methodology}{21}{chapter.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Experiments}{26}{chapter.4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Results}{22}{chapter.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Results}{27}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {chapter}{Conclusion}{23}{chapter*.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{Appendix}{24}{chapter*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{Conclusion}{28}{chapter*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{Appendix}{29}{chapter*.6}\protected@file@percent }
 \citation{*}
 \bibstyle{plain}
 \bibdata{bibliography}

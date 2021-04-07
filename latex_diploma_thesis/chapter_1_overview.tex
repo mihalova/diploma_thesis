@@ -24,6 +24,8 @@ Phylogenetic trees can be either rooted or unrooted (Fig. \ref{unrooted_rooted})
 
 Every rooted tree has a height, which symbolizes the longest path. It is the number of nodes between the $root(T)$ and one of the leaves. 
 
+Nodes in rooted trees have levels. The level of node $l(u)$ is the number of ancestors on the path from the node $u$ to the $root(T)$. The root of a tree $root(T)$ has level 0, since it has no parents.
+
 If a rooted tree is weighted, nodes in the tree have depths. The depth of node $u$, $D(u)$, is the sum of the lengths of all edges between node $u$ and the $root(T)$ of a rooted tree.
 
 For~a~group of~nodes in~a~rooted tree, their~lowest common ancestor~(LCA) is the~farthest node from~the~root that has all nodes in~the~group as~descendants.
@@ -61,7 +63,7 @@ A reconciliation between gene tree $G$ and species tree $S$ is mapping $\phi: V(
 	\label{def_reconciliation}
 \end{definition}
 
-An example of gene tree reconciliation is shown in Figure \ref{reconciliation}. We are given the gene tree $G$, the species tree $S$ and a leaf mapping $\mu: L(G) \rightarrow L(S)$ that maps each leaf from $G$ to leaf of its species in $S$. We will map internal nodes according to the second condition in Definition \ref{def_reconciliation}. Software.Node $d$ is mapped to node $Y$, because it has $\phi(d)$ and $\phi(c)$ as descendants. It cannot be mapped to node $X$ since node $X$ does not have $\phi(c)$ as descendant thus $\phi(c)<_S\phi(d)$ would not hold. Then node $e$ is mapped above node $Y$ to have $\phi(a)$ and $\phi(d)$ as descendants.
+An example of gene tree reconciliation is shown in Figure \ref{reconciliation}. We are given the gene tree $G$, the species tree $S$ and a leaf mapping $\mu: L(G) \rightarrow L(S)$ that maps each leaf from $G$ to leaf of its species in $S$. We will map internal nodes according to the second condition in Definition \ref{def_reconciliation}. The node $d$ is mapped to node $Y$, because it has $\phi(d)$ and $\phi(c)$ as descendants. It cannot be mapped to node $X$ since node $X$ does not have $\phi(c)$ as descendant thus $\phi(c)<_S\phi(d)$ would not hold. Then node $e$ is mapped above node $Y$ to have $\phi(a)$ and $\phi(d)$ as descendants.
 
 \begin{figure}[ht]
 	\centering
