@@ -1,10 +1,10 @@
-\chapter{Algorithms}
+\chapter{Algorithms} \label{Algorithms}
 
 In this chapter, we will show different algorithms used to obtain the most parsimonious isometric gene tree reconciliation which will be implemented in our software. 
 
 The required input for our algorithms is a rooted species tree with exact branch lengths and an unrooted gene tree with inexact branch lengths. The gene tree is sequentially processed by following algorithms. Firstly, we find all possible roots and root the unrooted tree gene tree, which results in multiple rooted gene trees. Afterwards, we perform the two-pass algorithm (Chapter \ref{two-pass_algorithm}) and count the number of duplications and gene losses for every rooted gene tree to find the most parsimonious reconciliation.
 
-\section{Rooting the gene tree}
+\section{Rooting the gene tree} \label{rooting_the_gene_tree}
 
 We present an algorithm to find possible roots that are distant by given step for every edge $e$ of an unrooted gene tree $G$. 
 
@@ -14,7 +14,7 @@ For each edge $e \in E(G)$, we transform the unrooted gene tree into a semi-root
 \caption{Possible intervals to subdivide given edge $e$} 
 \label{getIntervals}
 \begin{algorithmic}[1]
-\Function{getIntervals}{$e \in E(G)$}
+\Function{getIntervals}{$e \in E(G), step \in R$}
 	\State $\epsilon$ = \num{1e-6}
 	\State totalMinLength = $w(e)_{min}$
 	\State totalMaxLength = $w(e)_{max}$
@@ -46,7 +46,7 @@ For each edge $e \in E(G)$, we transform the unrooted gene tree into a semi-root
 \end{algorithmic}
 \end{algorithm}
 
-At the beginning of the Algorithm \ref{getIntervals}, we define essential variables. Possible intervals for subdividing the edge $e$ are stored at the variable $intervals$ that is also return value of the function. To cover most of the possibilities, we allow rooting the gene tree right above the vertices $u$ and $v$ of the edge $e$. Let $r$ be the root of a semi-rooted gene tree $G$ then we get two possible roots after subdividing the edge $e$ right above the vertices $u$ and $v$. The first possible root subdivide the edge $e$ into two edges with interval lengths $w(u, r) = \langle 0, \epsilon \rangle$ on the left from the root and $w(r, v) = \langle totalMinLength, totalMaxLength-\epsilon \rangle$ on the right from the root, where $\epsilon$ is \num{1e-6}, $w(e)_{min}$ is original minimal length of the edge $e$ and $totalMaxLength$ is original maximal length of the edge $e$. The second option of the root subdivide the edge $e$ with intervals of the same length, that are flipped, so the original interval $w(u, r) = \langle totalMinLength, totalMaxLength-\epsilon \rangle$ is on the left from the root  and $w(r, v) = \langle 0, \epsilon \rangle$ in on the right from the root.
+At the beginning of the Algorithm \ref{getIntervals}, we define essential variables. Possible intervals for subdividing the edge $e$ are stored at the variable \emph{interval} that is also return value of the function. To cover most of the possibilities, we allow rooting the gene tree right above the vertices $u$ and $v$ of the edge $e$. Let $r$ be the root of a semi-rooted gene tree $G$ then we get two possible roots after subdividing the edge $e$ right above the vertices $u$ and $v$. The first possible root subdivide the edge $e$ into two edges with interval lengths $w(u, r) = \langle 0, \epsilon \rangle$ on the left from the root and $w(r, v) = \langle totalMinLength, totalMaxLength-\epsilon \rangle$ on the right from the root, where $\epsilon$ is \num{1e-6}, $w(e)_{min}$ is original minimal length of the edge $e$ and $totalMaxLength$ is original maximal length of the edge $e$. The second option of the root subdivide the edge $e$ with intervals of the same length, that are flipped, so the original interval $w(u, r) = \langle totalMinLength, totalMaxLength-\epsilon \rangle$ is on the left from the root  and $w(r, v) = \langle 0, \epsilon \rangle$ in on the right from the root.
 
 After inferring the first two options of the possible root, we run a while loop to get possible roots inside the edge $e$. In each iteration, we subtract the step from the minimal and maximal length of the left interval of the subdivided edge $e$ and add a step to the minimal and maximal length of the right interval of the subdivided edge $e$. We added condition for special cases, where the difference between the maximal and minimal original length of edge $e$ is equal to step or when it is not divisible by step (Fig. \ref{finding_root}). With the special case condition, we can infer intervals that would be normally skipped. The while loop goes until the maximal length of the right interval is the same or bigger as the original maximal length of the edge $e$ or the maximal length of the left interval reaches $0$ or less.
 
@@ -64,12 +64,10 @@ After inferring the first two options of the possible root, we run a while loop 
   	The difference between original minimal and maximal length is not divisible by the size of step, which give us only the blue lines intervals $w(u, r) = \langle 1, 2 \rangle$ on the left from the root and $w(r, v) = \langle 0, 2 \rangle$ on the right from root without the special case condition. After flipping the intervals with special case condition, we get green intervals $w(u, r) = \langle 0, 2 \rangle$ on the left from the root and $w(r, v) = \langle 1, 2 \rangle$ on the right from the root. Green and blue intervals intersect in area of $\langle 1, 2 \rangle$ for left interval and $\langle 1, 2 \rangle$ for right interval, but it also give us a new area of $\langle 0, 1 \rangle$ for left interval and $\langle 1, 2 \rangle$ for right interval.}
 \end{figure}
 
-Rooting the gene tree goes over all edges in the unrooted gene tree $G$. The running time of the function $getIntervals()$ in Algorithm~\ref{getIntervals} is $O(p)$, where $p$ stands for number of iterations in while loop that can be expressed as $p = ceil(totalMaxLength/step) - 1$. The result of function $getIntervals()$ is a set of intervals for subdividing the edge $e$. Subsequently, the intervals are used for a loop to root the semi-rooted gene tree $G$ resulting in a set of rooted gene trees with inexact branch lengths, which running time is $O(m)$ for $m = p+2$. Therefore, the total running time of rooting the unrooted gene tree $G$ is $O(Nm)$ with $N$ being the number of all edges in the unrooted tree $G$.
+Rooting the gene tree goes over all edges in the unrooted gene tree $G$. The running time of the function \emph{getIntervals} in Algorithm~\ref{getIntervals} is $O(p)$, where $p$ stands for number of iterations in while loop that can be expressed as $p = ceil(totalMaxLength/step) - 1$. The result of function \emph{getIntervals} is a set of intervals for subdividing the edge $e$. Subsequently, the intervals are used for a loop to root the semi-rooted gene tree $G$ resulting in a set of rooted gene trees with inexact branch lengths, which running time is $O(m)$ for $m = p+2$. Therefore, the total running time of rooting the unrooted gene tree $G$ is $O(Nm)$ with $N$ being the number of all edges in the unrooted tree $G$.
 
 
-
-
-\section{Counting algorithm}
+\section{Counting algorithm} \label{counting_algorithm}
 
 We present an algorithm for counting the number of duplications and gene losses in a rooted gene tree $G$ with inexact branch lengths depending on a rooted species tree $S$ with exact branch lengths. We allow only evolutionary events as duplication, gene loss and speciation can happen in evolutionary history. The counting algorithm consists of two parts: preprocessing and the main algorithm. In the preprocessing, we compute essential variables for the gene tree $G$ that are subsequently used in the main algorithm.
 
@@ -100,7 +98,7 @@ We use three algorithms for calculating the variables: Algorithm~\ref{computeSpe
 \end{algorithmic}
 \end{algorithm}
 
-The $computeSpeciesNodeBelow()$ function in Algorithm~\ref{computeSpeciesNodeBelow} saves the given species node $s$ to the variable $speciesNodeBelow$. It always remembers the last species node below the given gene node $u$ and serves as a return value. The while loop iterates over species nodes on the path from given species node $s$ to the root of the species tree. If $D(s) > X[u]_{max}$ stands, it means the species node $s$ is below the gene node $u$. Every iteration, we save the species node to the return value $speciesNodeBelow$ and move on the path closer to the root by assigning $parent(s)$ to the $s$ variable. If the species node $s$ does not have a parent, the gene node $u$ is above the root of the species tree. The while loop ends, if the while condition does not stand, so the new species node $s$ is above gene node $u$ or if the gene node $u$ is above the root.
+The \emph{computeSpeciesNodeBelow} function in Algorithm~\ref{computeSpeciesNodeBelow} saves the given species node $s$ to the variable \emph{speciesNodeBelow}. It always remembers the last species node below the given gene node $u$ and serves as a return value. The while loop iterates over species nodes on the path from given species node $s$ to the root of the species tree. If $D(s) > X[u]_{max}$ stands, it means the species node $s$ is below the gene node $u$. Every iteration, we save the species node to the return value \emph{speciesNodeBelow} and move on the path closer to the root by assigning $parent(s)$ to the $s$ variable. If the species node $s$ does not have a parent, the gene node $u$ is above the root of the species tree. The while loop ends, if the while condition does not stand, so the new species node $s$ is above gene node $u$ or if the gene node $u$ is above the root.
 
 \begin{algorithm}
 \caption{Sets level distance from parent to children of node $u$} 
@@ -114,13 +112,14 @@ The $computeSpeciesNodeBelow()$ function in Algorithm~\ref{computeSpeciesNodeBel
 \end{algorithmic}
 \end{algorithm}
 
-In the $levelDistanceFromChildren()$ function show in Algorithm~\ref{levelDistanceFromChildren}, we compute the $levelDistanceFromParent(v)$ for each child $v$ of the given node $u$. The level distance is calculated as the difference between the level of child $v$ and the level of its parent, node $u$. The distance is subtracted by 1 if the node $u$ is mapped to the same depth as its $\sigma(u)$.
+In the \emph{levelDistanceFromChildren} function show in Algorithm~\ref{levelDistanceFromChildren}, we compute the $levelDistanceFromParent(v)$ for each child $v$ of the given node $u$. The level distance is calculated as the difference between the level of child $v$ and the level of its parent, node $u$. The distance is subtracted by 1 if the node $u$ is mapped to the same depth as its $\sigma(u)$.
 
 \begin{algorithm}
 \caption{Compute levels for nodes from gene tree $G$} 
 \label{computeLevel}
 \begin{algorithmic}[1]
 \Function{computeLevel}{$u \in V(G)$} 
+	\State $\epsilon$ = \num{1e-6}
 	\If {$u \in L(G)$}
 		\State mappedToLca(u) = true
 		\State speciesNodeBelow(u) = $\sigma(u)$
@@ -129,7 +128,8 @@ In the $levelDistanceFromChildren()$ function show in Algorithm~\ref{levelDistan
 		\For {$v \in children(u)$}
 			\State computeLevel(v)
 		\EndFor
-		\If {$X[u]_{max} < D(\sigma(u))$}
+		\State depthDifference = $D(\sigma(u)) - X[u]_{max}$
+		\If {$X[u]_{max} < D(\sigma(u))$ or $depthDifference > \epsilon$}
 			\State mappedToLca(u) = false
 			\State node = max($v \in children(u)$: speciesNodeBelow(v))
 			\State speciesNodeBelow(u) = computeSpeciesNodeBelow(u, node))
@@ -148,19 +148,19 @@ In the $levelDistanceFromChildren()$ function show in Algorithm~\ref{levelDistan
 \end{algorithmic}
 \end{algorithm}
 
-The $computeLevel()$ function in Algorithm~\ref{computeLevel} goes over all nodes in gene tree $G$ in the direction from the leaves to the root. The leaves of gene tree $t \in L(G)$ are always mapped to its $\sigma(t)$ and their variables are set according to it. For each inner node $u \in V(G) \setminus L(G)$, we recognize whether the node $u$ has same depth as $\sigma(u)$ or not.
+The \emph{computeLevel} function in Algorithm~\ref{computeLevel} goes over all nodes in gene tree $G$ in the direction from the leaves to the root. The leaves of gene tree $t \in L(G)$ are always mapped to its $\sigma(t)$ and their variables are set according to it. For each inner node $u \in V(G) \setminus L(G)$, we recognize whether the node $u$ has the same maximal mapping depth $X[u]_{max}$ as $\sigma(u)$ or the difference between $X[u]_{max}$ and $\sigma(u)$ is smaller than $\epsilon$, which allows us to determine if the node $u$ is mapped to its $\sigma(u)$ even when the depths are not same because of the rounding error.
 
-In case that node $u$ has not the same depth as $\sigma(u)$, we set $mappedToLca(u)$ to false. From the children of node $u$, we save the closest species node to the gene node $u$ into variable $node$ and run function $computeSpeciesNodeBelow()$ in Algorithm~\ref{computeSpeciesNodeBelow} to get $speciesNodeBelow(u)$. 
+In case that node $u$ has not the same depth as $\sigma(u)$ and also their \emph{depthDifference} is bigger than $\epsilon$, we set $mappedToLca(u)$ to false. From the children of node $u$, we save the closest species node to the gene node $u$ into variable \emph{node} and run function \emph{computeSpeciesNodeBelow} in Algorithm~\ref{computeSpeciesNodeBelow} to get $speciesNodeBelow(u)$. 
 
-Otherwise, when the node $u$ has the same depth as $\sigma(u)$, we first check if any of its children is already mapped to $\sigma(u)$, because exactly one node from the gene tree can be mapped to exactly one node from species tree to be considerate as speciation. If at least one child of node $u$ is mapped to $\sigma(u)$, we set $mappedToLca(u)$ to false. The $speciesNodeBelow(u)$ is $\sigma(u)$.
+Otherwise, when the node $u$ has the same depth as $\sigma(u)$ or the \emph{depthDifference} is smaller or equal to the $\epsilon$, we first check if any of its children is already mapped to $\sigma(u)$, because exactly one node from the gene tree can be mapped to exactly one node from species tree to be considerate as speciation. If at least one child of node $u$ is mapped to $\sigma(u)$, we set $mappedToLca(u)$ to false. The $speciesNodeBelow(u)$ is $\sigma(u)$.
 
-Lastly, we set level of node $u$ to the level of computed $speciesNodeBelow(u)$ and run function $levelDistanceFromChildre()$ in Algorithm~\ref{levelDistanceFromChildren}.
+Lastly, we set level of node $u$ to the level of computed $speciesNodeBelow(u)$ and run function \emph{levelDistanceFromChildre} in Algorithm~\ref{levelDistanceFromChildren}.
 
-The $computeLevel()$ function goes over all nodes in the rooted gene tree $G$. If the gene tree $G$ is balanced, the function $computeSpeciesNodeBelow()$ has running time $O(log N)$, where $N$ is number of nodes in gene tree $G$. The $levelDistanceFromChildren()$ function is computed in constant time. So the total preprocessing running time is $O(N log N)$ for balanced gene tree $G$. However, if the gene tree $G$ is not balanced, the preprocessing running time is $O(N^2)$.
+The \emph{computeLevel} function goes over all nodes in the rooted gene tree $G$. If the gene tree $G$ is balanced, the function \emph{computeSpeciesNodeBelow} has running time $O(log N)$, where $N$ is number of nodes in gene tree $G$. The \emph{levelDistanceFromChildren} function is computed in constant time. So the total preprocessing running time is $O(N log N)$ for balanced gene tree $G$. However, if the gene tree $G$ is not balanced, the preprocessing running time is $O(N^2)$.
 
 \subsection{Main algorithm} \label{main_algorithm}
 
-The prerequisites for the $countDL$ function shown in Algorithm~\ref{countDL} are computed in preprocessing. Besides, we need to have set the $countLossesAboveRoot$ variable. If it is true, we count losses above root that occurred as a result of the gene tree $G$ not containing genes of all species from the species tree $S$. 
+The prerequisites for the \emph{countDL} function shown in Algorithm~\ref{countDL} are computed in preprocessing. Besides, we need to have set the \emph{countLossesAboveRoot} variable. If it is true, we count losses above root that occurred as a result of the gene tree $G$ not containing genes of all species from the species tree $S$. 
 
 \begin{algorithm}
 \caption{Counts duplications and gene losses in gene tree $G$} 
@@ -168,32 +168,32 @@ The prerequisites for the $countDL$ function shown in Algorithm~\ref{countDL} ar
 \begin{algorithmic}[1]
 \Function{countDL}{$u \in V(G)$} 
 	\If {$u \ne L(G)$}
-		\State right = countDL(u.right)
-		\State left = countDL(u.left)
+		\State v, w = children(u)
+		\State $DL_u = DL_v+DL_w$
 	\EndIf
 
-	\State loss = right.loss+left.loss
-	\State duplication = right.duplication+left.duplication
-
-	\State loss += levelDistanceFromParent(u)
+	\State loss = levelDistanceFromParent(u)
 	\If {$parent(u) = null$ \textbf{and} $parent(\sigma(u)) \ne null$ \textbf{and} $countLossesAboveRoot$}
 		\State loss += l(u); 
 	\EndIf
 	\If {\textbf{not} $mappedToLca(u)$}
-		\State duplication += 1
+		\State duplication = 1
 	\EndIf
-
-	\Return {(duplication, loss)}
+	
+	\Return {$DL_u$ +(duplication, loss)}
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
-We count the evolutionary events in the direction from leaves to the root of gene tree $G$. For each node $u \in V(G)$ and its parent $v \in V(G)$, we consider evolutionary events that occur in the node $u$ and on the edge $(u, v)$. We do not compute evolutionary event in the parent, they are determined directly in the parent. In the root, we only calculate the evolutionary events that happened in the node as the root has no parent thus no edge to consider. We initiate the variable $loss$ with sum of losses from $children(u)$ and $duplication$ with sum of duplications from $children(u)$. Thereafter, we add to these variables gene losses and duplication obtained in the node $u$ and on the edge $(u, v)$.
+We count the evolutionary events in the direction from leaves to the root of gene tree $G$. For each node $u \in V(G)$ and its parent $v \in V(G)$, we consider evolutionary events that occur in the node $u$ and on the edge $(u, v)$. We do not compute evolutionary event in the parent, they are determined directly in the parent. In the root, we only calculate the evolutionary events that happened in the node as the root has no parent thus no edge to consider.
 
-The number of gene losses on the edge $(u, v)$ is calculated as the number of species nodes on the path from node $u$ to node $v$, which is precomputed in variable $levelDistanceFromParent(u)$. If $\sigma(root(G)) \ne root(S)$, thus the $\sigma(root(G))$ is below $root(S)$ means that some species do not have their gene in the gene tree. Therefore, the gene loss occurred before the $root(G)$, which resolves in extra gene loss that can be added if the variable $countLossesAboveRoot$ is true. The truth value of $countLossesAboveRoot$ is set by the user.
+The number of duplications and gene losses are depicted as pair $DL = (duplication, loss)$. The sum of the pairs $DL_1$  and $DL_2$ is computed as $DL_1+DL_2=(duplication_1+duplication_2, loss_1+loss_2)$. For each node $u \in V(G)$, we calculate the $DL_u$, which corresponds to the number of duplications and gene losses inferred in subtree of node $u$. Thereafter, we infer the duplication and gene losses in the node $u$ and on the edge above the node $u$.
+
+The number of gene losses on the edge $(u, v)$ is calculated as the number of species nodes on the path from node $u$ to node $v$, which is precomputed in variable $levelDistanceFromParent(u)$. If $\sigma(root(G)) \ne root(S)$, thus the $\sigma(root(G))$ is below $root(S)$ means that some species do not have their gene in the gene tree. Therefore, the gene loss occurred before the $root(G)$, which resolves in extra gene loss that can be added if the variable \emph{countLossesAboveRoot} is true. The truth value of \emph{countLossesAboveRoot} is set by the user.
 
 Duplication and speciation are easy to determine since it depends on whether the node $u$ is mapped to $\sigma(u)$ or above, which we already precomputed in $mappedToLca(u)$.
 
-Gene losses and duplications are computed in constant time for one gene node. The $countDL$ function goes over all nodes in gene tree $G$ thus the running time is $O(N)$, where $N$ is the number of all node in the gene tree $G$.
+The function return pair $DL$ that corresponds to the number of duplication and gene losses in subtree of node $u$, in the node $u$ and on the edge above node $u$.
 
+Gene losses and duplications are computed in constant time for one gene node. The \emph{countDL} function goes over all nodes in gene tree $G$ thus the running time is $O(N)$, where $N$ is the number of all node in the gene tree $G$.
 
