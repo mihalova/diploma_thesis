@@ -187,13 +187,14 @@ The prerequisites for the \emph{countDL} function shown in Algorithm~\ref{countD
 
 We count the evolutionary events in the direction from leaves to the root of gene tree $G$. For each node $u \in V(G)$ and its parent $v \in V(G)$, we consider evolutionary events that occur in the node $u$ and on the edge $(u, v)$. We do not compute evolutionary event in the parent, they are determined directly in the parent. In the root, we only calculate the evolutionary events that happened in the node as the root has no parent thus no edge to consider.
 
-The number of duplications and gene losses are depicted as pair $DL = (duplication, loss)$. The sum of the pairs $DL_1$  and $DL_2$ is computed as $DL_1+DL_2=(duplication_1+duplication_2, loss_1+loss_2)$. For each node $u \in V(G)$, we calculate the $DL_u$, which corresponds to the number of duplications and gene losses inferred in subtree of node $u$. Thereafter, we infer the duplication and gene losses in the node $u$ and on the edge above the node $u$.
+The number of duplications and gene losses are depicted as pair $DL = (duplication, loss)$. The sum of the pairs $DL_1$  and $DL_2$ is computed as $DL_1+DL_2=(duplication_1+duplication_2, loss_1+loss_2)$. For each node $u \in V(G)$, we calculate the $DL_u$, which corresponds to the number of duplications and gene losses inferred in the subtree of node $u$. Thereafter, we infer the duplication and gene losses in the node $u$ and on the edge above the node $u$.
 
 The number of gene losses on the edge $(u, v)$ is calculated as the number of species nodes on the path from node $u$ to node $v$, which is precomputed in variable $levelDistanceFromParent(u)$. If $\sigma(root(G)) \ne root(S)$, thus the $\sigma(root(G))$ is below $root(S)$ means that some species do not have their gene in the gene tree. Therefore, the gene loss occurred before the $root(G)$, which resolves in extra gene loss that can be added if the variable \emph{countLossesAboveRoot} is true. The truth value of \emph{countLossesAboveRoot} is set by the user.
 
 Duplication and speciation are easy to determine since it depends on whether the node $u$ is mapped to $\sigma(u)$ or above, which we already precomputed in $mappedToLca(u)$.
 
-The function return pair $DL$ that corresponds to the number of duplication and gene losses in subtree of node $u$, in the node $u$ and on the edge above node $u$.
+The function return pair $DL$ corresponds to the number of duplication and gene losses in the subtree of node $u$, in the node $u$ and on the edge above node $u$.
 
 Gene losses and duplications are computed in constant time for one gene node. The \emph{countDL} function goes over all nodes in gene tree $G$ thus the running time is $O(N)$, where $N$ is the number of all node in the gene tree $G$.
+
 
