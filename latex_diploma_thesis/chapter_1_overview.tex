@@ -34,7 +34,7 @@ An~unrooted tree is a~phylogenetic tree without root. Unrooted tree can be roote
 
 A special type of an unrooted tree is a semi-rooted tree, where we presume the new root of an unrooted gene tree $G$ is positioned on edge $(u, v) \in E(G)$ and subtrees are rooted at nodes $u$ and $v$.
 
-\begin{figure}[ht]
+\begin{figure}[ht!]
 	\centering
 	\label{unrooted_rooted}
   	\includegraphics[width=\linewidth]{unrooted_rooted}
@@ -49,7 +49,7 @@ A~gene tree is a~phylogenetic tree $G$ where $L(G)$ represent present-day copies
 
 Phylogenetic trees are reconstructed from a~multiple alignments of~the~DNA sequences of~present-day species by~various methods \cite{felsenstein} to find the~most likely phylogenetic tree to given DNA sequences.
 
-\section{Different approaches to gene tree reconciliation}
+\section{Different approaches to gene tree reconciliation} \label{different_approaches}
 Evolutionary history is a possible sequence of~evolutionary events that lead to~observed members of~a~gene family in~present-day species (Fig. \ref{reconciliation}). It illustrates how many duplications and gene losses happened during the~evolution of~one or more genes inside the evolution of~a~group of~species.
 
 The~problem of~gene tree and species tree reconciliation was introduced in~1979 by~Goodman~et~al.~\cite{goodman} as~a~method to~infer the~evolutionary history of~duplications and gene losses in~a~gene family to~decode evolutionary relationships between copies of~a~gene. The goal of~reconciliation consists in~mapping nodes of a gene tree into a species tree and thus inducing the~evolution of~a gene family in~terms of~speciations, duplications and gene losses. An important prerequisite for~reconciliation is to~have a~gene tree without errors as~misplaced leaves can lead to~a different history of~the gene family.
@@ -65,7 +65,7 @@ A reconciliation between gene tree $G$ and species tree $S$ is mapping $\phi: V(
 
 An example of gene tree reconciliation is shown in Figure \ref{reconciliation}. We are given the gene tree $G$, the species tree $S$ and a leaf mapping $\mu: L(G) \rightarrow L(S)$ that maps each leaf from $G$ to leaf of its species in $S$. We will map internal nodes according to the second condition in Definition \ref{def_reconciliation}. The node $d$ is mapped to node $Y$, because it has $\phi(d)$ and $\phi(c)$ as descendants. It cannot be mapped to node $X$ since node $X$ does not have $\phi(c)$ as descendant thus $\phi(c)<_S\phi(d)$ would not hold. Then node $e$ is mapped above node $Y$ to have $\phi(a)$ and $\phi(d)$ as descendants.
 
-\begin{figure}[ht]
+\begin{figure}[ht!]
 	\centering
 	\label{reconciliation}
   	\includegraphics[width=\linewidth]{reconciliation}
@@ -133,7 +133,7 @@ An isometric reconciliation between gene tree $G$ and species tree $S$ with exac
 	\end{enumerate}
 \end{definition}
 
-\begin{figure}[ht]
+\begin{figure}[ht!]
 	\centering
 	\label{isometric_reconciliation}
   	\includegraphics[width=\linewidth]{isometric_reconciliation}
@@ -144,7 +144,7 @@ An isometric reconciliation between gene tree $G$ and species tree $S$ with exac
 
 Input to the above-mentioned algorithms, gene trees and species trees with their branch lengths, are practically estimated from DNA sequences, which were gathered from present-day species \cite{felsenstein}. The branch lengths are computed from observed mutations in collected DNA sequences. However, mutations happen randomly in the evolution and DNA sequences are also random samples from studied present-day species. It means that inferred gene trees and species trees with their branch lengths are estimated with an error.
 
-\begin{figure}[ht]
+\begin{figure}[ht!]
 	\centering
 	\label{isometric_reconciliation_inexact}
   	\includegraphics[width=\linewidth]{isometric_reconciliation_inexact}

@@ -17,6 +17,8 @@
 \contentsline {section}{\numberline {3.1}Classes and variables}{25}{section.3.1}%
 \contentsline {section}{\numberline {3.2}Differences from the original source code}{26}{section.3.2}%
 \contentsline {chapter}{\numberline {4}Experiments}{31}{chapter.4}%
-\contentsline {chapter}{\numberline {5}Results}{32}{chapter.5}%
-\contentsline {chapter}{Conclusion}{33}{chapter*.4}%
-\contentsline {chapter}{Appendix}{34}{chapter*.5}%
+\contentsline {section}{\numberline {4.1}Simulated dataset}{31}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Real dataset}{32}{section.4.2}%
+\contentsline {chapter}{\numberline {5}Results}{33}{chapter.5}%
+\contentsline {chapter}{Conclusion}{34}{chapter*.4}%
+\contentsline {chapter}{Appendix}{35}{chapter*.5}%
