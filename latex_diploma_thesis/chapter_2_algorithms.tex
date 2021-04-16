@@ -8,14 +8,13 @@ The required input for our algorithms is a rooted species tree with exact branch
 
 We present an algorithm to find possible roots that are distant by given step for every edge $e$ of an unrooted gene tree $G$. 
 
-For each edge $e \in E(G)$, we transform the unrooted gene tree into a semi-rooted gene tree by rooting the subtrees at vertices $u \in V(G)$ and $v \in V(G)$ of the edge $e = (u, v)$. The edge is subsequently used as the parameter for the Algorithm~\ref{getIntervals} to infer intervals for subdividing the given edge and completely root the unrooted gene tree $G$.
+For each edge $e \in E(G)$, we transform the unrooted gene tree into a semi-rooted gene tree by rooting the subtrees at vertices $u \in V(G)$ and $v \in V(G)$ of the edge $e = (u, v)$. The edge is subsequently used as the parameter for the Algorithm~\ref{getIntervals} to infer intervals for subdividing the given edge and completely root the unrooted gene tree $G$. By default, the $\epsilon$ is set to \num{1e-6} and step to $0.5$.
 
 \begin{algorithm}
 \caption{Possible intervals to subdivide given edge $e$} 
 \label{getIntervals}
 \begin{algorithmic}[1]
 \Function{getIntervals}{$e \in E(G), step \in R$}
-	\State $\epsilon$ = \num{1e-6}
 	\State totalMinLength = $w(e)_{min}$
 	\State totalMaxLength = $w(e)_{max}$
 	\State minLengthLeft = totalMinLength
@@ -46,7 +45,7 @@ For each edge $e \in E(G)$, we transform the unrooted gene tree into a semi-root
 \end{algorithmic}
 \end{algorithm}
 
-At the beginning of the Algorithm \ref{getIntervals}, we define essential variables. Possible intervals for subdividing the edge $e$ are stored at the variable \emph{interval} that is also return value of the function. To cover most of the possibilities, we allow rooting the gene tree right above the vertices $u$ and $v$ of the edge $e$. Let $r$ be the root of a semi-rooted gene tree $G$ then we get two possible roots after subdividing the edge $e$ right above the vertices $u$ and $v$. The first possible root subdivide the edge $e$ into two edges with interval lengths $w(u, r) = \langle 0, \epsilon \rangle$ on the left from the root and $w(r, v) = \langle totalMinLength, totalMaxLength-\epsilon \rangle$ on the right from the root, where $\epsilon$ is \num{1e-6}, $w(e)_{min}$ is original minimal length of the edge $e$ and $totalMaxLength$ is original maximal length of the edge $e$. The second option of the root subdivide the edge $e$ with intervals of the same length, that are flipped, so the original interval $w(u, r) = \langle totalMinLength, totalMaxLength-\epsilon \rangle$ is on the left from the root  and $w(r, v) = \langle 0, \epsilon \rangle$ in on the right from the root.
+At the beginning of the Algorithm \ref{getIntervals}, we define essential variables. Possible intervals for subdividing the edge $e$ are stored at the variable \emph{interval} that is also return value of the function. To cover most of the possibilities, we allow rooting the gene tree right above the vertices $u$ and $v$ of the edge $e$. Let $r$ be the root of a semi-rooted gene tree $G$ then we get two possible roots after subdividing the edge $e$ right above the vertices $u$ and $v$. The first possible root subdivide the edge $e$ into two edges with interval lengths $w(u, r) = \langle 0, \epsilon \rangle$ on the left from the root and $w(r, v) = \langle totalMinLength, totalMaxLength-\epsilon \rangle$ on the right from the root, where $w(e)_{min}$ is original minimal length of the edge $e$ and $totalMaxLength$ is original maximal length of the edge $e$. The second option of the root subdivide the edge $e$ with intervals of the same length, that are flipped, so the original interval $w(u, r) = \langle totalMinLength, totalMaxLength-\epsilon \rangle$ is on the left from the root  and $w(r, v) = \langle 0, \epsilon \rangle$ in on the right from the root.
 
 After inferring the first two options of the possible root, we run a while loop to get possible roots inside the edge $e$. In each iteration, we subtract the step from the minimal and maximal length of the left interval of the subdivided edge $e$ and add a step to the minimal and maximal length of the right interval of the subdivided edge $e$. We added condition for special cases, where the difference between the maximal and minimal original length of edge $e$ is equal to step or when it is not divisible by step (Fig. \ref{finding_root}). With the special case condition, we can infer intervals that would be normally skipped. The while loop goes until the maximal length of the right interval is the same or bigger as the original maximal length of the edge $e$ or the maximal length of the left interval reaches $0$ or less.
 
@@ -73,7 +72,7 @@ We present an algorithm for counting the number of duplications and gene losses 
 
 The prerequisites for the counting algorithm are calculated depth $D(a)$ and level $l(a)$ for each $a \in V(S)$. For the gene tree $G$, we assume an interval of possible mapping depths $X[u] = \langle X[u]_{min}, X[u]_{max} \rangle$ for each $u \in V(G)$ that can be computed with the two-pass algorithm (Chapter \ref{two-pass_algorithm}) and LCA-mapping $\sigma(u)$ for each $u \in V(G)$.
 
-\subsection{Preprocessing}
+\subsection{Preprocessing} \label{preprocessing}
 
 In the preprocessing, we calculate necessary variables for nodes in the gene tree $G$ that are used in the main algorithm \ref{main_algorithm}. For each $u \in V(G)$ we compute $l(u)$, $speciesNodeBelow(u)$, $levelDistanceFromParent(u)$ and $mappedToLca(u)$. The level $l(u)$ variable of gene node $u$ signifies number of species nodes on the path from gene node $u$ to the root of the gene tree $G$. It is calculated from the $speciesNodeBelow(u)$ variable that represents species node $s \in V(S)$, which is right below gene node $u$, so the gene node $u$ lies on the path from species node $s$ to $parent(s)$. The $levelDistanceFromParent(u)$ means number of species nodes between gene node $u$ and its $parent(u)$. It is not calculated for the root of the gene tree $G$ as it has no parent. The variable $mappedToLca(u)$ presents the truth value of statement: $X[u]_{max} = D(\sigma(u))$, thus if the node $u$ is mapped to $\sigma(u)$ or not. 
 
@@ -119,7 +118,6 @@ In the \emph{levelDistanceFromChildren} function show in Algorithm~\ref{levelDis
 \label{computeLevel}
 \begin{algorithmic}[1]
 \Function{computeLevel}{$u \in V(G)$} 
-	\State $\epsilon$ = \num{1e-6}
 	\If {$u \in L(G)$}
 		\State mappedToLca(u) = true
 		\State speciesNodeBelow(u) = $\sigma(u)$
@@ -134,7 +132,12 @@ In the \emph{levelDistanceFromChildren} function show in Algorithm~\ref{levelDis
 			\State node = max($v \in children(u)$: speciesNodeBelow(v))
 			\State speciesNodeBelow(u) = computeSpeciesNodeBelow(u, node))
 		\Else
-			\If {$v \in children(u): speciesNodeBelow(v) = \sigma(u)$}
+			\If {$\forall v \in children(u): speciesNodeBelow(v) = \sigma(u)$}
+				\If {$\forall v \in children(u): mappedToLca(v)$}
+					\State mappedToLca($v \in children(u): min(v)$) = false
+				\EndIf
+				\State mappedToLca(u) = false
+			\ElsIf {$\exists v \in children(u): speciesNodeBelow(v) = \sigma(u)$}
 				\State mappedToLca(u) = false
 			\Else
 				\State mappedToLca(u) = true
@@ -148,13 +151,17 @@ In the \emph{levelDistanceFromChildren} function show in Algorithm~\ref{levelDis
 \end{algorithmic}
 \end{algorithm}
 
-The \emph{computeLevel} function in Algorithm~\ref{computeLevel} goes over all nodes in gene tree $G$ in the direction from the leaves to the root. The leaves of gene tree $t \in L(G)$ are always mapped to its $\sigma(t)$ and their variables are set according to it. For each inner node $u \in V(G) \setminus L(G)$, we recognize whether the node $u$ has the same maximal mapping depth $X[u]_{max}$ as $\sigma(u)$ or the difference between $X[u]_{max}$ and $\sigma(u)$ is smaller than $\epsilon$, which allows us to determine if the node $u$ is mapped to its $\sigma(u)$ even when the depths are not same because of the rounding error.
+The \emph{computeLevel} function in Algorithm~\ref{computeLevel} goes over all nodes in gene tree $G$ in the direction from the leaves to the root. The leaves of gene tree $t \in L(G)$ are always mapped to its $\sigma(t)$ and their variables are set according to it. For each inner node $u \in V(G) \setminus L(G)$, we recognize whether the node $u$ has the same maximal mapping depth $X[u]_{max}$ as $\sigma(u)$ or the difference between $X[u]_{max}$ and $\sigma(u)$ is smaller than $\epsilon$, which allows us to determine if the node $u$ is mapped to its $\sigma(u)$ even when the depths are not same because of the rounding error. By default, the $\epsilon$ is set to \num{1e-6}.
 
 In case that node $u$ has not the same depth as $\sigma(u)$ and also their \emph{depthDifference} is bigger than $\epsilon$, we set $mappedToLca(u)$ to false. From the children of node $u$, we save the closest species node to the gene node $u$ into variable \emph{node} and run function \emph{computeSpeciesNodeBelow} in Algorithm~\ref{computeSpeciesNodeBelow} to get $speciesNodeBelow(u)$. 
 
-Otherwise, when the node $u$ has the same depth as $\sigma(u)$ or the \emph{depthDifference} is smaller or equal to the $\epsilon$, we first check if any of its children is already mapped to $\sigma(u)$, because exactly one node from the gene tree can be mapped to exactly one node from species tree to be considerate as speciation. If at least one child of node $u$ is mapped to $\sigma(u)$, we set $mappedToLca(u)$ to false. The $speciesNodeBelow(u)$ is $\sigma(u)$.
+Otherwise, when the node $u$ has the same depth as $\sigma(u)$ or the \emph{depthDifference} is smaller or equal to the $\epsilon$, we consider three cases can happen, where the first two cases check if both or at least one child is already mapped to $\sigma(u)$, because exactly one node from the gene tree can be mapped to exactly one node from species tree to be considerate as speciation. In the first case, we consider that both $v \in children(u)$ have the same $speciesNodeBelow(v)$ as $\sigma(u)$. It means that both children of node $u$ can be mapped to the same species node, so we check if their $mappedToLca(v)$ is set to true. If the condition holds, we take the child $v$ that is closer to the node $u$ and set its $mappedToLca(v)$ to false. As the other child is already mapped to the species node, we set $mappedToLca(u)$ to false.
 
-Lastly, we set level of node $u$ to the level of computed $speciesNodeBelow(u)$ and run function \emph{levelDistanceFromChildre} in Algorithm~\ref{levelDistanceFromChildren}.
+The second case checks if at least one $v \in children(u)$ is mapped to $\sigma(u)$. If the condition holds, we can not map another gene node to the species node, so we set $mappedToLca(u)$ to false. 
+
+In the third case, any $v \in children (u)$ has the same $speciesNodeBelow(v)$ as the $\sigma(u)$, thus we set the $mappedToLca$ to true.
+
+Lastly, we set the $speciesNodeBelow(u)$ to the $\sigma(u)$ and level of node $u$ to the level of computed $speciesNodeBelow(u)$. Then, we run function \emph{levelDistanceFromChildre} in Algorithm~\ref{levelDistanceFromChildren}.
 
 The \emph{computeLevel} function goes over all nodes in the rooted gene tree $G$. If the gene tree $G$ is balanced, the function \emph{computeSpeciesNodeBelow} has running time $O(log N)$, where $N$ is number of nodes in gene tree $G$. The \emph{levelDistanceFromChildren} function is computed in constant time. So the total preprocessing running time is $O(N log N)$ for balanced gene tree $G$. However, if the gene tree $G$ is not balanced, the preprocessing running time is $O(N^2)$.
 
