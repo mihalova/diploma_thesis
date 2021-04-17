@@ -134,7 +134,8 @@ In the \emph{levelDistanceFromChildren} function show in Algorithm~\ref{levelDis
 		\Else
 			\If {$\forall v \in children(u): speciesNodeBelow(v) = \sigma(u)$}
 				\If {$\forall v \in children(u): mappedToLca(v)$}
-					\State mappedToLca($v \in children(u): min(v)$) = false
+					\State v = $v \in children(u): min(v)$
+					\State levelDistanceFromChildren(v)
 				\EndIf
 				\State mappedToLca(u) = false
 			\ElsIf {$\exists v \in children(u): speciesNodeBelow(v) = \sigma(u)$}
@@ -155,7 +156,7 @@ The \emph{computeLevel} function in Algorithm~\ref{computeLevel} goes over all n
 
 In case that node $u$ has not the same depth as $\sigma(u)$ and also their \emph{depthDifference} is bigger than $\epsilon$, we set $mappedToLca(u)$ to false. From the children of node $u$, we save the closest species node to the gene node $u$ into variable \emph{node} and run function \emph{computeSpeciesNodeBelow} in Algorithm~\ref{computeSpeciesNodeBelow} to get $speciesNodeBelow(u)$. 
 
-Otherwise, when the node $u$ has the same depth as $\sigma(u)$ or the \emph{depthDifference} is smaller or equal to the $\epsilon$, we consider three cases can happen, where the first two cases check if both or at least one child is already mapped to $\sigma(u)$, because exactly one node from the gene tree can be mapped to exactly one node from species tree to be considerate as speciation. In the first case, we consider that both $v \in children(u)$ have the same $speciesNodeBelow(v)$ as $\sigma(u)$. It means that both children of node $u$ can be mapped to the same species node, so we check if their $mappedToLca(v)$ is set to true. If the condition holds, we take the child $v$ that is closer to the node $u$ and set its $mappedToLca(v)$ to false. As the other child is already mapped to the species node, we set $mappedToLca(u)$ to false.
+Otherwise, when the node $u$ has the same depth as $\sigma(u)$ or the \emph{depthDifference} is smaller or equal to the $\epsilon$, we consider three cases can happen, where the first two cases check if both or at least one child is already mapped to $\sigma(u)$, because exactly one node from the gene tree can be mapped to exactly one node from species tree to be considerate as speciation. In the first case, we consider that both $v \in children(u)$ have the same $speciesNodeBelow(v)$ as $\sigma(u)$. It means that both children of node $u$ can be mapped to the same species node, so we check if their $mappedToLca(v)$ is set to true. If the condition holds, we take the child $v$ that is closer to the node $u$ and set its $mappedToLca(v)$ to false that also affects the distance from $children(v)$, thus we call the $levelDistanceFromChildren(v)$ to reset the distance. As the other child is already mapped to the species node, we set $mappedToLca(u)$ to false.
 
 The second case checks if at least one $v \in children(u)$ is mapped to $\sigma(u)$. If the condition holds, we can not map another gene node to the species node, so we set $mappedToLca(u)$ to false. 
 
