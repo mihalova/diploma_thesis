@@ -1,30 +1,38 @@
 package Software;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class Printer {
 
-    List<Pair<DL, RootedIntervalNode>> solutions;
-    String dirPath;
+    int edgesForRoot;
 
-    public Printer(String dirPath, List<Pair<DL, RootedIntervalNode>> solutions) {
-        this.dirPath = new File(dirPath).getParent();
-        this.solutions = solutions;
-        saveSolutionToFile();
+    public Printer(String dirPath, String printType, List<RootedIntervalTree> solutions, String tolerance) {
+        dirPath = new File(dirPath).getParent();
+        //this.printType = settings[1];
+        /*if (printType == null)
+            printType = "sol";*/
+        saveSolutionToFile(solutions, "rel", dirPath, tolerance);
+        saveSolutionToFile(solutions, "sol", dirPath, tolerance);
+        //saveSolutionToFile(solutions, printType, dirPath, tolerance);
     }
 
-    private void saveSolutionToFile() {
+    public int toFile() {
+        return edgesForRoot;
+    }
+
+    private void saveSolutionToFile(List<RootedIntervalTree> solutions, String printType, String dirPath, String tolerance) {
+        edgesForRoot = 0;
         File output;
+        int same = 0;
         if (dirPath == null) //if JAR in the same directory as gene tree
-            output = new File("solution.txt");
+            output = new File("reroot-" + tolerance + "." + printType + ".txt");
         else
-            output = new File(dirPath + "/solution.txt");
+            output = new File(dirPath + "/reroot-" + tolerance + "." + printType + ".txt");
         try {
             output.createNewFile();
         } catch (IOException e) {
@@ -34,11 +42,52 @@ public class Printer {
         FileWriter fw;
         try {
             fw = new FileWriter(output);
+            //System.out.println("Solutions: "+solutions.size());
             for (int i = 0; i < solutions.size(); i++) {
-                fw.write("D: " + solutions.get(i).getFirst().getDuplication() + " L: " + solutions.get(i).getFirst().getLoss());
+                if (printType.equals("rel")) {
+                    if (i != 0 &&
+                            solutions.get(i).getRoot().getRight().getName().equals(solutions.get(i - 1).getRoot().getRight().getName()) &&
+                            solutions.get(i).getRoot().getLeft().getName().equals(solutions.get(i - 1).getRoot().getLeft().getName())) {
+                        same++;
+                    } else {
+                        if (same != 0) {
+                            fw.write(System.lineSeparator());
+                            fw.write("Same " + same);
+                            same = 0;
+                            fw.write(System.lineSeparator());
+                            fw.write(System.lineSeparator());
+                        }
+                        edgesForRoot++;
+                        fw.write("D: " + solutions.get(i).getScore().getDuplication() + " L: " + solutions.get(i).getScore().getLoss());
+                        //System.out.println("D: " + solutions.get(i).getFirst().getDuplication() + " L: " + solutions.get(i).getFirst().getLoss());
+                        fw.write(System.lineSeparator());
+                        printToRelFile(fw, solutions.get(i).getRoot());
+                    }
+                } else {
+                    if (i != 0 &&
+                            solutions.get(i).getRoot().getRight().getName().equals(solutions.get(i - 1).getRoot().getRight().getName()) &&
+                            solutions.get(i).getRoot().getLeft().getName().equals(solutions.get(i - 1).getRoot().getLeft().getName())) {
+                        same++;
+                    } else {
+                        if (same != 0) {
+                            fw.write(System.lineSeparator());
+                            fw.write("Same " + same);
+                            same = 0;
+                            fw.write(System.lineSeparator());
+                            fw.write(System.lineSeparator());
+                        }
+                        edgesForRoot++;
+                        fw.write("D: " + solutions.get(i).getScore().getDuplication() + " L: " + solutions.get(i).getScore().getLoss());
+                        //System.out.println("D: " + solutions.get(i).getFirst().getDuplication() + " L: " + solutions.get(i).getFirst().getLoss());
+                        fw.write(System.lineSeparator());
+                        printToTreeFile(fw, solutions.get(i).getRoot());
+                    }
+                }
+            }
+            if (same != 0) {
                 fw.write(System.lineSeparator());
-                printToTreeFile(fw, solutions.get(i).getSecond());
-                fw.write(System.lineSeparator());
+                fw.write("Same " + same);
+                same = 0;
             }
             fw.close();
         } catch (IOException ex) {
@@ -47,14 +96,38 @@ public class Printer {
     }
 
     private void printToTreeFile(FileWriter fw, RootedIntervalNode node) throws IOException {
-        fw.write(node.getName() + " " + node.getMinD() + " " + node.getMaxD());
+        fw.write(node.getName() + "\t" + node.getMinL() + "\t" + node.getMaxL());
         fw.write(System.lineSeparator());
-        if(node.getLeft() != null) {
+        if (node.getLeft() != null) {
             printToTreeFile(fw, node.getLeft());
             printToTreeFile(fw, node.getRight());
         }
     }
 
+    //List<Pair<String, String>> branches = new ArrayList<>();
+
+    private void printToRelFile(FileWriter fw, RootedIntervalNode node) throws IOException {
+        if (node.getRight() != null) {
+            if (!node.getMappedToLca())
+                fw.write("dup\t" + node.getRight().getName() + "\t" + node.getLeft().getName());
+            else
+                fw.write("spec\t" + node.getRight().getName() + "\t" + node.getLeft().getName());
+        } else
+            fw.write("gene\t" + node.getName());
+        fw.write(System.lineSeparator());
+        if (node.getLevelDistanceFromParent() > 0) {
+            for (int i = 0; i < node.getLevelDistanceFromParent(); i++) {
+                fw.write("loss\t" + node.getName());
+                fw.write(System.lineSeparator());
+            }
+        }
+        if (node.getLeft() != null) {
+            printToRelFile(fw, node.getLeft());
+            printToRelFile(fw, node.getRight());
+            /*branches.add(new Pair<>(node.getName(), node.getLeft().getName()));
+            branches.add(new Pair<>(node.getName(), node.getRight().getName()));*/
+        }
+    }
 
     /*private void saveSolutionToFile(){
         for (int i = 0; i < solutions.size(); i++) {

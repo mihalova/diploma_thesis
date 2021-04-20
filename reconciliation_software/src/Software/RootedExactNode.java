@@ -1,12 +1,11 @@
 package Software;
 
 public class RootedExactNode extends Node {
-    private double depth;
-    private int level;
 
-    private RootedExactNode parent;
-    private RootedExactNode left;
-    private RootedExactNode right;
+    RootedExactNode parent;
+    RootedExactNode right;
+    RootedExactNode left;
+    double depth;
 
     public RootedExactNode(String name, double depth, int level){
         super(name);
@@ -18,16 +17,15 @@ public class RootedExactNode extends Node {
         return depth;
     }
 
-    public void setDepth(double d) {
-        this.depth = Reconciliator.round(d);
+    public void setDepth(double depth) {
+        this.depth = Reconciliator.round(depth);    }
+
+    public RootedExactNode getParent() {
+        return parent;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int l) {
-        this.level = l;
+    public void setParent(RootedExactNode parent) {
+        this.parent = parent;
     }
 
     public RootedExactNode getLeft() {
@@ -44,14 +42,6 @@ public class RootedExactNode extends Node {
 
     public void setRight(RootedExactNode right) {
         this.right = right;
-    }
-
-    public RootedExactNode getParent() {
-        return parent;
-    }
-
-    public void setParent(RootedExactNode parent) {
-        this.parent = parent;
     }
 
 }

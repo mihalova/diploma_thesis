@@ -1,30 +1,32 @@
 package Software;
 
+import javafx.scene.shape.Box;
+
 import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class RootedExactTree {
 
-    private RootedExactNode root;
-    TreeMap<String, String> leafMap = new TreeMap<>();
+    RootedExactNode root;
+    TreeMap<String, RootedExactNode> nodes = new TreeMap<>();
 
     public RootedExactTree(){
         root = new RootedExactNode("root", 0, 0);
-    }
-
-    public RootedExactNode getRoot() {
-        return root;
     }
 
     public void setRoot(RootedExactNode r){
         root = r;
     }
 
-    public RootedExactNode findNode(String name){
-        return findNodeInternal(root, name);
+    public RootedExactNode getRoot() {
+        return root;
     }
 
-    private RootedExactNode findNodeInternal(RootedExactNode node, String name){
+    public RootedExactNode findNode(String name){
+        return nodes.get(name);
+    }
+
+   /* private RootedExactNode findNodeInternal(RootedExactNode node, String name){
         if(node==null) return null;
         if(node.getName().equals(name)) return node;
         RootedExactNode left = findNodeInternal(node.getLeft(), name);
@@ -32,7 +34,7 @@ public class RootedExactTree {
         if(left != null) return left;
         if(right != null) return right;
         return null;
-    }
+    }*/
 
     public static RootedExactNode lca(RootedExactNode node1, RootedExactNode node2) {
         ArrayList<RootedExactNode> path1 = pathToRoot(node1);
@@ -58,7 +60,13 @@ public class RootedExactTree {
         return path;
     }
 
-    //vrati dlzku cesty medzi dvoma vrcholmi, kde vieme, ze druhy vrchol je predok prveho
+    public void setNodes(TreeMap<String, RootedExactNode> nodes) {
+        this.nodes = nodes;
+    }
+
+
+
+ /*   //vrati dlzku cesty medzi dvoma vrcholmi, kde vieme, ze druhy vrchol je predok prveho
     public static int pathLengthToAncestor(RootedExactNode descendant, RootedExactNode ancestor){
         int result = 1;
 
@@ -70,7 +78,6 @@ public class RootedExactTree {
 
         return result;
     }
-
     //dlzka cesty medzi dvoma vrcholmi, ked nie je znamy ich vztah
     public static int pathLength(RootedExactNode node1, RootedExactNode node2){
         RootedExactNode lca = lca(node1, node2);
@@ -196,5 +203,5 @@ public class RootedExactTree {
 
         addToUnrooted(unrooted, child, child.getLeft());
         addToUnrooted(unrooted, child, child.getRight());
-    }
+    }*/
 }

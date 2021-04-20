@@ -14,6 +14,10 @@ public class UnrootedTree {
         leafMap = new TreeMap<>();
     }
 
+    public ArrayList<UnrootedNode> getNodes() {
+        return nodes;
+    }
+
     public UnrootedNode getNode(int i) {
         return nodes.get(i);
     }
@@ -62,7 +66,13 @@ public class UnrootedTree {
                 names.add(resultingName);
             }
             Collections.sort(names);
-            node.setName(names.get(0) + "|" + names.get(1) + "|" + names.get(2));
+            String nodeName = "";
+            for (int i = 0; i < names.size(); i++){
+                nodeName += names.get(i);
+                if (i != names.size()-1)
+                    nodeName += "|";
+            }
+            node.setName(nodeName);
         }
     }
 
@@ -80,6 +90,10 @@ public class UnrootedTree {
             result.addAll(leaves(e, otherNode));
         }
         return result;
+    }
+
+    public void setLeafMap(TreeMap<String, String> leafMap) {
+        this.leafMap = leafMap;
     }
 
 	/*public boolean equalTopology(Software.UnrootedTree other) {

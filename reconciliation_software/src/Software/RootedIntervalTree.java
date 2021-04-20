@@ -1,17 +1,20 @@
 package Software;
-
+import static Software.Main.EPSILON;
 import java.util.TreeMap;
 
 public class RootedIntervalTree {
-    private RootedExactTree speciesTree;
     private RootedIntervalNode root;
+    private RootedExactTree speciesTree;
     TreeMap<String, String> leafMap;
+    private DL score;
+    boolean countLossesAboveRoot = false;
 
     public RootedIntervalTree(UnrootedNode newRoot, Edge sourceEdge, RootedExactTree speciesTree,
                               TreeMap<String, String> leafMap) {
         this.speciesTree = speciesTree;
         this.leafMap = leafMap;
         this.root = enroot(newRoot, sourceEdge);
+        setLcas(root);
     }
 
     public RootedIntervalTree(RootedIntervalNode root, RootedExactTree speciesTree, TreeMap<String, String> leafMap) {
@@ -20,41 +23,85 @@ public class RootedIntervalTree {
         this.root = root;
     }
 
+    public RootedIntervalTree() {
+        root = new RootedIntervalNode("root");
+        leafMap = new TreeMap<>();
+    }
+
+    public void setCountLossesAboveRoot(boolean countLossesAboveRoot) {
+        this.countLossesAboveRoot = countLossesAboveRoot;
+    }
+
+    public void setScore(DL score){
+        this.score = score;
+    }
+
+    public DL getScore(){
+        return score;
+    }
+
+    public void addMapping(String geneNode, String speciesNode) {
+        leafMap.put(geneNode, speciesNode);
+    }
+
+    public TreeMap<String, String> getLeafMap() {
+        return leafMap;
+    }
+
+    public RootedIntervalNode getRoot() {
+        return root;
+    }
+
     public void computeLevel(RootedIntervalNode u) {
         if (u.getLeft() == null) {
             u.setMappedToLca(true);
             u.setSpeciesNodeBelow(u.getLcaS());
-            u.setLevelS(u.getSpeciesNodeBelow().getLevel());
+            u.setLevel(u.getSpeciesNodeBelow().getLevel());
         } else {
             computeLevel(u.getRight());
             computeLevel(u.getLeft());
             RootedExactNode rightS = u.getRight().getSpeciesNodeBelow();
             RootedExactNode leftS = u.getLeft().getSpeciesNodeBelow();
             RootedExactNode speciesNode;
-            if (u.getMaxD() < u.getLcaS().getDepth()) { //not mapped to lca
+            double nodesDifference = u.getLcaS().getDepth() - u.getMaxD();
+            if (u.getMaxD() < u.getLcaS().getDepth() && nodesDifference > EPSILON) { //not mapped to lca
                 if (rightS.getDepth() > leftS.getDepth())
                     speciesNode = computeSpeciesNodeBelow(u, leftS);
                 else
                     speciesNode = computeSpeciesNodeBelow(u, rightS);
                 u.setMappedToLca(false);
                 u.setSpeciesNodeBelow(speciesNode);
-                u.setLevelS(u.getSpeciesNodeBelow().getLevel());
-                levelDistanceFromChildren(u);
+                u.setLevel(u.getSpeciesNodeBelow().getLevel());
             } else { //mapped to lca
-                if (rightS == u.getLcaS() || leftS == u.getLcaS()) //more gene nodes can mapped to root, only first one is speciation
+                //more gene nodes can mapped to root, only first one is speciation
+                if (rightS == u.getLcaS() && leftS == u.getLcaS()) {
+                    //if both parents have the same speciesNodeBelow and both are mapped and are not leaves,
+                    // we need to set one of them to unmapped
+                    if (u.getRight().getMappedToLca() && u.getLeft().getMappedToLca()
+                    && u.getRight().getRight() != null && u.getLeft().getRight() != null){
+                        RootedIntervalNode child;
+                        if (u.getRight().getMaxD() > u.getLeft().getMaxD())
+                            child = u.getLeft();
+                        else
+                            child = u.getRight();
+                        levelDistanceFromChildren(child);
+                    }
+                     u.setMappedToLca(false);
+                } else if (rightS == u.getLcaS() || leftS == u.getLcaS()) {
+                    //if at least one parent have the same speciesNodeBelow
                     u.setMappedToLca(false);
-                else
+                } else
                     u.setMappedToLca(true);
                 u.setSpeciesNodeBelow(u.getLcaS());
-                u.setLevelS(u.getSpeciesNodeBelow().getLevel());
-                levelDistanceFromChildren(u);
+                u.setLevel(u.getSpeciesNodeBelow().getLevel());
             }
+            levelDistanceFromChildren(u);
         }
     }
 
     public void levelDistanceFromChildren(RootedIntervalNode u) {
-        int rightLevelDistance = u.getRight().getLevelS() - u.getLevelS();
-        int leftLevelDistance = u.getLeft().getLevelS() - u.getLevelS();
+        int rightLevelDistance = u.getRight().getLevel() - u.getLevel();
+        int leftLevelDistance = u.getLeft().getLevel() - u.getLevel();
         u.getRight().setLevelDistanceFromParent(rightLevelDistance - u.getMappedToLca_Integer());
         u.getLeft().setLevelDistanceFromParent(leftLevelDistance - u.getMappedToLca_Integer());
     }
@@ -72,23 +119,27 @@ public class RootedIntervalTree {
     }
 
     public DL countDL(RootedIntervalNode u) {
-        int duplication = 0, losses = 0;
-        DL right = new DL(0, 0), left = new DL(0, 0);
+        DL dl = new DL(0,0);
         if (u.getLeft() != null) {
-            right = countDL(u.getRight());
-            left = countDL(u.getLeft());
+            dl.sum(countDL(u.getRight()), countDL(u.getLeft()));
         }
         //System.out.println("Node: " + u.getName());
-        RootedExactNode lca = u.getLcaS();
+        //RootedExactNode lca = u.getLcaS();
 
-        losses = u.getLevelDistanceFromParent();
+        int loss = 0;
+        int duplication = 0;
+
+        loss += u.getLevelDistanceFromParent();
+        if (u.getName().equals("root") && !u.getLcaS().getName().equals("root") && countLossesAboveRoot)
+            loss += u.getLevel();
         //System.out.println("\tLoss: " + losses);
 
         if (!u.getMappedToLca()) {
             //System.out.println("\tDuplication: " + 1);
-            duplication = 1;
+            duplication += 1;
         }
-        return new DL(duplication + right.getDuplication() + left.getDuplication(), losses + right.getLoss() + left.getLoss());
+        dl.sum(dl, new DL(duplication, loss));
+        return dl;
     }
 
 
@@ -172,7 +223,7 @@ public class RootedIntervalTree {
         RootedIntervalNode rNode = new RootedIntervalNode(uNode.getName());
 
         if (uNode.getEdges().size() != 3 && uNode.getEdges().size() != 1) {
-            System.err.println("Zlý počet hrán pre vrchol " + uNode.getEdges());
+            System.err.println("Wrong number of edges for node " + uNode.getEdges());
         }
 
         for (Edge e : uNode.getEdges()) {
@@ -182,7 +233,7 @@ public class RootedIntervalTree {
 
             UnrootedNode otherNode = e.otherNode(uNode);
             if (otherNode == null) {
-                System.err.println("Chyba v súbore G.tree");
+                System.err.println("Mistake in gene tree file.");
             }
 
             RootedIntervalNode child = enroot(otherNode, e); //zakorenim strom od noveho root smerom dole
@@ -196,7 +247,7 @@ public class RootedIntervalTree {
             } else if (rNode.getRight() == null) {
                 rNode.setRight(child);
             } else {
-                System.err.println("Software.Node " + uNode.getName() + " doesnt contain source edge.");
+                System.err.println("Node " + uNode.getName() + " doesn't contain source edge.");
             }
         }
         //skontroluje, ci su dobre nastavene deti
@@ -204,25 +255,25 @@ public class RootedIntervalTree {
             System.err.println("There are 2 edges for node " + rNode.getName());
         }
 
-        if (rNode.getLeft() != null && rNode.getRight() != null) {
-            rNode.setLcaS(speciesTree.lca(rNode.getLeft().getLcaS(), rNode.getRight().getLcaS()));
-            if (rNode.getLeft().getName().compareTo(rNode.getRight().getName()) < 0) {
-                rNode.setName(rNode.getLeft().getName() + rNode.getRight().getName());
-            } else {
-                rNode.setName(rNode.getRight().getName() + rNode.getLeft().getName());
-            }
-        } else {
-            rNode.setLcaS(speciesTree.findNode(leafMap.get(rNode.getName())));
-            if (rNode.getLcaS() == null) {
-                System.err.println("Zly nazov listu " + rNode.getName());
-            }
-        }
-
         return rNode;
     }
 
-    public RootedIntervalNode getRoot() {
-        return root;
+    private void setLcas(RootedIntervalNode node) {
+        if (node.getRight() != null) {
+            setLcas(node.getRight());
+            setLcas(node.getLeft());
+            node.setLcaS(speciesTree.lca(node.getLeft().getLcaS(), node.getRight().getLcaS()));
+            if (node.getLeft().getName().compareTo(node.getRight().getName()) < 0) {
+                node.setName(node.getLeft().getName() + "," + node.getRight().getName());
+            } else {
+                node.setName(node.getRight().getName() + "," + node.getLeft().getName());
+            }
+        } else {
+            node.setLcaS(speciesTree.findNode(leafMap.get(node.getName())));
+            if (node.getLcaS() == null) {
+                System.err.println("Wrong name of leaf " + node.getName());
+            }
+        }
     }
 
     boolean upward(RootedIntervalNode v) {
@@ -242,7 +293,11 @@ public class RootedIntervalTree {
         maxD = Math.min(maxD, v.getLcaS().getDepth());
         //no solution
         if (maxD < minD) {
-            return false;
+            if (minD - maxD > EPSILON)
+                return false;
+            else {
+                maxD = minD;
+            }
         }
         v.setMinD(minD);
         v.setMaxD(maxD);
@@ -255,20 +310,10 @@ public class RootedIntervalTree {
         double maxDepthL = Math.min(v.getMaxD() + v.getLeft().getMaxL(), v.getLeft().getMaxD());
         double minDepthR = Math.max(v.getMinD() + v.getRight().getMinL(), v.getRight().getMinD());
         double maxDepthR = Math.min(v.getMaxD() + v.getRight().getMaxL(), v.getRight().getMaxD());
-        if (minDepthL > maxDepthL) {
-            v.getLeft().setMinD(maxDepthL);
-            v.getLeft().setMaxD(minDepthL);
-        } else {
-            v.getLeft().setMinD(minDepthL);
-            v.getLeft().setMaxD(maxDepthL);
-        }
-        if (minDepthR > maxDepthR) {
-            v.getRight().setMinD(maxDepthR);
-            v.getRight().setMaxD(minDepthR);
-        } else {
-            v.getRight().setMinD(minDepthR);
-            v.getRight().setMaxD(maxDepthR);
-        }
+        v.getLeft().setMinD(minDepthL);
+        v.getLeft().setMaxD(maxDepthL);
+        v.getRight().setMinD(minDepthR);
+        v.getRight().setMaxD(maxDepthR);
         //System.out.println(v.getName() + " " + minD +" "+maxD);
         downward(v.getLeft());
         downward(v.getRight());

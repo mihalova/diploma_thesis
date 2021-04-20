@@ -3,8 +3,6 @@ package Test;
 import Software.*;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -139,11 +137,11 @@ class RootedIntervalTreeTest {
         assertEquals(nodes_S[3].getName(), nodes_G[3].getSpeciesNodeBelow().getName());
         assertEquals(nodes_S[4].getName(), nodes_G[4].getSpeciesNodeBelow().getName());
         //levelS
-        assertEquals(2, nodes_G[0].getLevelS());
-        assertEquals(2, nodes_G[1].getLevelS());
-        assertEquals(1, nodes_G[2].getLevelS());
-        assertEquals(1, nodes_G[3].getLevelS());
-        assertEquals(0, nodes_G[4].getLevelS());
+        assertEquals(2, nodes_G[0].getLevel());
+        assertEquals(2, nodes_G[1].getLevel());
+        assertEquals(1, nodes_G[2].getLevel());
+        assertEquals(1, nodes_G[3].getLevel());
+        assertEquals(0, nodes_G[4].getLevel());
         //levelDistanceFromParent
         assertEquals(0, nodes_G[0].getLevelDistanceFromParent());
         assertEquals(0, nodes_G[1].getLevelDistanceFromParent());
@@ -166,11 +164,11 @@ class RootedIntervalTreeTest {
         assertEquals(nodes_S[3].getName(), nodes_G[3].getSpeciesNodeBelow().getName());
         assertEquals(nodes_S[4].getName(), nodes_G[4].getSpeciesNodeBelow().getName());
         //levelS
-        assertEquals(2, nodes_G[0].getLevelS());
-        assertEquals(2, nodes_G[1].getLevelS());
-        assertEquals(1, nodes_G[2].getLevelS());
-        assertEquals(1, nodes_G[3].getLevelS());
-        assertEquals(0, nodes_G[4].getLevelS());
+        assertEquals(2, nodes_G[0].getLevel());
+        assertEquals(2, nodes_G[1].getLevel());
+        assertEquals(1, nodes_G[2].getLevel());
+        assertEquals(1, nodes_G[3].getLevel());
+        assertEquals(0, nodes_G[4].getLevel());
         //levelDistanceFromParent
         assertEquals(1, nodes_G[0].getLevelDistanceFromParent());
         assertEquals(1, nodes_G[1].getLevelDistanceFromParent());
@@ -193,11 +191,11 @@ class RootedIntervalTreeTest {
         assertEquals(nodes_S[2].getName(), nodes_G[3].getSpeciesNodeBelow().getName());
         assertEquals(nodes_S[2].getName(), nodes_G[4].getSpeciesNodeBelow().getName());
         //levelS
-        assertEquals(1, nodes_G[0].getLevelS());
-        assertEquals(1, nodes_G[1].getLevelS());
-        assertEquals(1, nodes_G[2].getLevelS());
-        assertEquals(0, nodes_G[3].getLevelS());
-        assertEquals(0, nodes_G[4].getLevelS());
+        assertEquals(1, nodes_G[0].getLevel());
+        assertEquals(1, nodes_G[1].getLevel());
+        assertEquals(1, nodes_G[2].getLevel());
+        assertEquals(0, nodes_G[3].getLevel());
+        assertEquals(0, nodes_G[4].getLevel());
         //levelDistanceFromParent
         assertEquals(1, nodes_G[0].getLevelDistanceFromParent());
         assertEquals(0, nodes_G[1].getLevelDistanceFromParent());
@@ -220,11 +218,11 @@ class RootedIntervalTreeTest {
         assertEquals(nodes_S[2].getName(), nodes_G[3].getSpeciesNodeBelow().getName());
         assertEquals(nodes_S[2].getName(), nodes_G[4].getSpeciesNodeBelow().getName());
         //levelS
-        assertEquals(1, nodes_G[0].getLevelS());
-        assertEquals(1, nodes_G[1].getLevelS());
-        assertEquals(1, nodes_G[2].getLevelS());
-        assertEquals(0, nodes_G[3].getLevelS());
-        assertEquals(0, nodes_G[4].getLevelS());
+        assertEquals(1, nodes_G[0].getLevel());
+        assertEquals(1, nodes_G[1].getLevel());
+        assertEquals(1, nodes_G[2].getLevel());
+        assertEquals(0, nodes_G[3].getLevel());
+        assertEquals(0, nodes_G[4].getLevel());
         //levelDistanceFromParent
         assertEquals(1, nodes_G[0].getLevelDistanceFromParent());
         assertEquals(1, nodes_G[1].getLevelDistanceFromParent());
@@ -249,13 +247,13 @@ class RootedIntervalTreeTest {
         assertEquals(nodes_S[5].getName(), nodes_G[5].getSpeciesNodeBelow().getName());
         assertEquals(nodes_S[6].getName(), nodes_G[6].getSpeciesNodeBelow().getName());
         //levelS
-        assertEquals(2, nodes_G[0].getLevelS());
-        assertEquals(2, nodes_G[1].getLevelS());
-        assertEquals(2, nodes_G[2].getLevelS());
-        assertEquals(2, nodes_G[3].getLevelS());
-        assertEquals(1, nodes_G[4].getLevelS());
-        assertEquals(1, nodes_G[5].getLevelS());
-        assertEquals(0, nodes_G[6].getLevelS());
+        assertEquals(2, nodes_G[0].getLevel());
+        assertEquals(2, nodes_G[1].getLevel());
+        assertEquals(2, nodes_G[2].getLevel());
+        assertEquals(2, nodes_G[3].getLevel());
+        assertEquals(1, nodes_G[4].getLevel());
+        assertEquals(1, nodes_G[5].getLevel());
+        assertEquals(0, nodes_G[6].getLevel());
         //levelDistanceFromParent
         assertEquals(1, nodes_G[0].getLevelDistanceFromParent());
         assertEquals(1, nodes_G[1].getLevelDistanceFromParent());
@@ -282,13 +280,13 @@ class RootedIntervalTreeTest {
         assertEquals(nodes_S[5].getName(), nodes_G[5].getSpeciesNodeBelow().getName());
         assertEquals(nodes_S[6].getName(), nodes_G[6].getSpeciesNodeBelow().getName());
         //levelS
-        assertEquals(2, nodes_G[0].getLevelS());
-        assertEquals(2, nodes_G[1].getLevelS());
-        assertEquals(2, nodes_G[2].getLevelS());
-        assertEquals(2, nodes_G[3].getLevelS());
-        assertEquals(1, nodes_G[4].getLevelS());
-        assertEquals(1, nodes_G[5].getLevelS());
-        assertEquals(0, nodes_G[6].getLevelS());
+        assertEquals(2, nodes_G[0].getLevel());
+        assertEquals(2, nodes_G[1].getLevel());
+        assertEquals(2, nodes_G[2].getLevel());
+        assertEquals(2, nodes_G[3].getLevel());
+        assertEquals(1, nodes_G[4].getLevel());
+        assertEquals(1, nodes_G[5].getLevel());
+        assertEquals(0, nodes_G[6].getLevel());
         //levelDistanceFromParent
         assertEquals(1, nodes_G[0].getLevelDistanceFromParent());
         assertEquals(1, nodes_G[1].getLevelDistanceFromParent());
@@ -315,13 +313,13 @@ class RootedIntervalTreeTest {
         assertEquals(nodes_S[5].getName(), nodes_G[5].getSpeciesNodeBelow().getName());
         assertEquals(nodes_S[6].getName(), nodes_G[6].getSpeciesNodeBelow().getName());
         //levelS
-        assertEquals(2, nodes_G[0].getLevelS());
-        assertEquals(2, nodes_G[1].getLevelS());
-        assertEquals(2, nodes_G[2].getLevelS());
-        assertEquals(2, nodes_G[3].getLevelS());
-        assertEquals(1, nodes_G[4].getLevelS());
-        assertEquals(1, nodes_G[5].getLevelS());
-        assertEquals(0, nodes_G[6].getLevelS());
+        assertEquals(2, nodes_G[0].getLevel());
+        assertEquals(2, nodes_G[1].getLevel());
+        assertEquals(2, nodes_G[2].getLevel());
+        assertEquals(2, nodes_G[3].getLevel());
+        assertEquals(1, nodes_G[4].getLevel());
+        assertEquals(1, nodes_G[5].getLevel());
+        assertEquals(0, nodes_G[6].getLevel());
         //levelDistanceFromParent
         assertEquals(1, nodes_G[0].getLevelDistanceFromParent());
         assertEquals(1, nodes_G[1].getLevelDistanceFromParent());
@@ -348,13 +346,13 @@ class RootedIntervalTreeTest {
         assertEquals(nodes_S[6].getName(), nodes_G[5].getSpeciesNodeBelow().getName());
         assertEquals(nodes_S[6].getName(), nodes_G[6].getSpeciesNodeBelow().getName());
         //levelS
-        assertEquals(2, nodes_G[0].getLevelS());
-        assertEquals(2, nodes_G[1].getLevelS());
-        assertEquals(2, nodes_G[2].getLevelS());
-        assertEquals(2, nodes_G[3].getLevelS());
-        assertEquals(1, nodes_G[4].getLevelS());
-        assertEquals(0, nodes_G[5].getLevelS());
-        assertEquals(0, nodes_G[6].getLevelS());
+        assertEquals(2, nodes_G[0].getLevel());
+        assertEquals(2, nodes_G[1].getLevel());
+        assertEquals(2, nodes_G[2].getLevel());
+        assertEquals(2, nodes_G[3].getLevel());
+        assertEquals(1, nodes_G[4].getLevel());
+        assertEquals(0, nodes_G[5].getLevel());
+        assertEquals(0, nodes_G[6].getLevel());
         //levelDistanceFromParent
         assertEquals(1, nodes_G[0].getLevelDistanceFromParent());
         assertEquals(1, nodes_G[1].getLevelDistanceFromParent());
@@ -383,15 +381,15 @@ class RootedIntervalTreeTest {
         assertEquals(nodes_S[7].getName(), nodes_G[7].getSpeciesNodeBelow().getName());
         assertEquals(nodes_S[8].getName(), nodes_G[8].getSpeciesNodeBelow().getName());
         //levelS
-        assertEquals(3, nodes_G[0].getLevelS());
-        assertEquals(3, nodes_G[1].getLevelS());
-        assertEquals(3, nodes_G[2].getLevelS());
-        assertEquals(3, nodes_G[3].getLevelS());
-        assertEquals(1, nodes_G[4].getLevelS());
-        assertEquals(0, nodes_G[5].getLevelS());
-        assertEquals(0, nodes_G[6].getLevelS());
-        assertEquals(2, nodes_G[7].getLevelS());
-        assertEquals(0, nodes_G[8].getLevelS());
+        assertEquals(3, nodes_G[0].getLevel());
+        assertEquals(3, nodes_G[1].getLevel());
+        assertEquals(3, nodes_G[2].getLevel());
+        assertEquals(3, nodes_G[3].getLevel());
+        assertEquals(1, nodes_G[4].getLevel());
+        assertEquals(0, nodes_G[5].getLevel());
+        assertEquals(0, nodes_G[6].getLevel());
+        assertEquals(2, nodes_G[7].getLevel());
+        assertEquals(0, nodes_G[8].getLevel());
         //levelDistanceFromParent
         assertEquals(3, nodes_G[0].getLevelDistanceFromParent());
         assertEquals(3, nodes_G[1].getLevelDistanceFromParent());
@@ -422,15 +420,15 @@ class RootedIntervalTreeTest {
         assertEquals(nodes_S[7].getName(), nodes_G[7].getSpeciesNodeBelow().getName());
         assertEquals(nodes_S[8].getName(), nodes_G[8].getSpeciesNodeBelow().getName());
         //levelS
-        assertEquals(3, nodes_G[0].getLevelS());
-        assertEquals(3, nodes_G[1].getLevelS());
-        assertEquals(3, nodes_G[2].getLevelS());
-        assertEquals(3, nodes_G[3].getLevelS());
-        assertEquals(1, nodes_G[4].getLevelS());
-        assertEquals(1, nodes_G[5].getLevelS());
-        assertEquals(0, nodes_G[6].getLevelS());
-        assertEquals(2, nodes_G[7].getLevelS());
-        assertEquals(0, nodes_G[8].getLevelS());
+        assertEquals(3, nodes_G[0].getLevel());
+        assertEquals(3, nodes_G[1].getLevel());
+        assertEquals(3, nodes_G[2].getLevel());
+        assertEquals(3, nodes_G[3].getLevel());
+        assertEquals(1, nodes_G[4].getLevel());
+        assertEquals(1, nodes_G[5].getLevel());
+        assertEquals(0, nodes_G[6].getLevel());
+        assertEquals(2, nodes_G[7].getLevel());
+        assertEquals(0, nodes_G[8].getLevel());
         //levelDistanceFromParent
         assertEquals(2, nodes_G[0].getLevelDistanceFromParent());
         assertEquals(2, nodes_G[1].getLevelDistanceFromParent());
@@ -461,15 +459,15 @@ class RootedIntervalTreeTest {
         assertEquals(nodes_S[7].getName(), nodes_G[7].getSpeciesNodeBelow().getName());
         assertEquals(nodes_S[8].getName(), nodes_G[8].getSpeciesNodeBelow().getName());
         //levelS
-        assertEquals(3, nodes_G[0].getLevelS());
-        assertEquals(3, nodes_G[1].getLevelS());
-        assertEquals(3, nodes_G[2].getLevelS());
-        assertEquals(3, nodes_G[3].getLevelS());
-        assertEquals(1, nodes_G[4].getLevelS());
-        assertEquals(2, nodes_G[5].getLevelS());
-        assertEquals(1, nodes_G[6].getLevelS());
-        assertEquals(2, nodes_G[7].getLevelS());
-        assertEquals(0, nodes_G[8].getLevelS());
+        assertEquals(3, nodes_G[0].getLevel());
+        assertEquals(3, nodes_G[1].getLevel());
+        assertEquals(3, nodes_G[2].getLevel());
+        assertEquals(3, nodes_G[3].getLevel());
+        assertEquals(1, nodes_G[4].getLevel());
+        assertEquals(2, nodes_G[5].getLevel());
+        assertEquals(1, nodes_G[6].getLevel());
+        assertEquals(2, nodes_G[7].getLevel());
+        assertEquals(0, nodes_G[8].getLevel());
         //levelDistanceFromParent
         assertEquals(0, nodes_G[0].getLevelDistanceFromParent());
         assertEquals(0, nodes_G[1].getLevelDistanceFromParent());

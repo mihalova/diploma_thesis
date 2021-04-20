@@ -7,126 +7,172 @@ import java.util.List;
 public class Loader {
 
     String[] args;
-    private String dirPathSpecies, dirPathGene, dirPathMap;
-    private Double tolerance, step;
-    private RootedExactTree S;
-    private UnrootedTree G;
-    private List<Pair<String, String>> Smapping = new ArrayList<>();
-    private boolean wrongArguments;
 
     public Loader(String[] args) {
         this.args = args;
-        wrongArguments = false;
     }
 
-    public Four<RootedExactTree, UnrootedTree, Double, String> getLoadArgs(){
-        loadArguments(args);
-        if (tolerance == null)
-            tolerance = 0.5;
-        loadTrees();
-        return new Four<>(S, G, step, dirPathGene);
-    }
-
-    private void loadTrees() {
-        if (dirPathSpecies == null) {
-            wrongArguments = true;
-            return;
-        } else
-            loadSpeciesTreeFromFile();
-        loadSpeciesMappingFromFile();
-        if (dirPathGene == null) {
-            wrongArguments = true;
-            return;
-        } else
-            loadGeneTreeFromFile();
-    }
-
-
-    public boolean exit(){
-        return wrongArguments;
+    public Object[] getLoadArgs() {
+        return loadArguments(args);
     }
 
     /*
-     * -h = help, print all posiible settings
+     * -help = help, print all posiible settings
      * -S = path to species tree (mandatory)
      * -G = path to gene tree (mandatory)
      * -M = path to mapping (optional)
      * -t = tolerance (optional)
      * -s = step (optional)
+     * -r = if the gene tree is rooted
+     * -reroot = if the gene tree is rooted and is wish to be rerooted
+     * -l = count losses above the root of gene tree
+     * -p = print type (optional)
+     * -epsilon = set epsilon
      * */
-    private void loadArguments(String[] args) {
+    private Object[] loadArguments(String[] args) {
+        Parser p = new Parser();
+        RootedExactTree S = null;
+        UnrootedTree G_unrooted = null;
+        RootedIntervalTree G_rooted = null;
+        List<Pair<String, String>> Smapping = new ArrayList<>();
+        String dirPathGene = null;
+        Double tolerance = null, step = null;
+        String printType = null;
+        double epsilon = Double.parseDouble("1e-6");
+        boolean rootedGeneTree = false, reroot = false, countLossesAboveRoot = false;
         boolean exit = false;
-        for(int i = 0; i < args.length; i+=2){
+        for (int i = 0; i < args.length; i += 2) {
             switch (args[i]) {
-                case "-h":
+                case "-help":
                     System.out.println("Usage: java -jar isometricRecon.jar [options] \n" +
                             "\n" +
                             "Options:\n" +
                             "\tInput/Output:\n" +
-                            "\t\t-h\tshow this help message and exit" +
+                            "\t\t-help\tshow this help message and exit" +
                             "\t\t-S <species tree>\tspecies tree file in newick format (mandatory)\n" +
                             "\t\t-G <gene tree>\tgene tree file in newick format (mandatory)\n" +
                             "\t\t-M <species map>\tgene to species map\n" +
                             "\t\t-t <tolerance>\ttolerance from 0 to 1 (default: 0.5)\n" +
-                            "\t\t-s <step>\tstep (default: 0.5)");
+                            "\t\t-s <step>\tstep (default: 0.5)\n" +
+                            "\t\t-r\tif the gene tree is rooted (by default: the gene tree is consider to be unrooted)\n" +
+                            "\t\t-reroot\tif the gene tree is rooted and is wished to be rerooted\n" +
+                            "\t\t-l\tcount losses above the root of the gene tree\n" +
+                            "\t\t-p <print type>\ttwo options: sol = for tree with depths (default)\n" +
+                            "\t\t\t\t\trel = for tree with dup, gene, spec, loss definition next to nodes\n" +
+                            "\t\t-epsilon <epsilon>\tepsilon (default: 1e-6");
                     exit = true;
                     break;
                 case "-S":
-                    dirPathSpecies = args[i+1];
+                    S = loadSpeciesTreeFromFile(args[i + 1], p);
+                    if(S == null)
+                        System.out.println("Wrong species tree.");
                     break;
                 case "-G":
-                    dirPathGene = args[i+1];
+                    dirPathGene = args[i + 1];
                     break;
                 case "-M":
-                    dirPathMap = args[i+1];
+                    Smapping = loadSpeciesMappingFromFile(args[i + 1], p);
                     break;
                 case "-t":
-                    tolerance = Double.valueOf(args[i+1]);
+                    tolerance = Double.valueOf(args[i + 1]);
+                    if (tolerance < 0.0 || tolerance > 1.0){
+                        System.out.println("Tolerance out of range. Set to default: 0.5");
+                        tolerance = 0.5;
+                    }
                     break;
                 case "-s":
-                    step = Double.valueOf(args[i+1]);
+                    step = Double.valueOf(args[i + 1]);
+                    if(step < 0.0){
+                    System.out.println("Step less than 0.0. Set to default: 0.01");
+                    step = 0.01;
+                }
+                    break;
+                case "-r":
+                    rootedGeneTree = true;
+                    i--;
+                    break;
+                case "-reroot":
+                    reroot = true;
+                    i--;
+                    break;
+                case "-l":
+                    countLossesAboveRoot = true;
+                    i--;
+                    break;
+                case "-p":
+                    if (args[i + 1].equals("rel") || args[i + 1].equals("sol"))
+                        printType = args[i + 1];
+                    else
+                        printType = "sol";
+                    break;
+                case "-epsilon":
+                    epsilon = Double.parseDouble(args[i + 1]);
                     break;
             }
             if (exit)
                 break;
         }
-        /*if (args.length == 1) {
-            dirPath = args[0];
-        } else if (args.length == 2) {
-            dirPath = args[0];
-            tolerance = Double.valueOf(args[1]);
-        } else if (args.length == 3) {
-            dirPath = args[0];
-            tolerance = Double.valueOf(args[1]);
-            step = Double.valueOf(args[2]);
-        } else {
-            throw new IllegalArgumentException("Start the program with arguments: [path] and [tolerance (optional)]");
-        }*/
+        if (S == null || dirPathGene == null)
+            return null;
+        if (tolerance == null)
+            tolerance = 0.5;
+        if (step == null)
+            step = 0.01;
+
+        if (rootedGeneTree)
+            G_rooted = loadRootedGeneTreeFromFile(dirPathGene, p, tolerance, Smapping, S);
+        else
+            G_unrooted = loadUnrootedGeneTreeFromFile(dirPathGene, p, tolerance, Smapping);
+        if (reroot && G_rooted != null) {
+            G_unrooted = p.rootedToUnrootedTree(G_rooted);
+            G_unrooted.setLeafMap(G_rooted.getLeafMap());
+            G_rooted = null;
+        }
+
+        if (G_rooted != null || G_unrooted != null) {
+            if (Smapping.isEmpty() || G_rooted.getLeafMap().isEmpty() || G_unrooted.getLeafMap().isEmpty()) {
+                System.out.println("Wrong leaf mapping.");
+                return null;
+            }
+            return new Object[]{S, G_rooted, G_unrooted, step, countLossesAboveRoot, dirPathGene, printType, epsilon};
+        } else
+            return null;
     }
 
-    private void loadSpeciesTreeFromFile() {
-        if (new File(dirPathSpecies).exists()){
-            S = Parser.parseRootedTree(dirPathSpecies);
+    private RootedExactTree loadSpeciesTreeFromFile(String dirPath, Parser p) {
+        if (new File(dirPath).exists()) {
+            return p.parseRootedTree(dirPath);
         } else {
-            wrongArguments = true;
             System.err.println("Wrong species tree file.");
+            return null;
         }
     }
 
-    private void loadSpeciesMappingFromFile() {
-        if(dirPathMap != null) {
-            File Smap = new File(dirPathMap);
-            Smapping = Parser.parseSpeciesMapping(Smap);
-        }
-    }
-
-    private void loadGeneTreeFromFile() {
-        //unrooted G
-        if (new File(dirPathGene).exists()) {
-            G = Parser.parseUnrootedTree(dirPathGene, tolerance, Smapping);
+    private List<Pair<String, String>> loadSpeciesMappingFromFile(String dirPath, Parser p) {
+        File Smap = new File(dirPath);
+        if (Smap.exists()) {
+            return p.parseSpeciesMapping(Smap);
         } else {
-            wrongArguments = true;
-            System.err.println("Wrong gene tree file.");
+            System.err.println("Wrong mapping file.");
+            return null;
+        }
+    }
+
+    private RootedIntervalTree loadRootedGeneTreeFromFile(String dirPath, Parser p, Double tolerance, List<Pair<String, String>> Smapping, RootedExactTree S) {
+        if (new File(dirPath).exists()) {
+            return p.parseRootedIntervalTree(dirPath, tolerance, Smapping, S);
+        } else {
+            System.err.println("Wrong gene tree file: " + dirPath);
+            return null;
+        }
+    }
+
+    private UnrootedTree loadUnrootedGeneTreeFromFile(String dirPath, Parser p, Double tolerance, List<Pair<String, String>> Smapping) {
+        if (new File(dirPath).exists()) {
+            return p.parseUnrootedTree(dirPath, tolerance, Smapping);
+        } else {
+            System.err.println("Wrong gene tree file: " + dirPath);
+            return null;
         }
     }
 }

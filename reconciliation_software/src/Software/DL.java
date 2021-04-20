@@ -9,6 +9,11 @@ public class DL {
         this.loss = loss;
     }
 
+    public void sum(DL score1, DL score2) {
+        this.duplication = score1.getDuplication()+score2.getDuplication();
+        this.loss = score1.getLoss()+score2.getLoss();
+    }
+
     public int getDuplication() {
         return duplication;
     }
@@ -33,4 +38,5 @@ public class DL {
         DL o = (DL) obj;
         return o != null && this.duplication == o.duplication && this.loss == o.loss;
     }
+
 }

@@ -1,21 +1,198 @@
 D: 8 L: 1
-root -0.03924 0.03865
-G10G11G12G7G8G16 0.05285 0.13216
-G10G11G12G7G8 0.189055 0.346255
-G7G8 0.39298 0.445075
-G7 0.47365 0.47365
-G8 0.47365 0.47365
-G10G11G12 0.337135 0.418365
-G10 0.47365 0.47365
-G11G12 0.42322 0.44907
-G11 0.47365 0.47365
-G12 0.47365 0.47365
-G16 0.47365 0.47365
-G0G1G2G4 0.25874 0.38376
-G0 0.46868 0.46868
-G1G2G4 0.369455 0.433295
-G1G2 0.465965 0.466915
-G1 0.46868 0.46868
-G2 0.46868 0.46868
-G4 0.46868 0.46868
+spec	root
+dup	G10,G11,G12,G7,G8,G16
+dup	G10,G11,G12,G7,G8
+dup	G7,G8
+gene	G7
+gene	G8
+dup	G10,G11,G12
+gene	G10
+dup	G11,G12
+gene	G11
+gene	G12
+gene	G16
+loss-1	G16
+dup	G0,G1,G2,G4
+gene	G0
+dup	G1,G2,G4
+dup	G1,G2
+gene	G1
+gene	G2
+gene	G4
+
+D: 8 L: 1
+spec	root
+dup	G10,G11,G12,G7,G8,G16
+dup	G10,G11,G12,G7,G8
+dup	G7,G8
+gene	G7
+gene	G8
+dup	G10,G11,G12
+gene	G10
+dup	G11,G12
+gene	G11
+gene	G12
+gene	G16
+dup	G0,G1,G2,G4
+loss-1	G0,G1,G2,G4
+gene	G0
+dup	G1,G2,G4
+dup	G1,G2
+gene	G1
+gene	G2
+gene	G4
+
+D: 8 L: 1
+dup	root
+dup	G1,G2,G4
+dup	G1,G2
+gene	G1
+gene	G2
+gene	G4
+spec	G0,G10,G11,G12,G7,G8,G16
+loss-1	G0,G10,G11,G12,G7,G8,G16
+gene	G0
+dup	G10,G11,G12,G7,G8,G16
+dup	G10,G11,G12,G7,G8
+dup	G7,G8
+gene	G7
+gene	G8
+dup	G10,G11,G12
+gene	G10
+dup	G11,G12
+gene	G11
+gene	G12
+gene	G16
+
+D: 8 L: 1
+dup	root
+dup	G1,G2
+gene	G1
+gene	G2
+dup	G0,G10,G11,G12,G7,G8,G16,G4
+loss-1	G0,G10,G11,G12,G7,G8,G16,G4
+spec	G0,G10,G11,G12,G7,G8,G16
+gene	G0
+dup	G10,G11,G12,G7,G8,G16
+dup	G10,G11,G12,G7,G8
+dup	G7,G8
+gene	G7
+gene	G8
+dup	G10,G11,G12
+gene	G10
+dup	G11,G12
+gene	G11
+gene	G12
+gene	G16
+gene	G4
+
+D: 8 L: 1
+dup	root
+dup	G1,G2
+gene	G1
+gene	G2
+dup	G0,G10,G11,G12,G7,G8,G16,G4
+loss-1	G0,G10,G11,G12,G7,G8,G16,G4
+spec	G0,G10,G11,G12,G7,G8,G16
+gene	G0
+dup	G10,G11,G12,G7,G8,G16
+dup	G10,G11,G12,G7,G8
+dup	G7,G8
+gene	G7
+gene	G8
+dup	G10,G11,G12
+gene	G10
+dup	G11,G12
+gene	G11
+gene	G12
+gene	G16
+gene	G4
+
+D: 8 L: 1
+dup	root
+gene	G1
+dup	G0,G10,G11,G12,G7,G8,G16,G4,G2
+loss-1	G0,G10,G11,G12,G7,G8,G16,G4,G2
+dup	G0,G10,G11,G12,G7,G8,G16,G4
+spec	G0,G10,G11,G12,G7,G8,G16
+gene	G0
+dup	G10,G11,G12,G7,G8,G16
+dup	G10,G11,G12,G7,G8
+dup	G7,G8
+gene	G7
+gene	G8
+dup	G10,G11,G12
+gene	G10
+dup	G11,G12
+gene	G11
+gene	G12
+gene	G16
+gene	G4
+gene	G2
+
+D: 8 L: 1
+dup	root
+gene	G1
+dup	G0,G10,G11,G12,G7,G8,G16,G4,G2
+loss-1	G0,G10,G11,G12,G7,G8,G16,G4,G2
+dup	G0,G10,G11,G12,G7,G8,G16,G4
+spec	G0,G10,G11,G12,G7,G8,G16
+gene	G0
+dup	G10,G11,G12,G7,G8,G16
+dup	G10,G11,G12,G7,G8
+dup	G7,G8
+gene	G7
+gene	G8
+dup	G10,G11,G12
+gene	G10
+dup	G11,G12
+gene	G11
+gene	G12
+gene	G16
+gene	G4
+gene	G2
+
+D: 8 L: 1
+dup	root
+gene	G2
+dup	G0,G10,G11,G12,G7,G8,G16,G4,G1
+loss-1	G0,G10,G11,G12,G7,G8,G16,G4,G1
+dup	G0,G10,G11,G12,G7,G8,G16,G4
+spec	G0,G10,G11,G12,G7,G8,G16
+gene	G0
+dup	G10,G11,G12,G7,G8,G16
+dup	G10,G11,G12,G7,G8
+dup	G7,G8
+gene	G7
+gene	G8
+dup	G10,G11,G12
+gene	G10
+dup	G11,G12
+gene	G11
+gene	G12
+gene	G16
+gene	G4
+gene	G1
+
+D: 8 L: 1
+dup	root
+gene	G2
+dup	G0,G10,G11,G12,G7,G8,G16,G4,G1
+loss-1	G0,G10,G11,G12,G7,G8,G16,G4,G1
+dup	G0,G10,G11,G12,G7,G8,G16,G4
+spec	G0,G10,G11,G12,G7,G8,G16
+gene	G0
+dup	G10,G11,G12,G7,G8,G16
+dup	G10,G11,G12,G7,G8
+dup	G7,G8
+gene	G7
+gene	G8
+dup	G10,G11,G12
+gene	G10
+dup	G11,G12
+gene	G11
+gene	G12
+gene	G16
+gene	G4
+gene	G1
 

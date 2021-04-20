@@ -4,29 +4,46 @@ import java.util.ArrayList;
 
 public class RootedIntervalNode extends Node {
 
-    //minimalna, maximalna hlbka namapovania vrcholu
-    private double minD;
-    private double maxD;
-
-    private double depth; //hlbka, ktora (snad) minimalizuje pocet udalosti
+    RootedIntervalNode parent;
+    RootedIntervalNode left;
+    RootedIntervalNode right;
 
     private double minL;
     private double maxL;
-
-    private RootedIntervalNode parent;
-    private RootedIntervalNode left;
-    private RootedIntervalNode right;
-
+    //minimalna, maximalna hlbka namapovania vrcholu
+    private double minD;
+    private double maxD;
     private RootedExactNode lcaS;
-    private int levelS;
     private boolean mappedToLca; //integer value of boolean
     private int levelDistanceFromParent;
     private RootedExactNode speciesNodeBelow;
 
-    private ArrayList<Interval> intervals = new ArrayList<>();
-
     public RootedIntervalNode(String name) {
         super(name);
+    }
+
+    public RootedIntervalNode getParent() {
+        return parent;
+    }
+
+    public void setParent(RootedIntervalNode parent) {
+        this.parent = parent;
+    }
+
+    public RootedIntervalNode getLeft() {
+        return left;
+    }
+
+    public void setLeft(RootedIntervalNode left) {
+        this.left = left;
+    }
+
+    public RootedIntervalNode getRight() {
+        return right;
+    }
+
+    public void setRight(RootedIntervalNode right) {
+        this.right = right;
     }
 
     public double getMinD() {
@@ -61,30 +78,6 @@ public class RootedIntervalNode extends Node {
         this.maxL = Reconciliator.round(maxL);
     }
 
-    public RootedIntervalNode getParent() {
-        return parent;
-    }
-
-    public void setParent(RootedIntervalNode parent) {
-        this.parent = parent;
-    }
-
-    public RootedIntervalNode getLeft() {
-        return left;
-    }
-
-    public void setLeft(RootedIntervalNode left) {
-        this.left = left;
-    }
-
-    public RootedIntervalNode getRight() {
-        return right;
-    }
-
-    public void setRight(RootedIntervalNode right) {
-        this.right = right;
-    }
-
     public RootedExactNode getLcaS() {
         return lcaS;
     }
@@ -105,14 +98,6 @@ public class RootedIntervalNode extends Node {
         this.mappedToLca = m;
     }
 
-    public int getLevelS() {
-        return levelS;
-    }
-
-    public void setLevelS(int l) {
-        this.levelS = l;
-    }
-
     public int getLevelDistanceFromParent() {
         return levelDistanceFromParent;
     }
@@ -127,19 +112,6 @@ public class RootedIntervalNode extends Node {
 
     public void setSpeciesNodeBelow(RootedExactNode speciesNodeBelow){
         this.speciesNodeBelow = speciesNodeBelow;
-    }
-
-    public double getDepth() {
-        return depth;
-    }
-
-    public void setDepth(double depth) {
-        this.depth = depth;
-    }
-
-    public Interval getInterval(int i){
-        if(intervals.isEmpty()) return null;
-        return intervals.get(i);
     }
 
 

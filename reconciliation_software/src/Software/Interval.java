@@ -1,51 +1,28 @@
 package Software;
 
 public class Interval {
-    private double maxDepth;
-    private double minDepth;
-    // nemusim si pre interval pamatat ci je otvoreny alebo uzavrety, kde sa to prejavi je len pri pocitani Software.DL
-    // intervaly, ktore su z aspon jednej strany otvorene, maju rozdielny minD a maxD
-    // ked pri urcovani Software.DL vezmem priemer maxD a minD, nemam problem s otvorenymi intervalmi
+    private double maximum;
+    private double minimum;
 
-    private DL dl; //celkove Software.DL v podstrome, ked sa vrchol namapuje do hlbky z tohto intervalu
-
-    //len pre posunuty interval, je to priemer maxD a minD povodneho intervalu pred posunom
-    private double originalMappingDepth;
-
-    public Interval(double maxDepth, double minDepth){
-        this.maxDepth = maxDepth;
-        this.minDepth = minDepth;
+    public Interval(double max, double min){
+        this.maximum = max;
+        this.minimum = min;
     }
 
-    public double getMaxDepth() {
-        return maxDepth;
+    public double getMaximum() {
+        return maximum;
     }
 
-    public void setMaxDepth(double maxDepth) {
-        this.maxDepth = maxDepth;
+    public void setMaximum(double maximum) {
+        this.maximum = maximum;
     }
 
-    public double getMinDepth() {
-        return minDepth;
+    public double getMinimum() {
+        return minimum;
     }
 
-    public void setMinDepth(double minDepth) {
-        this.minDepth = minDepth;
+    public void setMinimum(double minimum) {
+        this.minimum = minimum;
     }
 
-    public DL getDl() {
-        return dl;
-    }
-
-    public void setDl(DL dl) {
-        this.dl = dl;
-    }
-
-    public double getOriginalMappingDepth() {
-        return originalMappingDepth;
-    }
-
-    public void setOriginalMappingDepth(double originalMappingDepth) {
-        this.originalMappingDepth = originalMappingDepth;
-    }
 }
