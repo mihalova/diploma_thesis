@@ -53,7 +53,7 @@ The unnecessary \emph{depth} variable was deleted as we store the mapping depth 
 In the \emph{RootedIntervalTree}, we implement our algorithms from Chapter \ref{counting_algorithm} and their are called from the \emph{Reconciliator} class. We add the variable of type \emph{DL} to store the number of duplication and gene losses inferred in the gene tree.\\
 \textbf{Class Parser}
 
-We change the parsing method for a species tree and an unrooted gene tree. In the species tree parsing method, we infer \emph{level} in species tree nodes. In the unrooted gene tree parsing method, we resolve inexact branch lengths if the given gene tree has inexact branches or we transform exact branch lengths to inexact branch lengths if the given gene tree has exact branch lengths. To modify the exact branch lengths into inexact branch lengths, the user needs to set the tolerance value that has to be from interval $\langle 0, 1 \rangle$. The interval of the edge is compute as: $\langle length - (tolerance \cdot length), length + (tolerance \cdot length) \rangle$.
+We change the parsing method for a species tree and an unrooted gene tree. In the species tree parsing method, we infer \emph{level} in species tree nodes. In the unrooted gene tree parsing method, we resolve inexact branch lengths if the given gene tree has inexact branches or we transform exact branch lengths to inexact branch lengths if the given gene tree has exact branch lengths. To modify the exact branch lengths into inexact branch lengths, the user needs to set the tolerance value that has to be from interval $[ 0, 1 ]$. The interval of the edge is compute as: $[ length - (tolerance \cdot length), length + (tolerance \cdot length) ]$.
 
 Furthermore, we add a parsing method for a rooted gene tree that can either resolve inexact branch lengths or transform exact branch lengths to inexact branch lengths. We included a method to parse mapping of gene leaves to species leaves from a file and a method for transforming a rooted gene tree to an unrooted gene tree. This allows us to forget the original root of a gene tree and find a new one with function \emph{getIntervals} (Algorithm \ref{getIntervals}). All methods in the class are called from the \emph{Loader} class.\\
 \textbf{Class Loader}
@@ -75,9 +75,9 @@ The \emph{Loader} class is initialized with arguments from the command line. It 
     \hline
     -M <species map> & mapping of genes to species\\
     \hline
-    -t <tolerance> & required tolerance from interval $\langle 0, 1 \rangle$ (By default, it is set to $0.5$) \\
+    -t <tolerance> & required tolerance from interval $[ 0, 1 ]$ (By default, it is set to $0.5$) \\
     \hline
-    -s <step> & required step (By default, it is set to $0.5$)\\
+    -s <step> & required step from $[0, \infty]$ (By default, it is set to $0.01$)\\
     \hline
     -r & signifies that the given gene tree is rooted (By default, the given gene tree is considered to be unrooted)\\
     \hline

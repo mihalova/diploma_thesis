@@ -2,65 +2,70 @@
 
 In this chapter, we will show different algorithms used to obtain the most parsimonious isometric gene tree reconciliation which will be implemented in our software. 
 
-The required input for our algorithms is a rooted species tree with exact branch lengths and an unrooted gene tree with inexact branch lengths. The gene tree is sequentially processed by following algorithms. Firstly, we find all possible roots and root the unrooted tree gene tree, which results in multiple rooted gene trees. Afterwards, we perform the two-pass algorithm (Chapter \ref{two-pass_algorithm}) and count the number of duplications and gene losses for every rooted gene tree to find the most parsimonious reconciliation.
+The required input for our algorithms is a rooted species tree with exact branch lengths and an unrooted gene tree with inexact branch lengths. The gene tree is sequentially processed by following algorithms. Firstly, we find possible roots and root the unrooted tree gene tree, which results in multiple rooted gene trees. Afterwards, for each rooted gene tree we perform the two-pass algorithm to find a reconciliation  (Chapter \ref{two-pass_algorithm}) and count the number of duplications and gene losses in the found reconciliation. Finally, we select the most parsimonious reconciliation among those considered.
 
 \section{Rooting the gene tree} \label{rooting_the_gene_tree}
 
-We present an algorithm to find possible roots that are distant by given step for every edge $e$ of an unrooted gene tree $G$. 
+An unrooted gene tree has an infinite number of possible root location. We present an algorithm to find a finite set of possible roots that are distant by given step on every edge $e$ of an unrooted gene tree $G$. However, our set of possible roots may not always contain an optimal solution. 
 
-For each edge $e \in E(G)$, we transform the unrooted gene tree into a semi-rooted gene tree by rooting the subtrees at vertices $u \in V(G)$ and $v \in V(G)$ of the edge $e = (u, v)$. The edge is subsequently used as the parameter for the Algorithm~\ref{getIntervals} to infer intervals for subdividing the given edge and completely root the unrooted gene tree $G$. By default, the $\epsilon$ is set to \num{1e-6} and step to $0.5$.
+For each edge $e \in E(G)$, we transform the unrooted gene tree into a semi-rooted gene tree by rooting the subtrees at vertices $u \in V(G)$ and $v \in V(G)$ of the edge $e = (u, v)$. The edge is subsequently used as the parameter for the Algorithm~\ref{getIntervals} to select a set of roots on edge $e$, each root given by a pair of intervals. Let $r$ be the root of a semi-rooted gene tree $G$ then the first interval of the pair represents the length of edge $(u, r)$ and the second interval represents the length of edge $(r, v)$.
 
 \begin{algorithm}
 \caption{Possible intervals to subdivide given edge $e$} 
 \label{getIntervals}
 \begin{algorithmic}[1]
 \Function{getIntervals}{$e \in E(G), step \in R$}
-	\State totalMinLength = $w(e)_{min}$
-	\State totalMaxLength = $w(e)_{max}$
-	\State minLengthLeft = totalMinLength
-	\State maxLengthLeft = totalMaxLength - step
-	\State minLengthRight = 0
-	\State maxLengthRight = step
-	\State difference = totalMaxLength - totalMinLength
-	\State differenceIsDivisibleByStep = difference / step == floor(difference / step)
+	\State difference = $w(e)_{min} - w(e)_{max}$
+	\If {$step > difference \div 2$}
+		\State intervalSize = $difference \div 2$
+	\Else
+		\State intervalSize = step
+	\EndIf
+	\State $w(u,r)_{min}$ = $w(e)_{min}$
+	\State $w(u,r)_{max}$ = $w(e)_{max}$ - intervalSize
+	\State $w(r,v)_{min}$ = $\epsilon$
+	\State $w(r,v)_{max}$ = intervalSize
 	
-	\State intervals.add($\langle 0, \epsilon \rangle$, $\langle totalMinLength, totalMaxLength-\epsilon \rangle$) 
-	\State intervals.add($\langle totalMinLength, totalMaxLength-\epsilon \rangle$, $\langle 0, \epsilon \rangle$)
+	\State intervals.add($[ \epsilon, \epsilon ]$, $[ w(e)_{min}-\epsilon, w(e)_{max}-\epsilon ]$) 
+	\State intervals.add($[ w(e)_{min}-\epsilon, w(e)_{max}-\epsilon ]$, $[ \epsilon, \epsilon ]$)
 	
-	\While {$maxLengthRight < totalMaxLength$ \textbf{and} $maxLengthLeft > 0$ \textbf{and} $step \ne 0$}
-		\State intervals.add($\langle minLengthLeft, maxLengthLeft \rangle$, $\langle minLengthRight, maxLengthRight \rangle$)
-		\If {$difference = step$ \textbf{or not} $differenceIsDivisibleByStep$}
-			\State intervals.add($\langle minLengthRight, maxLengthRight \rangle$, $\langle minLengthhLeft, maxLengthLeft \rangle$)
+	\If {$step \ne 0$}
+	\While {$w(r,v)_{max} < w(e)_{max}$ \textbf{and} $w(u,r)_{max} > 0$}
+		\State intervals.add($[w(u,r)_{min}, w(u,r)_{max}]$, $[w(r,v)_{min},w(r,v)_{max}]$)
+		\State $w(u,r)_{min}$ -= step
+		\If {$w(u,r)_{min} <= 0$}
+			\State $w(u,r)_{min}$ = $\epsilon$
 		\EndIf
-		\State minLengthLeft -= step
-		\If {$minLengthLeft < 0$}
-			\State minLengthLeft = 0
-		\EndIf
-		\State maxLengthLeft -=step
-		\State minLengthRight += step
-		\State maxLengthRight += step
+		\State $w(u,r)_{max}$ -=step
+		\State $w(r,v)_{min}$ += step
+		\State $w(r,v)_{max}$ += step
 	\EndWhile
+	\EndIf
 	\Return {intervals}
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
-At the beginning of the Algorithm \ref{getIntervals}, we define essential variables. Possible intervals for subdividing the edge $e$ are stored at the variable \emph{interval} that is also return value of the function. To cover most of the possibilities, we allow rooting the gene tree right above the vertices $u$ and $v$ of the edge $e$. Let $r$ be the root of a semi-rooted gene tree $G$ then we get two possible roots after subdividing the edge $e$ right above the vertices $u$ and $v$. The first possible root subdivide the edge $e$ into two edges with interval lengths $w(u, r) = \langle 0, \epsilon \rangle$ on the left from the root and $w(r, v) = \langle totalMinLength, totalMaxLength-\epsilon \rangle$ on the right from the root, where $w(e)_{min}$ is original minimal length of the edge $e$ and $totalMaxLength$ is original maximal length of the edge $e$. The second option of the root subdivide the edge $e$ with intervals of the same length, that are flipped, so the original interval $w(u, r) = \langle totalMinLength, totalMaxLength-\epsilon \rangle$ is on the left from the root  and $w(r, v) = \langle 0, \epsilon \rangle$ in on the right from the root.
+At the beginning of the Algorithm \ref{getIntervals}, we define essential variables. The set of possible pairs of intervals for subdividing the edge $e$ are stored at the variable \emph{intervals} that is also the return value of the function. We added condition for special cases, where the difference between the maximal and minimal original length of edge $e$ divided by $2$ is less than the size of the step. With the special case condition, we can infer intervals with a better range or intervals that would be normally skipped (Fig. \ref{finding_root}).
 
-After inferring the first two options of the possible root, we run a while loop to get possible roots inside the edge $e$. In each iteration, we subtract the step from the minimal and maximal length of the left interval of the subdivided edge $e$ and add a step to the minimal and maximal length of the right interval of the subdivided edge $e$. We added condition for special cases, where the difference between the maximal and minimal original length of edge $e$ is equal to step or when it is not divisible by step (Fig. \ref{finding_root}). With the special case condition, we can infer intervals that would be normally skipped. The while loop goes until the maximal length of the right interval is the same or bigger as the original maximal length of the edge $e$ or the maximal length of the left interval reaches $0$ or less.
+To cover most of the possibilities, we allow rooting the gene tree right above the vertices $u$ and $v$ of the edge $e$ with $\epsilon$ distance from the vertices. The $\epsilon$ is by default set to \num{1e-6} and signifies the edge length close to the $0$. We do not allow $0$ edge length or interval starting with $0$ as $[0, \epsilon]$ to avoid mapping the root into vertex $u$ or $v$.
+
+We get two possible roots after subdividing the edge $e$ right above the vertices $u$ and $v$. The first possible root subdivides edge $e$ into two edges with interval lengths $w(u, r) = [ \epsilon, \epsilon ]$ on the left from the root and $w(r, v) = [ w(e)_{min}-\epsilon, w(e)_{max}-\epsilon ]$ on the right from the root, where $w(e)_{min}$ is original minimal length of the edge $e$ and $w(e)_{max}$ is original maximal length of the edge $e$. The second option of the root subdivide the edge $e$ with intervals of the same length, that are flipped, so the original interval $w(u, r) = [ w(e)_{min}-\epsilon, w(e)_{max}-\epsilon ]$ is on the left from the root and $w(r, v) = [ \epsilon, \epsilon ]$ in on the right from the root.
+
+After creating the first two options for the possible root, we check the size of the step, which is set to $0.01$ by default. If the size of the step is $0$, we have no distance between possible roots, thus no distance to shift while subdividing the edge $e$. However, if the step is different from $0$, we run a while loop to get possible roots inside the edge $e$. In each iteration, we subtract the step from the minimal and maximal length of the left interval of the subdivided edge $e$ and add a step to the minimal and maximal length of the right interval of the subdivided edge $e$. The while loop goes until the maximal length of the right interval is the same or bigger as the original maximal length of the edge $e$ or the maximal length of the left interval reaches $0$ or less.
 
 \begin{figure}[ht!]
 	\centering
 	\label{finding_root}
   	\includegraphics[width=\linewidth]{finding_root}
   	\caption[Rooting the gene tree: special case condition]
-  	{The X-axis on the graph stands for the possible length of interval on the left from the root and the y-axis signify the possible length of interval on the right from the root. Space between black lines represents all possible intervals after subdividing the edge $e$ with the root. Red lines are for the root right above the vertices $u$ and $v$, where one interval takes the original size and the second interval is between $0$ and $\epsilon$. Blue lines mean intervals for the root inside the edge $e$ without the special case condition. Green lines are inferred intervals for the root with special case condition \\
-  	\textbf{Condition 1}\\
-  	Parameters: $w(e) = \langle 1, 4 \rangle$ and $step = 3$. \\
-  	In this case, the difference between the original minimal and maximal length is equal to the size of the step. Without the special case condition, we would only get the blue line intervals $w(u, r) = \langle 1, 1 \rangle$ on the left from the root and $w(r, v) = \langle 0, 3 \rangle$ on the right from root. The special case condition flip the intervals thus we get green intervals $w(u, r) = \langle 0, 3 \rangle$ on the left from the root and $w(r, v) = \langle 1, 1 \rangle$ on the right from the root.\\
-  	\textbf{Condition 2}\\
-  	Parameters: $w(e) = \langle 1, 4 \rangle$ and $step = 2$. \\
-  	The difference between original minimal and maximal length is not divisible by the size of step, which give us only the blue lines intervals $w(u, r) = \langle 1, 2 \rangle$ on the left from the root and $w(r, v) = \langle 0, 2 \rangle$ on the right from root without the special case condition. After flipping the intervals with special case condition, we get green intervals $w(u, r) = \langle 0, 2 \rangle$ on the left from the root and $w(r, v) = \langle 1, 2 \rangle$ on the right from the root. Green and blue intervals intersect in area of $\langle 1, 2 \rangle$ for left interval and $\langle 1, 2 \rangle$ for right interval, but it also give us a new area of $\langle 0, 1 \rangle$ for left interval and $\langle 1, 2 \rangle$ for right interval.}
+  	{The X-axis on the graph stands for the possible length of interval on the right from the root and the y-axis signify the possible length of interval on the left from the root. Space between black lines represents all possible intervals after subdividing the edge $e$ with the root. Red lines are for the root right above the vertices $u$ and $v$, where one interval takes the original size and the second interval is $[\epsilon, \epsilon]$. Blue rectangle means intervals for the root inside the edge $e$ without the special case condition. Green squares are inferred intervals for the root with special case condition. \\
+  	\textbf{Condition 1: $step > difference \div 2$} (the left figure)\\
+  	Parameters: $w(e) = [1, 5]$ and $step = 3$. \\
+  	In this case, the size of the step is bigger than the difference between the original minimal and maximal length divided by $2$. Without the special case condition, we would only get the blue rectangle intervals $w(u,r)=[1,2]$ on the left from the root and $w(r,v)=[\epsilon, 3]$ on the right from the root. The special case condition changes the blue rectangle into the green square which gives us intervals $w(u, r) = [1, 3]$ on the left from the root and $w(r, v) = [\epsilon, 2]$ on the right from the root with better coverage of the space.\\
+  	\textbf{Condition 2: $step > difference$} (the right figure)\\
+  	Parameters: $w(e) = [1, 5]$ and $step = 5$. \\
+  	The size of the step is bigger than the difference between the original minimal and maximal length. Without the special case condition, we would not get any possible intervals for subdividing the edge $e$. However, the special case condition infer green intervals $w(u, r) = [1, 3]$ on the left from the root and $w(r, v) = [\epsilon, 2]$ on the right from the root.}
 \end{figure}
 
 Rooting the gene tree goes over all edges in the unrooted gene tree $G$. The running time of the function \emph{getIntervals} in Algorithm~\ref{getIntervals} is $O(p)$, where $p$ stands for number of iterations in while loop that can be expressed as $p = ceil(totalMaxLength/step) - 1$. The result of function \emph{getIntervals} is a set of intervals for subdividing the edge $e$. Subsequently, the intervals are used for a loop to root the semi-rooted gene tree $G$ resulting in a set of rooted gene trees with inexact branch lengths, which running time is $O(m)$ for $m = p+2$. Therefore, the total running time of rooting the unrooted gene tree $G$ is $O(Nm)$ with $N$ being the number of all edges in the unrooted tree $G$.
@@ -70,7 +75,7 @@ Rooting the gene tree goes over all edges in the unrooted gene tree $G$. The run
 
 We present an algorithm for counting the number of duplications and gene losses in a rooted gene tree $G$ with inexact branch lengths depending on a rooted species tree $S$ with exact branch lengths. We allow only evolutionary events as duplication, gene loss and speciation can happen in evolutionary history. The counting algorithm consists of two parts: preprocessing and the main algorithm. In the preprocessing, we compute essential variables for the gene tree $G$ that are subsequently used in the main algorithm.
 
-The prerequisites for the counting algorithm are calculated depth $D(a)$ and level $l(a)$ for each $a \in V(S)$. For the gene tree $G$, we assume an interval of possible mapping depths $X[u] = \langle X[u]_{min}, X[u]_{max} \rangle$ for each $u \in V(G)$ that can be computed with the two-pass algorithm (Chapter \ref{two-pass_algorithm}) and LCA-mapping $\sigma(u)$ for each $u \in V(G)$.
+The prerequisites for the counting algorithm are calculated depth $D(a)$ and level $l(a)$ for each $a \in V(S)$. For the gene tree $G$, we assume an interval of possible mapping depths $X[u] = [ X[u]_{min}, X[u]_{max} ]$ for each $u \in V(G)$ that can be computed with the two-pass algorithm (Chapter \ref{two-pass_algorithm}) and LCA-mapping $\sigma(u)$ for each $u \in V(G)$.
 
 \subsection{Preprocessing} \label{preprocessing}
 
