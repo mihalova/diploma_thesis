@@ -15,9 +15,10 @@
 \BOOKMARK [0][-]{chapter.3}{Implementation}{}% 15
 \BOOKMARK [1][-]{section.3.1}{Classes and variables}{chapter.3}% 16
 \BOOKMARK [1][-]{section.3.2}{Differences from the original source code}{chapter.3}% 17
-\BOOKMARK [0][-]{chapter.4}{Experiments}{}% 18
+\BOOKMARK [0][-]{chapter.4}{Experiments and results}{}% 18
 \BOOKMARK [1][-]{section.4.1}{Simulated dataset}{chapter.4}% 19
-\BOOKMARK [1][-]{section.4.2}{Real dataset}{chapter.4}% 20
-\BOOKMARK [0][-]{chapter.5}{Results}{}% 21
-\BOOKMARK [0][-]{chapter*.4}{Conclusion}{}% 22
-\BOOKMARK [0][-]{chapter*.5}{Appendix}{}% 23
+\BOOKMARK [2][-]{subsection.4.1.1}{Without rerooting the gene tree}{section.4.1}% 20
+\BOOKMARK [2][-]{subsection.4.1.2}{With rerooting the gene tree}{section.4.1}% 21
+\BOOKMARK [1][-]{section.4.2}{Real dataset}{chapter.4}% 22
+\BOOKMARK [0][-]{chapter*.4}{Conclusion}{}% 23
+\BOOKMARK [0][-]{chapter*.5}{Appendix}{}% 24

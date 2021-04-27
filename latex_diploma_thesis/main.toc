@@ -16,9 +16,10 @@
 \contentsline {chapter}{\numberline {3}Implementation}{26}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Classes and variables}{26}{section.3.1}%
 \contentsline {section}{\numberline {3.2}Differences from the original source code}{27}{section.3.2}%
-\contentsline {chapter}{\numberline {4}Experiments}{32}{chapter.4}%
+\contentsline {chapter}{\numberline {4}Experiments and results}{32}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Simulated dataset}{32}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Real dataset}{33}{section.4.2}%
-\contentsline {chapter}{\numberline {5}Results}{34}{chapter.5}%
-\contentsline {chapter}{Conclusion}{35}{chapter*.4}%
-\contentsline {chapter}{Appendix}{36}{chapter*.5}%
+\contentsline {subsection}{\numberline {4.1.1}Without rerooting the gene tree}{32}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}With rerooting the gene tree}{35}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Real dataset}{47}{section.4.2}%
+\contentsline {chapter}{Conclusion}{49}{chapter*.4}%
+\contentsline {chapter}{Appendix}{50}{chapter*.5}%
