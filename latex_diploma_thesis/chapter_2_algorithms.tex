@@ -26,8 +26,8 @@ For each edge $e \in E(G)$, we transform the unrooted gene tree into a semi-root
 	\State $w(r,v)_{min}$ = $\epsilon$
 	\State $w(r,v)_{max}$ = intervalSize
 	
-	\State intervals.add($[ \epsilon, \epsilon ]$, $[ w(e)_{min}-\epsilon, w(e)_{max}-\epsilon ]$) 
-	\State intervals.add($[ w(e)_{min}-\epsilon, w(e)_{max}-\epsilon ]$, $[ \epsilon, \epsilon ]$)
+	\State intervals.add($[ \epsilon, \epsilon ]$, $[ w(e)_{min}, w(e)_{max}-\epsilon ]$) 
+	\State intervals.add($[ w(e)_{min}, w(e)_{max}-\epsilon ]$, $[ \epsilon, \epsilon ]$)
 	
 	\If {$step \ne 0$}
 	\While {$w(r,v)_{max} < w(e)_{max}$ \textbf{and} $w(u,r)_{max} > 0$}
@@ -50,7 +50,7 @@ At the beginning of the Algorithm \ref{getIntervals}, we define essential variab
 
 To cover most of the possibilities, we allow rooting the gene tree right above the vertices $u$ and $v$ of the edge $e$ with $\epsilon$ distance from the vertices. The $\epsilon$ is by default set to \num{1e-6} and signifies the edge length close to the $0$. We do not allow $0$ edge length or interval starting with $0$ as $[0, \epsilon]$ to avoid mapping the root into vertex $u$ or $v$.
 
-We get two possible roots after subdividing the edge $e$ right above the vertices $u$ and $v$. The first possible root subdivides edge $e$ into two edges with interval lengths $w(u, r) = [ \epsilon, \epsilon ]$ on the left from the root and $w(r, v) = [ w(e)_{min}-\epsilon, w(e)_{max}-\epsilon ]$ on the right from the root, where $w(e)_{min}$ is original minimal length of the edge $e$ and $w(e)_{max}$ is original maximal length of the edge $e$. The second option of the root subdivide the edge $e$ with intervals of the same length, that are flipped, so the original interval $w(u, r) = [ w(e)_{min}-\epsilon, w(e)_{max}-\epsilon ]$ is on the left from the root and $w(r, v) = [ \epsilon, \epsilon ]$ in on the right from the root.
+We get two possible roots after subdividing the edge $e$ right above the vertices $u$ and $v$. The first possible root subdivides edge $e$ into two edges with interval lengths $w(u, r) = [ \epsilon, \epsilon ]$ on the left from the root and $w(r, v) = [ w(e)_{min}, w(e)_{max}-\epsilon ]$ on the right from the root, where $w(e)_{min}$ is original minimal length of the edge $e$ and $w(e)_{max}$ is original maximal length of the edge $e$. We do not subtract $\epsilon$ from $w(e)_{min}$ since the original minimal length can be a $0$ and after subtraction, we would get a negative minimal edge length. The second option of the root subdivide the edge $e$ with intervals of the same length, that are flipped, so the original interval $w(u, r) = [ w(e)_{min}, w(e)_{max}-\epsilon ]$ is on the left from the root and $w(r, v) = [ \epsilon, \epsilon ]$ in on the right from the root.
 
 After creating the first two options for the possible root, we check the size of the step, which is set to $0.01$ by default. If the size of the step is $0$, we have no distance between possible roots, thus no distance to shift while subdividing the edge $e$. However, if the step is different from $0$, we run a while loop to get possible roots inside the edge $e$. In each iteration, we subtract the step from the minimal and maximal length of the left interval of the subdivided edge $e$ and add a step to the minimal and maximal length of the right interval of the subdivided edge $e$. The while loop goes until the maximal length of the right interval is the same or bigger as the original maximal length of the edge $e$ or the maximal length of the left interval reaches $0$ or less.
 
