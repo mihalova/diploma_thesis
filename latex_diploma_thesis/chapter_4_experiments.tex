@@ -18,10 +18,9 @@ On the flies dataset (Tab. \ref{flies_without_rerooting}), our software has a pr
 
 \begin{table}[ht!]
 \caption{Flies: results of phylogenetic software on simulated dataset without rerooting the gene tree}
-\footnotesize
 \centering
 \begin{threeparttable}
-\begin{tabular}{| m{0.25\textwidth} | >{\centering\arraybackslash}m{0.1\textwidth} | >{\centering\arraybackslash}m{0.075\textwidth} | >{\centering\arraybackslash}m{0.075\textwidth} | >{\centering\arraybackslash}m{0.075\textwidth} | >{\centering\arraybackslash}m{0.075\textwidth} | >{\centering\arraybackslash}m{0.1\textwidth} |}
+\begin{tabular}{| m{0.25\textwidth} | >{\centering\arraybackslash}m{0.115\textwidth} | >{\centering\arraybackslash}m{0.08\textwidth} | >{\centering\arraybackslash}m{0.08\textwidth} | >{\centering\arraybackslash}m{0.08\textwidth} | >{\centering\arraybackslash}m{0.08\textwidth} | >{\centering\arraybackslash}m{0.115\textwidth} |}
    \hline
      \multirow{2}{*}{\textbf{Software\textsuperscript{a}}} &
      \multirow{2}{*}{\textbf{W/o sol\textsuperscript{b}}} & 
@@ -44,7 +43,7 @@ On the flies dataset (Tab. \ref{flies_without_rerooting}), our software has a pr
     \hline
   \end{tabular}
   \begin{tablenotes}
-                 \scriptsize
+                 \footnotesize
                  \item[a] Phylogenetic software with \emph{"t"} as tolerance setting.
                  \item[b] Percentage of gene trees without a solution.
                  \item[c] Precision of inferred duplications.
@@ -63,10 +62,9 @@ The results for the fungi dataset (Tab. \ref{fungi_without_rerooting}) are simil
 
 \begin{table}[ht!]
 \caption{Fungi: results of phylogenetic software on simulated dataset without rerooting the gene tree}
-\footnotesize
 \centering
  \begin{threeparttable}
-  \begin{tabular}{| m{0.25\textwidth} | >{\centering\arraybackslash}m{0.1\textwidth} | >{\centering\arraybackslash}m{0.075\textwidth} | >{\centering\arraybackslash}m{0.075\textwidth} | >{\centering\arraybackslash}m{0.075\textwidth} | >{\centering\arraybackslash}m{0.075\textwidth} | >{\centering\arraybackslash}m{0.1\textwidth} |}
+\begin{tabular}{| m{0.25\textwidth} | >{\centering\arraybackslash}m{0.115\textwidth} | >{\centering\arraybackslash}m{0.08\textwidth} | >{\centering\arraybackslash}m{0.08\textwidth} | >{\centering\arraybackslash}m{0.08\textwidth} | >{\centering\arraybackslash}m{0.08\textwidth} | >{\centering\arraybackslash}m{0.115\textwidth} |}
    \hline
      \multirow{2}{*}{\textbf{Software\textsuperscript{a}}} &
      \multirow{2}{*}{\textbf{W/o sol\textsuperscript{b}}} & 
@@ -89,7 +87,7 @@ The results for the fungi dataset (Tab. \ref{fungi_without_rerooting}) are simil
     \hline
   \end{tabular}
     \begin{tablenotes}
-                \scriptsize
+                \footnotesize
                  \item[a] Phylogenetic software with \emph{"t"} as tolerance setting.
                  \item[b] Percentage of gene trees without a solution.
                  \item[c] Precision of inferred duplications.
@@ -338,19 +336,54 @@ The best settings to infer the correct reconciliation on these datasets is toler
 
 \section{Real dataset}
 
-%ako sme spracovali align
-The correct gene tree is unknown in the real dataset, thus we use different metrics as with the simulated dataset. We measure the number of inferred duplications and gene losses overall gene trees in the dataset and the consistency score of duplications.
+The correct gene tree is unknown in the real dataset, thus we use different metrics as with the simulated dataset except for the average running time of computing the reconciliation for each gene tree. We measure the number of inferred duplications and gene losses and the average consistency score of duplications for each gene tree overall gene trees in the dataset.
 
-The duplication consistency score, $dcs$, shows the plausibility of inferred duplications. For a duplication node $u$ with children $v$ and $w$, the duplication consistency score $dcs(u) = (L \cup R) \mid (L \cap R)$ is computed as the union of $L$ and $R$ over intersection of $L$ and $R$, where $L$ is the set of species represented in left child $v$ and $R$ is the set of species represented in right child $w$.
+The duplication consistency score (Figure \ref{consistency_score}), $dcs$, was previously used in \cite{treebest} and \cite{spimap} to compare the plausibility of inferred duplications in different software. For a duplication node $u$ with children $v$ and $w$, the duplication consistency score is computed as the number of common species in both children nodes $v$ and $w$ divided by a number of all species present in the descendants of node $u$ such as $dcs(u) = (L \cup R) \mid (L \cap R)$, where $L$ is the set of species represented in left child $v$ and $R$ is the set of species represented in right child $w$. It is sensitive to recognizing the duplications that are wrongly inferred due to error in reconciliation. The higher the duplication consistency score, the more credible the duplication.
 
 \begin{figure}[ht!]
 	\centering
 	\label{consistency_score}
   	\includegraphics[width=\linewidth]{consistency_score}
   	\caption[Duplication consistency score]{\textbf{Duplication consistency score for node $w$}\\
-  	The set of species of left child $u$ is $L = \{A, B\}$ and the set of species of right child $v$ is $R = \{A, B\}$. The duplication consistency score is computed as: $dcs(w) = (L \cup R) \mid (L \cap R) = 2 \div 2 = 1$.
+  	The set of species of left child $u$ is $L = \{A, B\}$ and the set of species of right child $v$ is $R = \{A, B\}$. The duplication consistency score is computed as: $dcs(w) = (L \cup R) \mid (L \cap R) = 2 / 2 = 1$.
   	\\
   	\textbf{Duplication consistency score for node $r$}\\
-  	The set of species of left child $w$ is $L = \{A, B\}$ and the set of species of right child $z$ is $R = \{A, B, C, D\}$. The duplication consistency score is computed as: $dcs(r) = (L \cup R) \mid (L \cap R) = 2 \div 4 = 0.5$.}
+  	The set of species of left child $w$ is $L = \{A, B\}$ and the set of species of right child $z$ is $R = \{A, B, C, D\}$. The duplication consistency score is computed as: $dcs(r) = (L \cup R) \mid (L \cap R) = 2 / 4 = 0.5$.}
 \end{figure}
+
+The real fungi dataset consists of multiple sequence alignment for each gene family of the presented 5351 gene families. To obtain unrooted gene trees from the alignments, we run a RAxML program on each alignment with GTRGAMMA model. We run our software on the acquired unrooted gene trees with tolerance set to $1.0$ and step set to $0.01$ to infer the smallest possible number of duplications and gene losses. To compare, Notung and Treerecs on the acquired gene trees as well (Tab. \ref{real_dataset}). We do not run TreeFix on the real dataset as TreeFix takes only rooted gene trees.
+
+All compared software infer the same number of duplications. The least number of founded gene losses has Treerecs. Our software and Notung infer the same number of gene losses which is higher by $9525$ gene losses from the Treerecs. The duplication consistency score is also highest with Treerecs, which is understandable since it has the smallest number of gene losses. Notung has the duplication consistency score worse by $0.000012$ from the Treerecs. Even though we have the same number of duplications and gene losses with Notung, our duplication consistency score is smaller by $0.000014$ from Notung caused by multiple reconciliation solution, where some of them have duplications with worse duplication consistency score than Notung. The best average running time of computing the reconciliation for each gene tree has Treerecs. Our average running time is worse by $75.22\%$ from Treerecs and better by $20.51\%$ from Notung.
+
+\begin{table}[ht!]
+\caption{Results of phylogenetic software on real dataset}
+\centering
+\begin{threeparttable}
+\begin{tabular}{| m{0.25\textwidth} | >{\centering\arraybackslash}m{0.15\textwidth} | >{\centering\arraybackslash}m{0.15\textwidth} | >{\centering\arraybackslash}m{0.15\textwidth} | >{\centering\arraybackslash}m{0.15\textwidth} |}
+   \hline
+     \textbf{Software\textsuperscript{a}} &
+     \textbf{Dup\textsuperscript{b}} &
+     \textbf{Loss\textsuperscript{c}} &
+     \textbf{DCS\textsuperscript{d}} &
+     \textbf{Runtime\textsuperscript{e}}\\
+    \hline
+    Our & 20534 & 67521 & 0.106953 & 0.679773\\
+    Notung & 20534 & 67521 & 0.106967 & 0.855182\\
+    Treerecs & 20534 & 57996 & 0.106979 & 0.168448\\
+    \hline
+    \end{tabular}
+  \begin{tablenotes}
+                 \footnotesize
+                 \item[a] Phylogenetic software with \emph{"t"} as tolerance setting.
+                 \item[b] Number of inferred duplications.
+                 \item[c] Number of inferred gene losses.
+                 \item[d] Average duplication consistency score for each gene tree.
+                 \item[e] Average runtime of computing the reconciliation for each gene tree in seconds.
+             \end{tablenotes}
+         \end{threeparttable}
+  \label{real_dataset}
+\end{table}
+
+
+
 

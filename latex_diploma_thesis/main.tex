@@ -105,33 +105,17 @@
 %sk abstrakt
 \chapter*{Abstrakt}
 
-Cieľom diplomovej práce bolo implementovať softvér pre izometrickú rekonciliáciu génových stromov a experimentálne otestovať jeho presnosť na simulovaných aj reálnych biologických dátach. Práca je rozdelená do piatich kapitol.
-
-Prvá kapitola je venovaná základnej terminológií z oblasti bioinformatiky a prehľadu rôznych prístupov k riešeniu problému rekonciliácie s názornými riešeniami tejto problematiky v podobe softvérov.
-
-Ďalšia časť uvádza algoritmy a implementovaný softvér. Opisujú sa vytvorené algoritmy, špecifikujú sa vlastnosti implementovaného softvéru, spôsob spracovania vstupov a následné výstupy.
-
-Štvrtá kapitola prezentuje testovaciu sadu a opisuje vykonané experimenty na implementovanom softvéri pre izometrickú rekonciliáciu.
-
-Záverečná kapitola sa zaoberá interpretáciou výsledkov testovania implementovaného softvéru. 
+Evolučná história môže byť zobrazená fylogenetickými stromami. Používame dva typy fylogenetických stromov: strom druhov a génový strom. Strom druhov predstavuje vývoj druhu a genový strom predstavuje vývoj jedného génu. Izometrická rekonciliácia génových stromov je problém mapovania génového stromu na strom druhov so zachovaním dĺžok hrán. V tejto práci sa zameriavame na riešenie problému izometrickej rekonciliácie génových stromov s nepresnými dĺžkami hrán. Nadviazali sme na predchádzajúci výskum a predstavujeme dva algoritmy, ktoré sú implementované v softvéri v kombinácii s algoritmami z predchádzajúceho výskumu. Implementovaný softvér je experimentálne testovaný na simulovaných a reálnych biologických dátach a porovnávaný s inými softvérmi.
 \\\\
-\textbf{Kľúčové slová:} izometrická rekonciliácia génového stromu, nepresné dĺžky hrán, fylogenetický strom
+\textbf{Kľúčové slová:} izometrická rekonciliácia génových stromov, nepresné dĺžky hrán, fylogenetický strom
 \vfill\eject 
 
 %en abstrakt
 \chapter*{Abstract}
 
-The main goal of the diploma thesis was to implement software for isometric gene tree reconciliation and to experimentally evaluate its accuracy on simulated and real biological data. The thesis is divided into five chapters.
-
-The first chapter presents the basic terminology in the field of bioinformatics and an overview of different approaches to solving the problem of reconciliation with concrete solutions to this problem in the form of software.
-
-The next section presents algorithms and implemented software. The created algorithms are described, the properties of the implemented software, the method of input processing and subsequent outputs are specified.
-
-The fourth chapter presents a test set and describes the experiments performed on the implemented software for isometric reconciliation.
-
-The final chapter deals with the interpretation of the results of testing the implemented software.
+Evolutionary history can be presented by phylogenetic trees. We use two types of phylogenetic trees: species tree and gene tree. A species tree represents the evolution of a species and a gene tree represents the evolution of one gene. Isometric gene tree reconciliation is a problem of mapping the gene tree to species tree with preserving the edge lengths. In this work, we focus on solving the problem of isometric gene tree reconciliation with inexact branch lengths. We built on the previous research and present two algorithms that are implemented in software in combination with algorithms from previous research. The implemented software is experimentally tested on simulated and real biological data and compared with other software.
 \\\\
-\textbf{Keywords:} isometric gene tree  reconciliation, inexact branch lengths, phylogenetic tree
+\textbf{Keywords:} isometric gene tree reconciliation, inexact branch lengths, phylogenetic tree
 \vfill\eject  
 
 %zoznam obrazkov
@@ -145,7 +129,7 @@ The final chapter deals with the interpretation of the results of testing the im
 \mainmatter
 
 %úvod
-\chapter*{Introduction}
+\input introduction.tex
 \addcontentsline{toc}{chapter}{Introduction}
 \vfill\eject
 
@@ -153,24 +137,23 @@ The final chapter deals with the interpretation of the results of testing the im
 \input chapter_2_algorithms.tex
 \input chapter_3_implementation.tex
 \input chapter_4_experiments.tex
-\input chapter_5_results.tex
+
 
 \backmatter
 
 %záver
-\chapter*{Conclusion}
-\addcontentsline{toc}{chapter}{Conclusion}
+\input conclusion.tex
 \vfill\eject 
-
-%príloha
-\chapter*{Appendix}
-\addcontentsline{toc}{chapter}{Appendix}
-\vfill\eject 
-
 
 
 \nocite{*}
 \bibliographystyle{plain}
 \bibliography{bibliography}
+
+%príloha
+\input appendix.tex
+
+
+
 
 \end{document}
