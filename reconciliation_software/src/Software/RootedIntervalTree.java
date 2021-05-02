@@ -14,7 +14,6 @@ public class RootedIntervalTree {
         this.speciesTree = speciesTree;
         this.leafMap = leafMap;
         this.root = enroot(newRoot, sourceEdge);
-        setLcas(root);
     }
 
     public RootedIntervalTree(RootedIntervalNode root, RootedExactTree speciesTree, TreeMap<String, String> leafMap) {
@@ -64,37 +63,22 @@ public class RootedIntervalTree {
             RootedExactNode leftS = u.getLeft().getSpeciesNodeBelow();
             RootedExactNode speciesNode;
             double nodesDifference = u.getLcaS().getDepth() - u.getMaxD();
-            if (u.getMaxD() < u.getLcaS().getDepth() && nodesDifference > EPSILON) { //not mapped to lca
+            if (nodesDifference > EPSILON) { //not mapped to lca
                 if (rightS.getDepth() > leftS.getDepth())
                     speciesNode = computeSpeciesNodeBelow(u, leftS);
                 else
                     speciesNode = computeSpeciesNodeBelow(u, rightS);
                 u.setMappedToLca(false);
                 u.setSpeciesNodeBelow(speciesNode);
-                u.setLevel(u.getSpeciesNodeBelow().getLevel());
             } else { //mapped to lca
-                //more gene nodes can mapped to root, only first one is speciation
-                if (rightS == u.getLcaS() && leftS == u.getLcaS()) {
-                    //if both parents have the same speciesNodeBelow and both are mapped and are not leaves,
-                    // we need to set one of them to unmapped
-                    if (u.getRight().getMappedToLca() && u.getLeft().getMappedToLca()
-                    && u.getRight().getRight() != null && u.getLeft().getRight() != null){
-                        RootedIntervalNode child;
-                        if (u.getRight().getMaxD() > u.getLeft().getMaxD())
-                            child = u.getLeft();
-                        else
-                            child = u.getRight();
-                        levelDistanceFromChildren(child);
-                    }
-                     u.setMappedToLca(false);
-                } else if (rightS == u.getLcaS() || leftS == u.getLcaS()) {
+               if (rightS == u.getLcaS() || leftS == u.getLcaS()) {
                     //if at least one parent have the same speciesNodeBelow
                     u.setMappedToLca(false);
                 } else
                     u.setMappedToLca(true);
                 u.setSpeciesNodeBelow(u.getLcaS());
-                u.setLevel(u.getSpeciesNodeBelow().getLevel());
             }
+            u.setLevel(u.getSpeciesNodeBelow().getLevel());
             levelDistanceFromChildren(u);
         }
     }
@@ -123,8 +107,6 @@ public class RootedIntervalTree {
         if (u.getLeft() != null) {
             dl.sum(countDL(u.getRight()), countDL(u.getLeft()));
         }
-        //System.out.println("Node: " + u.getName());
-        //RootedExactNode lca = u.getLcaS();
 
         int loss = 0;
         int duplication = 0;
@@ -132,93 +114,14 @@ public class RootedIntervalTree {
         loss += u.getLevelDistanceFromParent();
         if (u.getName().equals("root") && !u.getLcaS().getName().equals("root") && countLossesAboveRoot)
             loss += u.getLevel();
-        //System.out.println("\tLoss: " + losses);
 
         if (!u.getMappedToLca()) {
-            //System.out.println("\tDuplication: " + 1);
             duplication += 1;
         }
         dl.sum(dl, new DL(duplication, loss));
         return dl;
     }
 
-
-    // novy koren 'u' genoveho stromu sa mapuje do svojho maxD
-    // v detoch 'v' a 'w' uz presiel upward-downward algoritmus a ich intervaly hlbky mapovania su urcene linearnym programovanim
-    // obe deti sa nemusia namapovat do svojich maximalnych hlbok, lebo nemusi na to vystacit dlzka korenovej hrany
-    // chceme najst hlbky namapovania deti, aby pocet udalosti bol co najmensi
-    // nastavi celkovy Software.DL count stromu
-    /*public static void findMostParsimoniousDepths(Software.RootedIntervalNode u, Software.Edge rootEdge) {
-        Software.RootedIntervalNode v = u.getLeft();
-        Software.RootedIntervalNode w = u.getRight();
-
-        //koren nema stanoveny lcaS
-        u.setLcaS(Software.RootedExactTree.lca(v.getLcaS(),w.getLcaS()));
-
-        //detom sa orezu intervaly zhora kvoli nastavenej hlbke korena
-        Double newVmin = Software.Reconciliator.linear2(0, true, v, w, u.getMaxD(), rootEdge, Software.Reconciliator.getDirPath());
-        newVmin = Software.Reconciliator.round(newVmin);
-        Double newWmin = Software.Reconciliator.linear2(1, true, v, w, u.getMaxD(), rootEdge, Software.Reconciliator.getDirPath());
-        newWmin = Software.Reconciliator.round(newWmin);
-
-        v.setMinD(newVmin);
-        w.setMinD(newWmin);
-
-        //detom sa vypocita Software.DL pre kazdy podinterval
-        v.countSubintervalDL();
-        w.countSubintervalDL();
-
-        double bestVdepth = Integer.MAX_VALUE;
-        double bestWdepth = Integer.MAX_VALUE;
-        Software.DL bestDL = new Software.DL(Integer.MAX_VALUE/2, Integer.MAX_VALUE/2);
-
-        assert v.intervalsSize() > 0 && w.intervalsSize() > 0;
-
-        for (int i = 0; i < v.intervalsSize(); i++) {
-            Software.Interval vInterval = v.getInterval(i);
-
-            //mapovanie na vrch intervalu ma rovnako vela Software.DL
-            double vDepth = vInterval.getMinDepth();
-
-            //hlbku w vypocitame z LP
-            Double wDepth = Software.Reconciliator.linearW(0, false, vDepth, w, u.getMaxD(), rootEdge, Software.Reconciliator.getDirPath());
-            wDepth = Software.Reconciliator.round(wDepth);
-            Software.DL DLu = u.countDL(u.getMaxD(), vDepth, wDepth);
-
-            //v praci binarne vyhladavanie, tu len prechod cez podintervaly
-            for (int j = w.intervalsSize() - 1; j >= 0; j--) {
-                Software.Interval wInterval = w.getInterval(j);
-                //ak sa rovna wInterval.getMaxD(), moze sa namapovat aj do nizsieho intervalu
-                if(wInterval.getMaxDepth() == wDepth && j > 0) continue;
-                //wDepth patri do intervalu
-                if(wInterval.getMinDepth() <= wDepth && wInterval.getMaxDepth() >= wDepth){
-                    Software.DL minDL = new Software.DL(DLu.getDuplication() + vInterval.getDl().getDuplication() + wInterval.getDl().getDuplication(),
-                            DLu.getLoss() + vInterval.getDl().getLoss() + wInterval.getDl().getLoss());
-                    if(minDL.getSum() < bestDL.getSum()){
-                        bestDL = minDL;
-                        bestVdepth = vDepth;
-                        bestWdepth = wDepth;
-                        break;
-                    }
-                }
-            }
-        }
-
-        //nastavim v podstromoch v a w konkretne hlbky mapovania najuspornejsieho riesenia
-        v.setDepth(bestVdepth);
-        w.setDepth(bestWdepth);
-        downwardSetSolution(v);
-        downwardSetSolution(w);
-
-
-        // ostava este vypocitat straty, ku ktorym dojde po ceste z korena S do mapovania korena G
-        // do korena S musi vstupovat jeden gen, ten sa musi stratit vo vrcholoch na spominanej ceste
-        int lossesOnPathBetweenRoots = Software.RootedExactTree.pathToRoot(u.getBearingNode(u.getMaxD())).size() - 1;
-
-        //nastav celkove Software.DL korena
-        u.setTotalDL(new Software.DL(bestDL.getDuplication(), bestDL.getLoss()+ lossesOnPathBetweenRoots));
-    }
-*/
     private RootedIntervalNode enroot(UnrootedNode uNode, Edge sourceEdge) {
         RootedIntervalNode rNode = new RootedIntervalNode(uNode.getName());
 
@@ -258,7 +161,7 @@ public class RootedIntervalTree {
         return rNode;
     }
 
-    private void setLcas(RootedIntervalNode node) {
+    public void setLcas(RootedIntervalNode node) {
         if (node.getRight() != null) {
             setLcas(node.getRight());
             setLcas(node.getLeft());
@@ -293,9 +196,9 @@ public class RootedIntervalTree {
         maxD = Math.min(maxD, v.getLcaS().getDepth());
         //no solution
         if (maxD < minD) {
-            if (minD - maxD > EPSILON)
+            if (minD - maxD > EPSILON) {
                 return false;
-            else {
+            } else {
                 maxD = minD;
             }
         }
@@ -314,16 +217,9 @@ public class RootedIntervalTree {
         v.getLeft().setMaxD(maxDepthL);
         v.getRight().setMinD(minDepthR);
         v.getRight().setMaxD(maxDepthR);
-        //System.out.println(v.getName() + " " + minD +" "+maxD);
         downward(v.getLeft());
         downward(v.getRight());
     }
 
-   /* private static void downwardSetSolution(Software.RootedIntervalNode v) {
-        if(v.getLeft() == null) return;
-        v.getLeft().setDepth(Math.min(v.getDepth() + v.getLeft().getMaxL(), v.getLeft().getMaxD()));
-        v.getRight().setDepth(Math.min(v.getDepth() + v.getRight().getMaxL(), v.getRight().getMaxD()));
-        downwardSetSolution(v.getLeft());
-        downwardSetSolution(v.getRight());
-    }*/
+
 }

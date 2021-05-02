@@ -1,22 +1,18 @@
 package Software;
 
-import sun.rmi.runtime.Log;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
+import static Software.Main.EPSILON;
+
 public class Parser {
-    static UnrootedTree G_unrooted;
-    static RootedIntervalTree G_rooted;
-    static int k;
 
-    String pattern = "##.##########";
-    DecimalFormat decimalFormat = new DecimalFormat(pattern);
-
+    int k;
     public UnrootedTree parseUnrootedTree(String path, Double tolerance, List<Pair<String, String>> Smapping) {
-        G_unrooted = new UnrootedTree();
+        UnrootedTree G_unrooted = new UnrootedTree();
         k = 0;
         boolean oneNodeTree = false, twoNodeTree = false;
         UnrootedNode first, second = null, third = null;
@@ -64,13 +60,13 @@ public class Parser {
             k++;
             G_unrooted.addNode(node);
             first = parseNewickUnrootedNode(
-                    str.substring(0, firstCommaIndex), node, tolerance, Smapping);
+                    G_unrooted, str.substring(0, firstCommaIndex), node, tolerance, Smapping);
             if (!oneNodeTree) {
-                second = parseNewickUnrootedNode(
+                second = parseNewickUnrootedNode(G_unrooted,
                         str.substring(firstCommaIndex + 1, secondCommaIndex), node, tolerance, Smapping);
             }
             if (!twoNodeTree && !oneNodeTree) {
-                third = parseNewickUnrootedNode(
+                third = parseNewickUnrootedNode(G_unrooted,
                         str.substring(secondCommaIndex + 1), node, tolerance, Smapping);
             }
             for (Edge e : first.getEdges()) {
@@ -99,12 +95,15 @@ public class Parser {
         return G_unrooted;
     }
 
-    private UnrootedNode parseNewickUnrootedNode(String str, UnrootedNode nodeFrom, Double tolerance, List<Pair<String, String>> Smapping) {
+    private UnrootedNode parseNewickUnrootedNode(UnrootedTree G_unrooted, String str, UnrootedNode nodeFrom, Double tolerance, List<Pair<String, String>> Smapping) {
         int colonIndex = str.lastIndexOf(':');
-        String time = str.substring(colonIndex + 1);
+        String time = str.substring(colonIndex +1);
         double[] interval = getTimeInterval(time, tolerance);
 
-        str = str.substring(0, colonIndex);
+        int in =  str.lastIndexOf(')');
+        if (in == -1)
+            in = colonIndex;
+        str = str.substring(0, in);
         if (!str.startsWith("(")) {
             //tu bude parsovanie leafmap G0_S1 = nodeG string "_" nodeS string
             String[] mapping = getMapping(str, Smapping);
@@ -138,9 +137,9 @@ public class Parser {
             int commaIndex = i;
 
             UnrootedNode first = parseNewickUnrootedNode(
-                    str.substring(1, commaIndex), node, tolerance, Smapping);
+                    G_unrooted, str.substring(1, commaIndex), node, tolerance, Smapping);
             UnrootedNode second = parseNewickUnrootedNode(
-                    str.substring(commaIndex + 1, str.length() - 1), node, tolerance, Smapping);
+                    G_unrooted, str.substring(commaIndex + 1, str.length()), node, tolerance, Smapping);
 
             for (Edge e : first.getEdges()) {
                 if (e.otherNode(first).equals(node)) {
@@ -167,7 +166,7 @@ public class Parser {
             }
         } else {
             int i = 0;
-            while (!str.contains(Smapping.get(i).getFirst())) {
+            while (!str.startsWith(Smapping.get(i).getFirst())) {
                 i++;
                 if (i == Smapping.size())
                     break;
@@ -186,7 +185,9 @@ public class Parser {
         time = time.replaceAll(",", ".");
         if (tolerance != null && !time.contains("-")) {
             //nastavenie tolerance pre hrany
-            double t = Double.parseDouble(time);
+            double t = round(Double.parseDouble(time));
+            if (t == 0.0)
+                t = 1;
             double[] interval = makeInterval(t, tolerance);
             min_time = interval[0];
             max_time = interval[1];
@@ -203,6 +204,10 @@ public class Parser {
     public static double[] makeInterval(double time, Double tolerance) {
         double min = time - (tolerance * time);
         double max = time + (tolerance * time);
+        if (min < 2*EPSILON)
+            min = 2*EPSILON;
+        if (max < 2*EPSILON)
+            max = 2*EPSILON;
         return new double[]{min, max};
     }
 
@@ -343,7 +348,7 @@ public class Parser {
     }
 
     public RootedIntervalTree parseRootedIntervalTree(String path, Double tolerance, List<Pair<String, String>> Smapping, RootedExactTree speciesTree) {
-        G_rooted = new RootedIntervalTree();
+        RootedIntervalTree G_rooted = new RootedIntervalTree();
 
         try (Scanner s = new Scanner(new File(path))) {
             String str = "";
@@ -356,8 +361,8 @@ public class Parser {
             G_rooted.getRoot().setMaxL(0.0);
             G_rooted.getRoot().setLevel(0);
             //nodes pod root
-            RootedIntervalNode left = parseIntervalNode(str.substring(param[0], param[1]), tolerance, Smapping, speciesTree, 0.0);
-            RootedIntervalNode right = parseIntervalNode(str.substring(param[1] + 1, param[2]), tolerance, Smapping, speciesTree, 0.0);
+            RootedIntervalNode left = parseIntervalNode(G_rooted, str.substring(param[0], param[1]), tolerance, Smapping, speciesTree, 0.0);
+            RootedIntervalNode right = parseIntervalNode(G_rooted, str.substring(param[1] + 1, param[2]), tolerance, Smapping, speciesTree, 0.0);
 
             if (right == null || left == null) {
                 RootedIntervalNode node;
@@ -381,7 +386,7 @@ public class Parser {
         return G_rooted;
     }
 
-    private RootedIntervalNode parseIntervalNode(String str, Double tolerance, List<Pair<String, String>> Smapping, RootedExactTree speciesTree, double savedTime) {
+    private RootedIntervalNode parseIntervalNode(RootedIntervalTree G_rooted, String str, Double tolerance, List<Pair<String, String>> Smapping, RootedExactTree speciesTree, double savedTime) {
         RootedIntervalNode node;
         int[] params = {0, 0, 0};
         if (str.startsWith("(")) {
@@ -403,15 +408,17 @@ public class Parser {
                 System.err.println("Wrong newick format inner");
                 return null;
             }
-            double time = Double.parseDouble(str.substring(params[0] + 1));
+            String pom = str.substring(params[0]);
+            int a = pom.indexOf(":");
+            double time = Double.parseDouble(pom.substring(a+1));
             if (savedTime > 0) {
                 time += savedTime;
                 savedTime = 0.0;
             }
-            double[] interval = getTimeInterval(decimalFormat.format(time), tolerance);
+            double[] interval = getTimeInterval(String.valueOf(time), tolerance);
             //nodes pod
-            RootedIntervalNode left = parseIntervalNode(str.substring(1, params[1]), tolerance, Smapping, speciesTree, savedTime);
-            RootedIntervalNode right = parseIntervalNode(str.substring(params[1] + 1, params[2]), tolerance, Smapping, speciesTree, savedTime);
+            RootedIntervalNode left = parseIntervalNode(G_rooted, str.substring(1, params[1]), tolerance, Smapping, speciesTree, savedTime);
+            RootedIntervalNode right = parseIntervalNode(G_rooted, str.substring(params[1] + 1, params[2]), tolerance, Smapping, speciesTree, savedTime);
 
             if (left != null && right != null) {
                 //ulozi nazov nodu v spravnom poradi (napr. S1S2)
@@ -460,7 +467,7 @@ public class Parser {
             if (savedTime != 0) {
                 time += savedTime;
             }
-            interval = getTimeInterval(decimalFormat.format(time), tolerance);
+            interval = getTimeInterval(String.valueOf(time), tolerance);
             if (!mapping[0].equals("")) {
                 G_rooted.addMapping(mapping[0], mapping[1]);
                 node = new RootedIntervalNode(mapping[0]);
@@ -489,7 +496,7 @@ public class Parser {
     }
 
     public UnrootedTree rootedToUnrootedTree(RootedIntervalTree t){
-        G_unrooted = new UnrootedTree();
+        UnrootedTree G_unrooted = new UnrootedTree();
         k = 0;
         RootedIntervalNode root = t.getRoot();
         double newMinL = root.getLeft().getMinL() + root.getRight().getMinL();
@@ -520,10 +527,10 @@ public class Parser {
             one.setMaxL(newMaxL);
         }
 
-        first = rootedToUnrootedNode(one, node);
-        second = rootedToUnrootedNode(two, node);
+        first = rootedToUnrootedNode(G_unrooted, one, node);
+        second = rootedToUnrootedNode(G_unrooted, two, node);
         if (three != null) {
-            third = rootedToUnrootedNode(three, node);
+            third = rootedToUnrootedNode(G_unrooted, three, node);
         }
         for (Edge e : first.getEdges()) {
             if (e.otherNode(first).equals(node)) {
@@ -546,7 +553,7 @@ public class Parser {
         return G_unrooted;
     }
 
-    public UnrootedNode rootedToUnrootedNode(RootedIntervalNode originalNode, UnrootedNode nodeFrom) {
+    public UnrootedNode rootedToUnrootedNode(UnrootedTree G_unrooted, RootedIntervalNode originalNode, UnrootedNode nodeFrom) {
         if (originalNode.getRight() == null) {
             //mapping je už hotove predtym
             UnrootedNode node = new UnrootedNode(originalNode.getName());
@@ -563,8 +570,8 @@ public class Parser {
             G_unrooted.addEdge(edgeFrom);
             node.addEdge(edgeFrom);
 
-            UnrootedNode first = rootedToUnrootedNode(originalNode.getLeft(), node);
-            UnrootedNode second = rootedToUnrootedNode(originalNode.getRight(), node);
+            UnrootedNode first = rootedToUnrootedNode(G_unrooted, originalNode.getLeft(), node);
+            UnrootedNode second = rootedToUnrootedNode(G_unrooted, originalNode.getRight(), node);
 
             for (Edge e : first.getEdges()) {
                 if (e.otherNode(first).equals(node)) {
@@ -578,5 +585,11 @@ public class Parser {
             }
             return node;
         }
+    }
+
+    static Double round(Double value) {
+        BigDecimal bd = new BigDecimal(Double.toString(value));
+        bd = bd.setScale(0, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }

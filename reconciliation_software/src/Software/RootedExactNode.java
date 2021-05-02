@@ -6,11 +6,24 @@ public class RootedExactNode extends Node {
     RootedExactNode right;
     RootedExactNode left;
     double depth;
+    int level;
+
+    public RootedExactNode(String name) {
+        super(name);
+    }
 
     public RootedExactNode(String name, double depth, int level){
         super(name);
         this.depth = Reconciliator.round(depth);
         this.level = level;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int l) {
+        this.level = l;
     }
 
     public double getDepth() {

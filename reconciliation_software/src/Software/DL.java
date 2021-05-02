@@ -22,14 +22,6 @@ public class DL {
         return loss;
     }
 
-    public void addDuplication(int D) {
-        this.duplication += D;
-    }
-
-    public void addLoss(int L) {
-        this.loss += L;
-    }
-
     public int getSum(){
         return duplication + loss;
     }

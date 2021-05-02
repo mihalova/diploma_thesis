@@ -119,24 +119,31 @@ public class Loader {
         if (step == null)
             step = 0.01;
 
-        if (rootedGeneTree)
+        if (rootedGeneTree) {
             G_rooted = loadRootedGeneTreeFromFile(dirPathGene, p, tolerance, Smapping, S);
-        else
+            if(G_rooted == null)
+                return null;
+            else if (G_rooted.getLeafMap().isEmpty()){
+                System.out.println("Wrong leaf mapping.");
+                return null;
+            }
+        }
+        else {
             G_unrooted = loadUnrootedGeneTreeFromFile(dirPathGene, p, tolerance, Smapping);
+            if(G_unrooted == null)
+                return null;
+            else if (G_unrooted.getLeafMap().isEmpty()){
+                System.out.println("Wrong leaf mapping.");
+                return null;
+            }
+        }
         if (reroot && G_rooted != null) {
             G_unrooted = p.rootedToUnrootedTree(G_rooted);
             G_unrooted.setLeafMap(G_rooted.getLeafMap());
             G_rooted = null;
         }
 
-        if (G_rooted != null || G_unrooted != null) {
-            if (Smapping.isEmpty() || G_rooted.getLeafMap().isEmpty() || G_unrooted.getLeafMap().isEmpty()) {
-                System.out.println("Wrong leaf mapping.");
-                return null;
-            }
-            return new Object[]{S, G_rooted, G_unrooted, step, countLossesAboveRoot, dirPathGene, printType, epsilon};
-        } else
-            return null;
+        return new Object[]{S, G_rooted, G_unrooted, step, countLossesAboveRoot, dirPathGene, printType, epsilon, tolerance};
     }
 
     private RootedExactTree loadSpeciesTreeFromFile(String dirPath, Parser p) {
