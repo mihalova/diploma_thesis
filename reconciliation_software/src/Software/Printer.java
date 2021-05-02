@@ -54,6 +54,7 @@ public class Printer {
                     }
                 } else {
                     fw.write(printToTreeFile(solutions.get(i).getRoot()) + ";");
+                    fw.write(System.lineSeparator());
                 }
             }
             if (same != 0) {

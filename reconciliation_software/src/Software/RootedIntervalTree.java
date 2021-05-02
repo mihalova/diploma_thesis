@@ -127,6 +127,7 @@ public class RootedIntervalTree {
 
         if (uNode.getEdges().size() != 3 && uNode.getEdges().size() != 1) {
             System.err.println("Wrong number of edges for node " + uNode.getEdges());
+            System.exit(1);
         }
 
         for (Edge e : uNode.getEdges()) {
@@ -137,6 +138,7 @@ public class RootedIntervalTree {
             UnrootedNode otherNode = e.otherNode(uNode);
             if (otherNode == null) {
                 System.err.println("Mistake in gene tree file.");
+                System.exit(1);
             }
 
             RootedIntervalNode child = enroot(otherNode, e); //zakorenim strom od noveho root smerom dole
@@ -151,11 +153,13 @@ public class RootedIntervalTree {
                 rNode.setRight(child);
             } else {
                 System.err.println("Node " + uNode.getName() + " doesn't contain source edge.");
+                System.exit(1);
             }
         }
         //skontroluje, ci su dobre nastavene deti
         if (rNode.getLeft() != null && rNode.getRight() == null) {
             System.err.println("There are 2 edges for node " + rNode.getName());
+            System.exit(1);
         }
 
         return rNode;

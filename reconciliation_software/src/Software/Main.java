@@ -2,7 +2,6 @@ package Software;
 
 import java.util.*;
 
-
 public class Main {
 
     public static double EPSILON;
@@ -23,7 +22,7 @@ public class Main {
                     System.out.println("No solution for given gene tree.");
                 }
             }
-    }
+        }
 }
 
 

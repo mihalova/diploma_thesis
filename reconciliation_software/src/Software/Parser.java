@@ -266,7 +266,7 @@ public class Parser {
                 return null;
             }
             //vzdialenost od najblizsieho node
-            Double depth = Double.parseDouble(str.substring(params[0]+1));
+            Double depth = Double.parseDouble(str.substring(params[0]+1))+parentDepth;
             //nodes pod
             RootedExactNode left = parseNode(str.substring(1, params[1]), depth, level + 1, nodes);
             RootedExactNode right = parseNode(str.substring(params[1] + 1, params[0]-1), depth, level + 1, nodes);
