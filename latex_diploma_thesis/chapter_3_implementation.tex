@@ -1,10 +1,10 @@
 \chapter{Implementation} \label{Implementation}
 
-The implementation of our software is built on Chládek's source code from his diploma thesis \cite{chladek_thesis}. We apply his implementation of basic classes for defining the phylogenetic tree, parsing an unrooted gene tree and a rooted species tree from a file with several changes. We also use his implementation of the two-pass algorithm, which we mentioned before in Chapter \ref{two-pass_algorithm}, to compute the gene tree possible mapping depths.
+The implementation of our software is built on Chládek's source code from his diploma thesis~\cite{chladek_thesis}. We apply his implementation of basic classes for defining the phylogenetic tree, parsing an unrooted gene tree and a rooted species tree from a file with several changes. We also use his implementation of the two-pass algorithm, which we mentioned before in Chapter~\ref{two-pass_algorithm}, to compute the gene tree possible mapping depths.
 
-On this basis, we implement our algorithms described in Chapter \ref{Algorithms} to find the most parsimonious reconciliation.
+On this basis, we implement our algorithms described in Chapter~\ref{Algorithms} to find the most parsimonious reconciliation.
 
-Our software is implemented in the programming language Java and has a command-line interface.
+Our software is implemented in the programming language Java and has a~command-line interface.
 
 \section{Classes and variables}
 %variables
@@ -29,7 +29,7 @@ The implemented software consists of 15 classes that we briefly introduce:
 
 \section{Differences from the original source code}
 
-As our source code is built on Chládek's source code, we show the differences in relations and entities between source codes in Fig. \ref{relation_diagram}. The differences, new variables and classes are described below by classes in more details.\\
+As our source code is built on Chládek's source code, we show the differences in relations and entities between source codes in Fig.~\ref{relation_diagram}. The differences, new variables and classes are described below by classes in more details.\\
 \begin{figure}[ht!]
 	\centering
 	\label{relation_diagram}
@@ -39,11 +39,11 @@ As our source code is built on Chládek's source code, we show the differences i
 
 \noindent \textbf{Class Interval}
 
-We change the name of parameters to \emph{minLength} and \emph{maxLength} and delete the unnecessary variable \emph{OriginalMappingDepth} as we use the \emph{Interval} to store the minimal and maximal length of new possible edges that can be created after subdividing the original root edge in function\emph{getIntervals} (Algorithm \ref{getIntervals}) in \emph{Reconciliator} class. The parameters are numbers of type double.
+We change the name of parameters to \emph{minLength} and \emph{maxLength} and delete the unnecessary variable \emph{OriginalMappingDepth} as we use the \emph{Interval} to store the minimal and maximal length of new possible edges that can be created after subdividing the original root edge in function\emph{getIntervals} (Algorithm~\ref{getIntervals}) in \emph{Reconciliator} class. The~parameters are numbers of type double.
 
 \noindent \textbf{Class RootedExactNode}
 
-In the \emph{RootedExactNode} class, we define a new \emph{level} variable. It is a number of type integer. The variable is set while parsing the species tree in the \emph{Parser} class and used for computing the level of gene nodes as shown in function \emph{computeLevel} (Algorithm \ref{computeLevel}) in \emph{Reconciliator} class.
+In the \emph{RootedExactNode} class, we define a new \emph{level} variable. It is a number of type integer. The variable is set while parsing the species tree in the \emph{Parser} class and used for computing the level of gene nodes as shown in function \emph{computeLevel} (Algorithm~\ref{computeLevel}) in \emph{Reconciliator} class.
 
 \noindent \textbf{Class RootedExactTree}
 
@@ -51,21 +51,21 @@ We add structure \emph{TreeMap} containing leaves, where the key is the name of 
 
 \noindent \textbf{Class RootedIntervalNode}
 
-The unnecessary \emph{depth} variable was deleted as we store the mapping depth of a \emph{RootedIntervalNode} in variables \emph{minDepth} and \emph{maxDepth}. We also delete the \emph{DL}, because we do not store the reconciliation score in nodes and the list of \emph{Interval} since we have the mapping depth interval and the interval of the edge above stored in separated variables. Besides, we add new variables: \emph{level}, \emph{mappedToLca}, \emph{levelDistanceFromParent} and \emph{speciesNodeBelow} that are computed and used in algorithms in Chapter \ref{counting_algorithm}. The \emph{level} and \emph{levelDistanceFromParent} are numbers of type integer. The \emph{mappedToLca} is data type boolean \emph{speciesNodeBelow} is object of type \emph{RootedExactNode}.
+The unnecessary \emph{depth} variable was deleted as we store the mapping depth of a \emph{RootedIntervalNode} in variables \emph{minDepth} and \emph{maxDepth}. We also delete the \emph{DL}, because we do not store the reconciliation score in nodes and the list of \emph{Interval} since we have the mapping depth interval and the interval of the edge above stored in separated variables. Besides, we add new variables: \emph{level}, \emph{mappedToLca}, \emph{levelDistanceFromParent} and \emph{speciesNodeBelow} that are computed and used in algorithms in Chapter~\ref{counting_algorithm}. The \emph{level} and \emph{levelDistanceFromParent} are numbers of type integer. The \emph{mappedToLca} is data type boolean \emph{speciesNodeBelow} is object of type \emph{RootedExactNode}.
 
 \noindent \textbf{Class RootedIntervalTree}
 
-In the \emph{RootedIntervalTree}, we implement our algorithms from Chapter \ref{counting_algorithm} and their are called from the \emph{Reconciliator} class. We add the variable of type \emph{DL} to store the number of duplication and gene losses inferred in the gene tree and variable \emph{CountLossesAboveRoot} to distinguish if the user wants to count losses above root or not.
+In the \emph{RootedIntervalTree}, we implement our algorithms from Chapter~\ref{counting_algorithm} and their are called from the \emph{Reconciliator} class. We add the variable of type \emph{DL} to store the number of duplication and gene losses inferred in the gene tree and variable \emph{CountLossesAboveRoot} to distinguish if the user wants to count losses above root or not.
 
 \noindent \textbf{Class Parser}
 
-We change the parsing method for a species tree and an unrooted gene tree. In the species tree parsing method, we infer \emph{level} in species tree nodes. In the unrooted gene tree parsing method, we resolve inexact branch lengths if the given gene tree has inexact branches or we transform exact branch lengths to inexact branch lengths if the given gene tree has exact branch lengths. To modify the exact branch lengths into inexact branch lengths, the user needs to set the tolerance value that has to be from interval $[ 0, 1 ]$. The interval of the edge $e$ is compute as: $w(e) = [ length - (tolerance \cdot length), length + (tolerance \cdot length) ]$. However, if the $w(e)_{min} < 2*\epsilon$ or $w(e)_{max} < 2*\epsilon$, we set them to $2*\epsilon$ to avoid problems with zero or negative length branches in Algorithm \ref{getIntervals}. 
+We change the parsing method for a species tree and an unrooted gene tree. In the species tree parsing method, we infer \emph{level} in species tree nodes. In the unrooted gene tree parsing method, we resolve inexact branch lengths if the given gene tree has inexact branches or we transform exact branch lengths to inexact branch lengths if the given gene tree has exact branch lengths. To modify the exact branch lengths into inexact branch lengths, the user needs to set the tolerance value that has to be from interval $[ 0, 1 ]$. The interval of the edge $e$ is compute as: $w(e) = [ length - (tolerance \cdot length), length + (tolerance \cdot length) ]$. However, if the $w(e)_{min} < 2*\epsilon$ or $w(e)_{max} < 2*\epsilon$, we set them to $2*\epsilon$ to avoid problems with zero or negative length branches in Algorithm~\ref{getIntervals}.
 
-Furthermore, we add a parsing method for a rooted gene tree that can either resolve inexact branch lengths or transform exact branch lengths to inexact branch lengths. We included a method to parse mapping of gene leaves to species leaves from a file and a method for transforming a rooted gene tree to an unrooted gene tree. This allows us to forget the original root of a gene tree and find a new one with function \emph{getIntervals} (Algorithm \ref{getIntervals}). All methods in the class are called from the \emph{Loader} class.
+Furthermore, we add a parsing method for a rooted gene tree that can either resolve inexact branch lengths or transform exact branch lengths to inexact branch lengths. We included a method to parse mapping of gene leaves to species leaves from a file and a method for transforming a rooted gene tree to an unrooted gene tree. This allows us to forget the original root of a gene tree and find a new one with function \emph{getIntervals} (Algorithm~\ref{getIntervals}). All methods in the class are called from the \emph{Loader} class.
 
 \noindent \textbf{Class Loader}
 
-The \emph{Loader} class is initialized with arguments from the command line. It loads the arguments and calls functions from \emph{Parser} according to the requirements specified in the arguments. We recognize 11 arguments that are listed in Table \ref{arguments}.
+The \emph{Loader} class is initialized with arguments from the command line. It loads the arguments and calls functions from \emph{Parser} according to the requirements specified in the arguments. We recognize 11 arguments that are listed in Table~\ref{arguments}.
 
 \begin{table}[ht!]
 \caption{Input arguments}
@@ -100,13 +100,13 @@ The \emph{Loader} class is initialized with arguments from the command line. It 
   \label{arguments}
 \end{table}
 
-The main method is \emph{loadArgs} which is called from the \emph{Main} class and returns an array of \emph{Object}: a rooted species tree, a rooted gene tree or an unrooted gene tree, \emph{step} and \emph{countLossesAboveRoot} needed for algorithms from Chapter \ref{counting_algorithm} implemented in \emph{Reconciliator} class along with \emph{dirPathGene} and \emph{printType} required in \emph{Printer} class functions.
+The main method is \emph{loadArgs} which is called from the \emph{Main} class and returns an array of \emph{Object}: a rooted species tree, a rooted gene tree or an unrooted gene tree, \emph{step} and \emph{countLossesAboveRoot} needed for algorithms from Chapter~\ref{counting_algorithm} implemented in \emph{Reconciliator} class along with \emph{dirPathGene} and \emph{printType} required in \emph{Printer} class functions.
 
 \noindent \textbf{Class Reconciliator}
 
-The algorithms from Chapter \ref{Algorithms} and the two-pass algorithm by Chládek from Chapter \ref{two-pass_algorithm} are called in the \emph{Reconciliator} class. These are the main methods to obtain the most parsimonious reconciliation.
+The algorithms from Chapter~\ref{Algorithms} and the two-pass algorithm by Chládek from Chapter~\ref{two-pass_algorithm} are called in the \emph{Reconciliator} class. These are the main methods to obtain the most parsimonious reconciliation.
 
-The \emph{Reconciliator} class is initialized with a rooted species tree, a rooted gene tree or an unrooted gene tree, \emph{step} and \emph{countLossesAboveRoot} that are inferred in \emph{Loader} class. It uses \emph{Interval} to store the minimal and maximal length of new edges in function \emph{getIntervals} (Algorithm \ref{getIntervals}), which are used for subdividing the root edge and creating the \emph{RootedIntervalTree}. The class returns a list of \emph{RootedIntervalTree} with most parsimonious reconciliation that has its reconciliation score store in \emph{DL}.
+The \emph{Reconciliator} class is initialized with a rooted species tree, a rooted gene tree or an unrooted gene tree, \emph{step} and \emph{countLossesAboveRoot} that are inferred in \emph{Loader} class. It uses \emph{Interval} to store the minimal and maximal length of new edges in function \emph{getIntervals} (Algorithm~\ref{getIntervals}), which are used for subdividing the root edge and creating the \emph{RootedIntervalTree}. The class returns a list of \emph{RootedIntervalTree} with most parsimonious reconciliation that has its reconciliation score store in \emph{DL}.
 
 \noindent \textbf{Class Printer}
 
@@ -120,4 +120,4 @@ The file with results is saved in the same directory as the given gene tree.
 
 \noindent \textbf{Class Main}
 
-The \emph{Main} class receives arguments given by user and send it to the \emph{Loader} class for processing. Sequentially, sends a rooted species tree, a rooted gene tree or an unrooted gene tree, \emph{step} and \emph{countLossesAboveRoot} to the \emph{Reconciliator} class to infer the most parsimonious reconciliation, which returns list of \emph{RootedIntervalTree}. Eventually, it sends the list of \emph{RootedIntervalTree}, \emph{printType} and \emph{dirPathGene} to the \emph{Printer} to print the results. Also, it stores the value of $\epsilon$ that are required in functions \emph{getIntervals} (Algorithm \ref{getIntervals}) in \emph{Reconciliator} class and \emph{computeLevel} (Algorithm \ref{computeLevel}) in \emph{RootedIntervalTree} class.  \\
+The \emph{Main} class receives arguments given by user and send it to the \emph{Loader} class for processing. Sequentially, sends a rooted species tree, a rooted gene tree or an unrooted gene tree, \emph{step} and \emph{countLossesAboveRoot} to the \emph{Reconciliator} class to infer the most parsimonious reconciliation, which returns list of \emph{RootedIntervalTree}. Eventually, it sends the list of \emph{RootedIntervalTree}, \emph{printType} and \emph{dirPathGene} to the \emph{Printer} to print the results. Also, it stores the value of $\epsilon$ that are required in functions \emph{getIntervals} (Algorithm~\ref{getIntervals}) in \emph{Reconciliator} class and \emph{computeLevel} (Algorithm~\ref{computeLevel}) in \emph{RootedIntervalTree} class.  \\

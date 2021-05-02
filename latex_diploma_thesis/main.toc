@@ -7,7 +7,7 @@
 \contentsline {subsection}{\numberline {1.2.2}Probabilistic gene tree reconciliation}{10}{subsection.1.2.2}%
 \contentsline {subsection}{\numberline {1.2.3}Isometric gene tree reconciliation}{12}{subsection.1.2.3}%
 \contentsline {subsubsection}{\numberline {1.2.3.1}Exact branch length}{12}{subsubsection.1.2.3.1}%
-\contentsline {subsubsection}{\numberline {1.2.3.2}Inexact branch lengths}{14}{subsubsection.1.2.3.2}%
+\contentsline {subsubsection}{\numberline {1.2.3.2}Inexact branch lengths}{13}{subsubsection.1.2.3.2}%
 \contentsline {chapter}{\numberline {2}Algorithms}{18}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Rooting the gene tree}{18}{section.2.1}%
 \contentsline {section}{\numberline {2.2}Counting algorithm}{20}{section.2.2}%
@@ -22,4 +22,4 @@
 \contentsline {subsection}{\numberline {4.1.2}With rerooting the gene tree}{39}{subsection.4.1.2}%
 \contentsline {section}{\numberline {4.2}Real dataset}{47}{section.4.2}%
 \contentsline {chapter}{Conclusion}{50}{chapter*.4}%
-\contentsline {chapter}{List of Appendices}{54}{chapter*.6}%
+\contentsline {chapter}{List of Appendices}{55}{chapter*.6}%
