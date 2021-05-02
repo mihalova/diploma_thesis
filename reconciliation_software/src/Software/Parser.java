@@ -185,9 +185,7 @@ public class Parser {
         time = time.replaceAll(",", ".");
         if (tolerance != null && !time.contains("-")) {
             //nastavenie tolerance pre hrany
-            double t = round(Double.parseDouble(time));
-            if (t == 0.0)
-                t = 1;
+            double t = Double.parseDouble(time);
             double[] interval = makeInterval(t, tolerance);
             min_time = interval[0];
             max_time = interval[1];
@@ -225,8 +223,8 @@ public class Parser {
             t.getRoot().setDepth(0.0);
             t.getRoot().setLevel(0);
             //nodes pod root
-            RootedExactNode left = parseNode(str.substring(param[0], param[1]), 0.0, 1, nodes);
-            RootedExactNode right = parseNode(str.substring(param[1] + 1, param[2]), 0.0, 1, nodes);
+            RootedExactNode left = parseNode(str.substring(1, param[1]), 0.0, 1, nodes);
+            RootedExactNode right = parseNode(str.substring(param[1] + 1, param[0]), 0.0, 1, nodes);
             //nastaví hierarchiu
             left.setParent(t.getRoot());
             right.setParent(t.getRoot());
@@ -239,36 +237,12 @@ public class Parser {
         return t;
     }
 
-    //Double s_time = 0.0;
-
     private int[] getParametersRoot(String str) {
         //suradnica ciarky
         int i = 1;
-        int start = 1;
-        int k = str.length() - 1;
-
         i = getMiddleColon(str, i);
-
-        if (i == str.length()) {
-            while (i == str.length()) {
-                start++;
-                k = str.substring(0, str.length() - 2).lastIndexOf(')');
-                //s_time += Double.parseDouble(str.substring(k + 2, str.length() - 2));
-                str = str.substring(1, k + 1);
-                i = getMiddleColon(str, 1);
-                /*start++;
-                i = getMiddleColon(str, start);
-                k = str.substring(0, str.length() - 2).lastIndexOf(')');
-                s_time = Double.parseDouble(str.substring(k + 2, str.length() - 2));*/
-            }
-        }
-        String a = str.substring(1, i);
-        a = str.substring(i + 1, k);
-
-        //suradnica poslednej zatvorky
-        k = str.lastIndexOf(')');
-        //while (!(str.charAt(k) == ')')) k--;
-        return new int[]{start, i + start - 1, k + start - 1};
+        int k = str.lastIndexOf(')');
+        return new int[]{k, i};
     }
 
     private int getMiddleColon(String str, int i) {
@@ -292,12 +266,10 @@ public class Parser {
                 return null;
             }
             //vzdialenost od najblizsieho node
-            Double time = Double.parseDouble(str.substring(params[0] + 1));
-            //celkova vzdialenost od root
-            Double depth = parentDepth + time;
+            Double depth = Double.parseDouble(str.substring(params[0]+1));
             //nodes pod
             RootedExactNode left = parseNode(str.substring(1, params[1]), depth, level + 1, nodes);
-            RootedExactNode right = parseNode(str.substring(params[1] + 1, params[2]), depth, level + 1, nodes);
+            RootedExactNode right = parseNode(str.substring(params[1] + 1, params[0]-1), depth, level + 1, nodes);
 
             //ulozi nazov nodu v spravnom poradi (napr. S1S2)
             String name;
@@ -361,8 +333,8 @@ public class Parser {
             G_rooted.getRoot().setMaxL(0.0);
             G_rooted.getRoot().setLevel(0);
             //nodes pod root
-            RootedIntervalNode left = parseIntervalNode(G_rooted, str.substring(param[0], param[1]), tolerance, Smapping, speciesTree, 0.0);
-            RootedIntervalNode right = parseIntervalNode(G_rooted, str.substring(param[1] + 1, param[2]), tolerance, Smapping, speciesTree, 0.0);
+            RootedIntervalNode left = parseIntervalNode(G_rooted, str.substring(1, param[1]), tolerance, Smapping, speciesTree, 0.0);
+            RootedIntervalNode right = parseIntervalNode(G_rooted, str.substring(param[1] + 1, param[0]), tolerance, Smapping, speciesTree, 0.0);
 
             if (right == null || left == null) {
                 RootedIntervalNode node;
@@ -388,34 +360,15 @@ public class Parser {
 
     private RootedIntervalNode parseIntervalNode(RootedIntervalTree G_rooted, String str, Double tolerance, List<Pair<String, String>> Smapping, RootedExactTree speciesTree, double savedTime) {
         RootedIntervalNode node;
-        int[] params = {0, 0, 0};
         if (str.startsWith("(")) {
-            params = getParametersInnerNodes(str);
-            if (params[1] == 0) {
-                while (params[1] == 0) {
-                    int indexColon = str.lastIndexOf(":");
-                    savedTime += Double.parseDouble(str.substring(indexColon + 1, str.length() - 1));
-                    str = str.substring(1, indexColon - 1);
-                    params[1]++;
-                    if (str.startsWith("("))
-                        params = getParametersInnerNodes(str);
-                }
-            }
-        }
-        if (str.startsWith("(")) {
+            int[] params = getParametersInnerNodes(str);
 
             if (params[2] == str.length() - 1) {
                 System.err.println("Wrong newick format inner");
                 return null;
             }
-            String pom = str.substring(params[0]);
-            int a = pom.indexOf(":");
-            double time = Double.parseDouble(pom.substring(a+1));
-            if (savedTime > 0) {
-                time += savedTime;
-                savedTime = 0.0;
-            }
-            double[] interval = getTimeInterval(String.valueOf(time), tolerance);
+
+            double[] interval = getTimeInterval(str.substring(params[0]+1), tolerance);
             //nodes pod
             RootedIntervalNode left = parseIntervalNode(G_rooted, str.substring(1, params[1]), tolerance, Smapping, speciesTree, savedTime);
             RootedIntervalNode right = parseIntervalNode(G_rooted, str.substring(params[1] + 1, params[2]), tolerance, Smapping, speciesTree, savedTime);
@@ -453,8 +406,6 @@ public class Parser {
         } else {
             //ulozenie leaves
             String[] leaf = str.split(":");
-
-            double time;
             String[] mapping;
             double[] interval;
             if (leaf.length == 1) {
@@ -463,11 +414,7 @@ public class Parser {
             }
             String nodeName = leaf[0];
             mapping = getMapping(nodeName, Smapping);
-            time = Double.parseDouble(leaf[1]);
-            if (savedTime != 0) {
-                time += savedTime;
-            }
-            interval = getTimeInterval(String.valueOf(time), tolerance);
+            interval = getTimeInterval(leaf[1], tolerance);
             if (!mapping[0].equals("")) {
                 G_rooted.addMapping(mapping[0], mapping[1]);
                 node = new RootedIntervalNode(mapping[0]);
@@ -585,11 +532,5 @@ public class Parser {
             }
             return node;
         }
-    }
-
-    static Double round(Double value) {
-        BigDecimal bd = new BigDecimal(Double.toString(value));
-        bd = bd.setScale(0, RoundingMode.HALF_UP);
-        return bd.doubleValue();
     }
 }
