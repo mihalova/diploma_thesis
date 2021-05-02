@@ -19,6 +19,7 @@
 \usepackage{tabularx}
 \usepackage{array}
 \usepackage{multirow}
+\usepackage{multicol}
 \usepackage{threeparttable}
 \usepackage{fixltx2e}
 \graphicspath{ {./figures/} }
@@ -145,13 +146,17 @@ Evolutionary history can be presented by phylogenetic trees. We use two types of
 \input conclusion.tex
 \vfill\eject 
 
-
 \nocite{*}
 \bibliographystyle{plain}
 \bibliography{bibliography}
 
 %príloha
-\input appendix.tex
+\chapter*{List of appendices}
+\addcontentsline{toc}{chapter}{List of Appendices}
+
+Appendix A - Source code \\
+Appendix B - User manual
+\includepdf{appendixB.pdf}
 
 
 

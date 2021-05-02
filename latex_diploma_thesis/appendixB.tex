@@ -1,0 +1,156 @@
+\documentclass[12pt,a4paper,oneside]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{setspace}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{threeparttable}
+\usepackage{fixltx2e}
+\usepackage{longtable}
+\graphicspath{ {./figures/} }
+%\usepackage{natbib}
+\usepackage[left=3.5cm,right=2cm,top=2.5cm,bottom=2.5cm]{geometry}
+\setstretch{1.5} %riadkovanie 1.5
+\titleformat{\chapter}{\normalfont\huge\bfseries}{\thechapter}{20pt}{\normalfont\huge\bfseries}
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+\newtheorem{definition}{Definition}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\newenvironment{myindentpar}[1]%
+{\begin{list}{}%
+         {\setlength{\leftmargin}{#1}}%
+         \item[]%
+}
+
+\begin{document}
+\sloppy
+
+\part*{Appendix B - User manual}
+
+%obsah
+\tableofcontents
+
+\mainmatter
+
+\chapter{Input} \label{Input}
+
+The needed input for our software is a rooted species tree with exact branch lengths in Newick format and a rooted or unrooted gene tree with exact or inexact branch lengths in Newick format with mapping of gene tree leaves to the species tree leaves.
+
+Inexact branch lengths are required in format, where minimal branch length and maximal branch length are separated with a dash \emph{"-"} such as \emph{"geneName:minimalLength-maximalLength"} shown in an example \emph{"cat:1.3785-2.3375"}.
+
+We recognise two types of leaves mapping. The first type of leaf mapping is directly in the gene tree file, where each gene leaf name consists of the name of the gene and the name of the species to which it is mapping separated with underscore \emph{"\_"} such as \emph{"geneName\_speciesName"} shown in an example \emph{"cat12\_cat"}. The second type of leaf mapping is stored in an \emph{".smap"} file, where each gene name has assigned a species. It is a pattern-matching mapping and we consider only matching at prefix. For example, if the gene name starts always with \emph{"CAT"}, the mapping is \emph{"CAT*	cat"}, where the \emph{"*"} is optional postfix after the matching pattern and the gene leaf in a gene tree is \emph{"CAT12:0.8324"}.
+
+\chapter{Output} \label{Output}
+
+The output of our software is either reconciled gene trees file or a relations file. For the reconciled gene trees file, we print all reconciliation solution with the same most parsimonious reconciliation score. Each gene tree is printed in a Newick format on a new line.
+
+For the relations file, we recognise 4 types of relations for each node in gene tree:
+\begin{itemize}
+  \item \emph{"gene"} - for a gene node in a leaf,
+  \item \emph{"spec"} - if the evolutionary event occurred on the gene node is speciation,
+  \item \emph{"dup"} - if the evolutionary event occurred on the gene node is duplication,
+  \item \emph{"loss"} - if the evolutionary event occurred on the gene node is gene loss.
+\end{itemize}
+Each relation type is written in a new line with information about the node separated with spaces, such as:
+\begin{itemize}
+  \item \emph{"gene geneName"}, where \emph{geneName} is for the name of the gene
+  \item \emph{"spec leftChild rightChild"}, where \emph{leftChild} is the name of a left child of the speciation node and \emph{rightChild} is the name of a right child of the speciation node,
+  \item \emph{"dup leftChild rightChild"}, where \emph{leftChild} is the name of a left child of the duplication node and \emph{rightChild} is the name of a right child of the duplication node,
+  \item \emph{"loss node"}, where \emph{node} is the name of a node above which the loss occurred.
+\end{itemize}
+Each name of an internal node of a gene tree consists of genes presented in a subtree of that node separated by commas \emph{","}. If the found solutions have the same relations, we print only the first and the number of reconciled trees with the same relations.
+
+\chapter{Settings} \label{Settings}
+
+The mandatory setting for running the isometric software are:
+
+\begin{verbatim}-S <species tree>
+\end{verbatim}
+
+The \emph{<species tree>} signifies the path to the rooted species tree file in Newick tree format.
+
+\begin{verbatim}-G <gene tree>
+\end{verbatim}
+
+The \emph{<gene tree>} signifies the path to the rooted or unrooted gene tree in Newick tree format.
+
+If the given gene tree does not have leaf mapping directly int the gene tree file (as we discussed in Chapter \ref{Input}), we require a mapping file: 
+
+\begin{verbatim}-M <species map>
+\end{verbatim}
+
+The \emph{<species map>} signifies the path to the mapping file of genes to species in format mentioned above in Chapter \ref{Input}.
+\\
+
+Besides the mandatory setting, we offer optional settings:
+
+\begin{verbatim}-help
+\end{verbatim}
+
+The setting shows help information with all possible input arguments.
+
+\begin{verbatim}-t <tolerance>
+\end{verbatim}
+
+The \emph{<tolerance>} signifies the required tolerance from interval $[ 0, 1 ]$. By default, the tolerance is set to $0.5$.
+
+\begin{verbatim}-s <step>
+\end{verbatim}
+
+The \emph{<step>} signifies the required step from $[0, \infty]$. By default, the step is set to $0.01$.
+
+\begin{verbatim}-r
+\end{verbatim}
+
+The setting refers that the given gene tree is rooted. By default, the given gene tree is considered to be unrooted.
+
+\begin{verbatim}-reroot
+\end{verbatim}
+
+The setting refers that the given rooted gene tree is wished to be rerooted, which allows to find a reconciliation with better score.
+
+\begin{verbatim}-l
+\end{verbatim}
+
+The setting refers that the user wishes to count the gene losses above the root of the given gene tree. The case when the gene losses are above the root can occur when some genes of species from the species tree are not presented in the gene tree.
+
+\begin{verbatim}-p <print type>
+\end{verbatim}
+
+The \emph{<print type>} signifies the required print type from two options \emph{"sol"} and \emph{"rel"} as discussed in Chapter \ref{Output}. The \emph{"sol"} option prints the reconciled gene trees with the same most parsimonious reconciliation score. The \emph{"rel"} option prints the relations between nodes. By default, the print type is set to be \emph{"sol"}.
+
+\begin{verbatim}-epsilon <epsilon>
+\end{verbatim}
+
+The \emph{<epsilon>} signifies the required epsilon to recognize the rounding error. By default, the $\epsilon$ is set to \num{1e-6}.
+
+
+\chapter{Running the reconciliation}
+
+Our isometric reconciliation software has a command line interface, so it is executed from the command line with:
+
+\begin{verbatim}
+java -jar IsometricRecon.jar [settings]
+\end{verbatim}
+
+The \emph{[settings]} are setting discussed in Chapter \ref{Settings}. If the mandatory settings are not inputted or the given trees or leaf mapping is incorrect, the software writes an error message into the command line.
+
+\backmatter
+
+\end{document}
